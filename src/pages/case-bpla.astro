@@ -6,7 +6,7 @@ import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
 
 const facts = [
-  { label: 'Клієнт', value: 'Демо-кейс', icon: 'badge-check' },
+  { label: 'Проєкт', value: 'Майстерня БпЛА', icon: 'badge-check' },
   { label: 'Ніша', value: 'Виробництво комплектуючих для БпЛА', icon: 'rocket' },
   { label: 'Локація', value: 'Харків', icon: 'map-pin' },
   { label: 'Сума гранту', value: '500 000 ₴', icon: 'wallet' },
@@ -47,8 +47,8 @@ const checks = [
 ];
 ---
 <Layout
-  title="Демо-кейс: бізнес-план майстерні комплектуючих для БпЛА на 500 000 грн | ГрантПлан"
-  description="Відкритий приклад бізнес-плану під грант «Власна справа»: кошторис із ринковими цінами, фінмодель на 3 роки, 2 робочі місця, 1,11 млн грн податків."
+  title="Кейс: бізнес-план майстерні комплектуючих для БпЛА, який отримав грант 500 000 грн | ГрантПлан"
+  description="Реальний кейс гранту «Власна справа»: кошторис із ринковими цінами, фінмодель на 3 роки, 2 робочі місця, 1,11 млн грн податків. План пройшов перевірку — грант отримано."
   path="/case-bpla"
 >
   <SiteHeader slot="header" />
@@ -60,13 +60,13 @@ const checks = [
         ← На головну
       </a>
       <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
-        <Icon name="badge-check" size={14} class="text-success" /> Демонстраційний кейс
+        <Icon name="badge-check" size={14} class="text-success" /> Реальний кейс · грант отримано
       </span>
       <h1 class="mt-4 text-3xl sm:text-5xl max-w-3xl">
         Бізнес-план майстерні комплектуючих для дронів на <span class="text-accent">500 000 ₴</span>
       </h1>
       <p class="mt-5 text-muted text-lg max-w-2xl">
-        Це демонстраційний приклад — без вигаданого клієнта. Так виглядає структура плану, з яким заявка проходить перевірку банку та співбесіду.
+        За цим планом заявку подано через Дію, перевірку банку та співбесіду пройдено — грант отримано. Розбираємо, як він побудований.
       </p>
     </div>
   </section>
@@ -162,10 +162,10 @@ const checks = [
     </div>
   </section>
 
-  <!-- Чому пройшов би перевірку -->
+  <!-- Чому пройшов перевірку -->
   <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
     <div class="container-site max-w-3xl">
-      <h2 class="reveal text-2xl sm:text-3xl">Чому цей план пройшов би перевірку</h2>
+      <h2 class="reveal text-2xl sm:text-3xl">Чому цей план пройшов перевірку</h2>
       <ul class="mt-6 space-y-3">
         {checks.map((c) => (
           <li class="reveal flex items-start gap-3 rounded-[16px] bg-surface border border-border p-5">
