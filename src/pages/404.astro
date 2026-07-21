@@ -1,0 +1,22 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+---
+<Layout title="Сторінку не знайдено | ГрантПлан" path="/404" noindex={true}>
+  <SiteHeader slot="header" />
+
+  <section class="min-h-[70dvh] grid place-items-center pt-28 pb-16">
+    <div class="container-site text-center max-w-lg">
+      <div class="font-display font-extrabold text-7xl sm:text-8xl text-accent">404</div>
+      <h1 class="mt-4 text-2xl sm:text-3xl">Такої сторінки немає</h1>
+      <p class="mt-3 text-muted">Можливо, її переміщено або посилання застаріло. Повернімося на головну.</p>
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/" class="btn btn-primary">На головну</a>
+        <a href="/#lead" class="btn btn-ghost">Безкоштовний аудит</a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+</Layout>

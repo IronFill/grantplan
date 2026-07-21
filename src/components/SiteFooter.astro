@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import { site, nav } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="border-t border-border/70 pt-14 pb-28 md:pb-14">
+  <div class="container-site">
+    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <span class="font-display font-extrabold text-xl">ГрантПлан<span class="text-accent">.</span></span>
+        <p class="mt-3 text-muted max-w-xs">
+          Бізнес-плани під грант «Власна справа» за формою Дії. Харків, працюємо по всій Україні.
+        </p>
+      </div>
+
+      <nav aria-label="Навігація у підвалі">
+        <div class="text-sm font-semibold mb-3">Розділи</div>
+        <ul class="space-y-2 text-muted">
+          {nav.map((item) => (
+            <li><a href={item.href} class="hover:text-ink transition-colors">{item.label}</a></li>
+          ))}
+          <li><a href="/case-bpla" class="hover:text-ink transition-colors">Приклад плану</a></li>
+          <li><a href="/privacy" class="hover:text-ink transition-colors">Політика конфіденційності</a></li>
+        </ul>
+      </nav>
+
+      <div>
+        <div class="text-sm font-semibold mb-3">Контакти</div>
+        <ul class="space-y-2 text-muted">
+          <li>
+            <a href={`tel:${site.phone}`} class="inline-flex items-center gap-2 hover:text-ink" data-analytics="click_phone">
+              <Icon name="phone" size={16} /> {site.phoneDisplay}
+            </a>
+          </li>
+          <li>
+            <a href={site.telegram} target="_blank" rel="noopener" class="inline-flex items-center gap-2 hover:text-ink" data-analytics="click_telegram">
+              <Icon name="send" size={16} /> Telegram
+            </a>
+          </li>
+          <li>
+            <a href={`mailto:${site.email}`} class="inline-flex items-center gap-2 hover:text-ink">
+              <Icon name="file-text" size={16} /> {site.email}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-border/70 text-sm text-muted space-y-3">
+      <p>
+        Рішення про надання гранту ухвалює Державна служба зайнятості. Сайт не є офіційним ресурсом державних програм.
+      </p>
+      <p>© {year} ГрантПлан. Усі права захищено.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-analytics]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const ev = el.getAttribute('data-analytics');
+      if (ev && (window as any).plausible) (window as any).plausible(ev);
+    });
+  });
+</script>

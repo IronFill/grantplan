@@ -1,0 +1,172 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+<section id="lead" class="py-16 md:py-24 border-t border-border/70 bg-surface/30 scroll-mt-20">
+  <div class="container-site grid lg:grid-cols-[1fr_0.9fr] gap-10 lg:gap-14 items-start">
+    <div class="reveal">
+      <h2 class="text-3xl sm:text-4xl">Дізнайтесь за 15 хвилин, чи світить вам грант</h2>
+      <p class="mt-4 text-muted text-lg">
+        Безкоштовно і без зобов’язань. Якщо не проходите — чесно скажемо і пояснимо чому.
+      </p>
+
+      <!-- Прямі кнопки-месенджери -->
+      <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <a href={site.telegram} target="_blank" rel="noopener" class="btn btn-ghost !min-h-[52px]" data-analytics="click_telegram">
+          <Icon name="send" size={18} /> Telegram
+        </a>
+        <a href={site.viber} class="btn btn-ghost !min-h-[52px]" data-analytics="click_viber">
+          <Icon name="message-circle" size={18} /> Viber
+        </a>
+        <a href={site.whatsapp} target="_blank" rel="noopener" class="btn btn-ghost !min-h-[52px]" data-analytics="click_whatsapp">
+          <Icon name="message-circle" size={18} /> WhatsApp
+        </a>
+        <a href={`tel:${site.phone}`} class="btn btn-ghost !min-h-[52px]" data-analytics="click_phone">
+          <Icon name="phone" size={18} /> Дзвінок
+        </a>
+      </div>
+    </div>
+
+    <!-- Форма -->
+    <div class="reveal rounded-[16px] bg-surface border border-border p-6 md:p-7">
+      <form id="lead-form" novalidate>
+        <!-- Honeypot (приховане поле від спаму) -->
+        <div class="absolute -left-[9999px]" aria-hidden="true">
+          <label>Не заповнюйте це поле<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <!-- Прихований payload квізу (заповнюється JS) -->
+        <input type="hidden" name="quiz" id="lead-quiz" value="" />
+
+        <div class="space-y-4">
+          <div>
+            <label for="lf-name" class="block text-sm font-medium mb-1.5">Ім’я <span class="text-accent">*</span></label>
+            <input
+              id="lf-name" name="name" type="text" required autocomplete="name"
+              class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+              placeholder="Ваше ім’я"
+            />
+          </div>
+
+          <div>
+            <label for="lf-phone" class="block text-sm font-medium mb-1.5">Телефон <span class="text-accent">*</span></label>
+            <input
+              id="lf-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
+              class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+              placeholder="+380 __ ___ __ __" value="+380"
+            />
+            <p class="mt-1 text-xs hidden text-accent-hover" data-phone-error>Введіть коректний номер у форматі +380XXXXXXXXX</p>
+          </div>
+
+          <fieldset>
+            <legend class="block text-sm font-medium mb-2">Зручний месенджер</legend>
+            <div class="flex flex-wrap gap-2">
+              {['Telegram', 'Viber', 'Дзвінок'].map((m, i) => (
+                <label class="cursor-pointer">
+                  <input type="radio" name="messenger" value={m} class="peer sr-only" checked={i === 0} />
+                  <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 transition-colors">{m}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="lf-idea" class="block text-sm font-medium mb-1.5">Коротко про ідею <span class="text-muted font-normal">(необов’язково)</span></label>
+            <textarea
+              id="lf-idea" name="idea" rows="3"
+              class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none resize-y"
+              placeholder="Наприклад: майстерня з ремонту техніки, 1 робоче місце"
+            ></textarea>
+          </div>
+
+          <label class="flex items-start gap-3 text-sm text-muted">
+            <input type="checkbox" name="consent" required class="mt-1 w-4 h-4 accent-[#FF8A2A] shrink-0" />
+            <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою конфіденційності</a></span>
+          </label>
+
+          <button type="submit" class="btn btn-primary w-full" data-submit>
+            Отримати безкоштовний аудит
+          </button>
+        </div>
+      </form>
+
+      <!-- Екран подяки -->
+      <div id="lead-success" class="hidden text-center py-8">
+        <span class="inline-grid place-items-center w-16 h-16 rounded-full bg-success/15 text-success mx-auto">
+          <Icon name="check-circle" size={32} />
+        </span>
+        <h3 class="mt-5 text-2xl font-display font-semibold">Дякуємо!</h3>
+        <p class="mt-2 text-muted">Зателефонуємо протягом години в робочий час.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('lead-form') as HTMLFormElement | null;
+  const success = document.getElementById('lead-success');
+  const phoneInput = document.getElementById('lf-phone') as HTMLInputElement | null;
+  const phoneError = document.querySelector<HTMLElement>('[data-phone-error]');
+  const submitBtn = document.querySelector<HTMLButtonElement>('[data-submit]');
+
+  // Маска +380 — залишаємо тільки цифри, максимум 12 (380 + 9)
+  function formatPhone(v: string): string {
+    let digits = v.replace(/\D/g, '');
+    if (!digits.startsWith('380')) {
+      digits = digits.replace(/^0+/, ''); // прибираємо нацональний нуль (050 → 50)
+      digits = '380' + digits;
+    }
+    digits = digits.slice(0, 12);
+    return '+' + digits;
+  }
+  phoneInput?.addEventListener('input', () => {
+    const pos = phoneInput.selectionStart;
+    phoneInput.value = formatPhone(phoneInput.value);
+    if (pos) phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+  });
+
+  function validPhone(v: string): boolean {
+    return /^\+380\d{9}$/.test(v);
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form) return;
+
+    // Honeypot
+    const hp = (form.elements.namedItem('company') as HTMLInputElement)?.value;
+    if (hp) return; // бот
+
+    const phone = phoneInput?.value ?? '';
+    if (!validPhone(phone)) {
+      phoneError?.classList.remove('hidden');
+      phoneInput?.focus();
+      return;
+    }
+    phoneError?.classList.add('hidden');
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Надсилаємо…';
+    }
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    try {
+      const res = await fetch('/.netlify/functions/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error('bad response');
+      form.classList.add('hidden');
+      success?.classList.remove('hidden');
+      if ((window as any).plausible) (window as any).plausible('submit_form');
+    } catch (err) {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Отримати безкоштовний аудит';
+      }
+      alert('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
+    }
+  });
+</script>

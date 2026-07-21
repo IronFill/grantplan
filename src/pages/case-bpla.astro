@@ -1,0 +1,194 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import Icon from '../components/Icon.astro';
+
+const facts = [
+  { label: 'Клієнт', value: 'Демо-кейс', icon: 'badge-check' },
+  { label: 'Ніша', value: 'Виробництво комплектуючих для БпЛА', icon: 'rocket' },
+  { label: 'Локація', value: 'Харків', icon: 'map-pin' },
+  { label: 'Сума гранту', value: '500 000 ₴', icon: 'wallet' },
+];
+
+const estimate = [
+  { item: 'Верстат ЧПК', sum: 180_300 },
+  { item: '3 × 3D-принтери', sum: 150_000 },
+  { item: 'Лазерний гравер', sum: 24_700 },
+  { item: 'Резервне живлення', sum: 45_000 },
+  { item: 'Витяжка', sum: 25_000 },
+  { item: 'Вакуумний стіл', sum: 20_000 },
+  { item: 'ПК + CAD/CAM', sum: 30_000 },
+  { item: 'Оснастка', sum: 25_000 },
+];
+const estimateTotal = estimate.reduce((a, b) => a + b.sum, 0);
+const uah = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
+
+const financials = [
+  { label: 'Дохід, рік 1', value: '1,43 млн ₴' },
+  { label: 'Прибуток, рік 3', value: '424 тис ₴' },
+  { label: 'Податки за 3 роки', value: '1,11 млн ₴' },
+];
+
+const stages = [
+  { n: '1', title: 'Місяці 1–2', text: 'Реєстрація ФОП, оренда приміщення, закупівля обладнання за кошторисом.' },
+  { n: '2', title: 'Місяці 2–3', text: 'Монтаж і налагодження ЧПК та принтерів, пусконалагодження, тестові партії.' },
+  { n: '3', title: 'Місяці 3–4', text: 'Найм і навчання 2 працівників, вихід на стабільну якість, перші замовлення.' },
+  { n: '4', title: 'Місяці 4–6', text: 'Масштабування виробництва, вихід на планові обсяги та точку беззбитковості.' },
+];
+
+const checks = [
+  'Ринкові ціни з комерційних пропозицій — кожна позиція кошторису підтверджена КП',
+  'Цифри сходяться: кошторис = 500 000 ₴, витрати збігаються з фінмоделлю',
+  'Консервативний прогноз доходу — без завищених очікувань',
+  '2 робочі місця з календарем найму — виконання зобов’язань програми',
+  'Податки пораховані на 3 роки — 1,11 млн ₴ надходжень для бюджету',
+];
+---
+<Layout
+  title="Демо-кейс: бізнес-план майстерні комплектуючих для БпЛА на 500 000 грн | ГрантПлан"
+  description="Відкритий приклад бізнес-плану під грант «Власна справа»: кошторис із ринковими цінами, фінмодель на 3 роки, 2 робочі місця, 1,11 млн грн податків."
+  path="/case-bpla"
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero кейса -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site">
+      <a href="/#case" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">
+        ← На головну
+      </a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="badge-check" size={14} class="text-success" /> Демонстраційний кейс
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl max-w-3xl">
+        Бізнес-план майстерні комплектуючих для дронів на <span class="text-accent">500 000 ₴</span>
+      </h1>
+      <p class="mt-5 text-muted text-lg max-w-2xl">
+        Це демонстраційний приклад — без вигаданого клієнта. Так виглядає структура плану, з яким заявка проходить перевірку банку та співбесіду.
+      </p>
+    </div>
+  </section>
+
+  <!-- Факти -->
+  <section class="py-12 md:py-16">
+    <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {facts.map((f) => (
+        <div class="reveal rounded-[16px] bg-surface border border-border p-5">
+          <Icon name={f.icon} size={22} class="text-accent" />
+          <div class="mt-3 text-xs text-muted uppercase tracking-wide">{f.label}</div>
+          <div class="mt-1 font-display font-semibold">{f.value}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Проблема і мета -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site grid md:grid-cols-2 gap-6">
+      <div class="reveal rounded-[16px] bg-surface border border-border p-7">
+        <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent"><Icon name="alert-triangle" size={22} /></span>
+        <h2 class="mt-4 text-2xl">Проблема</h2>
+        <p class="mt-3 text-muted">Попит на комплектуючі для БпЛА зростає, але власних потужностей у регіоні бракує. Виробництво потребує стартового обладнання, яке важко профінансувати з нуля.</p>
+      </div>
+      <div class="reveal rounded-[16px] bg-surface border border-border p-7">
+        <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-success/10 text-success"><Icon name="target" size={22} /></span>
+        <h2 class="mt-4 text-2xl">Мета</h2>
+        <p class="mt-3 text-muted">Запустити майстерню з ЧПК- та 3D-виробництва, створити 2 офіційні робочі місця та вийти на самоокупність за 6 місяців, використавши грант 500 000 ₴ на обладнання.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Кошторис -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Кошторис обладнання</h2>
+      <p class="reveal mt-2 text-muted">Кожна позиція — з комерційною пропозицією постачальника.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-[16px] border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Позиція</th>
+              <th class="py-3.5 px-5 font-medium text-right">Вартість</th>
+            </tr>
+          </thead>
+          <tbody>
+            {estimate.map((row) => (
+              <tr class="border-t border-border">
+                <td class="py-3.5 px-5">{row.item}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{uah(row.sum)}</td>
+              </tr>
+            ))}
+            <tr class="border-t border-border bg-surface/60">
+              <td class="py-4 px-5 font-display font-semibold">Разом</td>
+              <td class="py-4 px-5 text-right font-display font-extrabold text-accent tabular-nums">{uah(estimateTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Фінрезультати -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Фінансові результати</h2>
+      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+        {financials.map((f) => (
+          <div class="reveal rounded-[16px] bg-raised border border-border p-6 text-center sm:text-left">
+            <Icon name="trending-up" size={22} class="text-success mx-auto sm:mx-0" />
+            <div class="mt-3 font-display font-extrabold text-2xl sm:text-3xl text-accent">{f.value}</div>
+            <div class="mt-1 text-sm text-muted">{f.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Етапи запуску -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Етапи запуску — 6 місяців</h2>
+      <div class="mt-6 grid md:grid-cols-4 gap-4">
+        {stages.map((s) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent text-[#14181C] font-display font-extrabold">{s.n}</span>
+            <h3 class="mt-4 font-display font-semibold">{s.title}</h3>
+            <p class="mt-2 text-sm text-muted">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Чому пройшов би перевірку -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site max-w-3xl">
+      <h2 class="reveal text-2xl sm:text-3xl">Чому цей план пройшов би перевірку</h2>
+      <ul class="mt-6 space-y-3">
+        {checks.map((c) => (
+          <li class="reveal flex items-start gap-3 rounded-[16px] bg-surface border border-border p-5">
+            <Icon name="check-circle" size={22} class="text-success shrink-0 mt-0.5" />
+            <span>{c}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 md:py-24">
+    <div class="container-site">
+      <div class="reveal rounded-[20px] bg-raised border border-accent/70 p-8 md:p-12 text-center relative overflow-hidden">
+        <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-[100px] opacity-15" style="background:radial-gradient(circle,#FF8A2A,transparent 70%)" aria-hidden="true"></div>
+        <h2 class="relative text-2xl sm:text-4xl">Хочу такий план під свою ідею</h2>
+        <p class="relative mt-4 text-muted text-lg max-w-xl mx-auto">Почніть із безкоштовного аудиту — чесно скажемо, чи проходить ваша ідея, ще до оплати.</p>
+        <a href="/#lead" class="relative btn btn-primary mt-7" data-analytics="click_cta_case">Отримати безкоштовний аудит</a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

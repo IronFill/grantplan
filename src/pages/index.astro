@@ -1,0 +1,66 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Hero from '../components/Hero.astro';
+import StatsBelt from '../components/StatsBelt.astro';
+import WhyRejected from '../components/WhyRejected.astro';
+import Method from '../components/Method.astro';
+import Pricing from '../components/Pricing.astro';
+import CaseTeaser from '../components/CaseTeaser.astro';
+import Author from '../components/Author.astro';
+import HonestyBlock from '../components/HonestyBlock.astro';
+import ProgramScale from '../components/ProgramScale.astro';
+import Quiz from '../components/Quiz.astro';
+import Faq from '../components/Faq.astro';
+import Reviews from '../components/Reviews.astro';
+import LeadForm from '../components/LeadForm.astro';
+import MobileCta from '../components/MobileCta.astro';
+import { faq } from '../data/faq';
+import { site } from '../data/site';
+
+// FAQPage
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+// Service з прайсом
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Підготовка бізнес-плану для гранту «Власна справа»',
+  provider: { '@type': 'ProfessionalService', name: 'ГрантПлан', areaServed: 'Україна' },
+  areaServed: { '@type': 'AdministrativeArea', name: 'Харківська область' },
+  offers: [
+    { '@type': 'Offer', name: 'Аудит ідеї', price: '0', priceCurrency: 'UAH' },
+    { '@type': 'Offer', name: 'Бізнес-план', priceCurrency: 'UAH', priceSpecification: { '@type': 'PriceSpecification', minPrice: '4000', maxPrice: '6000', priceCurrency: 'UAH' } },
+    { '@type': 'Offer', name: '«Під ключ»', priceCurrency: 'UAH', priceSpecification: { '@type': 'PriceSpecification', minPrice: '8000', maxPrice: '10000', priceCurrency: 'UAH' } },
+  ],
+};
+---
+<Layout schema={[faqSchema, serviceSchema]}>
+  <SiteHeader slot="header" />
+
+  <Hero />
+  <StatsBelt />
+  <WhyRejected />
+  <Method />
+  <Pricing />
+  <CaseTeaser />
+  <Author />
+  <HonestyBlock />
+  <ProgramScale />
+  <Quiz />
+  <Faq />
+  <Reviews />
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

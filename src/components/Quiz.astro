@@ -1,0 +1,251 @@
+---
+import Icon from './Icon.astro';
+
+const questions = [
+  {
+    q: 'Ваш статус?',
+    key: 'status',
+    options: ['ФОП', 'Фізособа', 'Ветеран або член родини', 'Молодь 18–25'],
+  },
+  {
+    q: 'Чи є прострочені кредити понад 30 днів або банкрутство?',
+    key: 'debts',
+    options: ['Так', 'Ні', 'Не знаю'],
+  },
+  {
+    q: 'Скільки робочих місць готові створити?',
+    key: 'jobs',
+    options: ['0', '1', '2+'],
+  },
+  {
+    q: 'Область реєстрації?',
+    key: 'region',
+    options: ['Харківська чи інша прифронтова', 'Інша область'],
+  },
+  {
+    q: 'Чи готові офіційно працювати і платити податки 3 роки?',
+    key: 'commit',
+    options: ['Так', 'Ні'],
+  },
+];
+---
+<section id="quiz" class="py-16 md:py-24 scroll-mt-20">
+  <div class="container-site max-w-3xl">
+    <div class="reveal rounded-[20px] bg-raised border border-border p-6 md:p-10 relative overflow-hidden" data-quiz>
+      <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full blur-[110px] opacity-15" style="background:radial-gradient(circle,#FF8A2A,transparent 70%)" aria-hidden="true"></div>
+
+      <!-- Інтро -->
+      <div class="relative text-center" data-quiz-intro>
+        <span class="inline-grid place-items-center w-14 h-14 rounded-2xl bg-accent/15 text-accent mx-auto">
+          <Icon name="sparkles" size={28} />
+        </span>
+        <h2 class="mt-5 text-2xl sm:text-3xl">Пройти тест: чи підходить вам грант?</h2>
+        <p class="mt-3 text-muted max-w-lg mx-auto">5 коротких питань — і ви побачите орієнтовний ліміт та наступні кроки. Без реєстрації.</p>
+        <button type="button" class="btn btn-primary mt-7" data-quiz-start>Почати тест</button>
+      </div>
+
+      <!-- Кроки -->
+      <div class="relative hidden" data-quiz-steps>
+        <!-- Прогрес -->
+        <div class="flex items-center justify-between text-sm text-muted mb-2">
+          <span data-quiz-counter>Питання 1 з {questions.length}</span>
+          <button type="button" class="hover:text-ink" data-quiz-back hidden>← Назад</button>
+        </div>
+        <div class="h-1.5 rounded-full bg-border overflow-hidden">
+          <div class="h-full bg-accent transition-all duration-300" style="width:20%" data-quiz-progress></div>
+        </div>
+
+        {questions.map((question, qi) => (
+          <div class={qi === 0 ? 'mt-7' : 'mt-7 hidden'} data-quiz-q={qi}>
+            <h3 class="text-xl sm:text-2xl font-display font-semibold">{question.q}</h3>
+            <div class="mt-5 grid gap-3">
+              {question.options.map((opt) => (
+                <button
+                  type="button"
+                  class="text-left rounded-xl border border-border bg-surface px-5 py-4 hover:border-accent transition-colors flex items-center justify-between group"
+                  data-quiz-opt data-key={question.key} data-value={opt}
+                >
+                  <span>{opt}</span>
+                  <Icon name="arrow-right" size={18} class="text-muted group-hover:text-accent transition-colors" />
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Результат -->
+      <div class="relative hidden text-center" data-quiz-result>
+        <span class="inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto" data-result-icon></span>
+        <h3 class="mt-5 text-2xl sm:text-3xl" data-result-title></h3>
+        <p class="mt-3 text-muted max-w-lg mx-auto" data-result-text></p>
+
+        <!-- Захоплення контакту -->
+        <form class="mt-7 max-w-md mx-auto text-left" data-quiz-form>
+          <div class="absolute -left-[9999px]" aria-hidden="true">
+            <label>Не заповнюйте<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+          </div>
+          <p class="text-sm text-muted mb-3 text-center">Надішлемо розрахунок і план дій:</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <input name="name" type="text" required placeholder="Ім’я"
+              class="rounded-xl bg-surface border border-border px-4 py-3 focus:border-accent outline-none" />
+            <input name="phone" type="tel" required inputmode="tel" value="+380" placeholder="+380 __ ___ __ __"
+              class="rounded-xl bg-surface border border-border px-4 py-3 focus:border-accent outline-none" data-quiz-phone />
+          </div>
+          <label class="flex items-start gap-2.5 text-xs text-muted mt-3">
+            <input type="checkbox" name="consent" required class="mt-0.5 w-4 h-4 accent-[#FF8A2A] shrink-0" />
+            <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою</a></span>
+          </label>
+          <button type="submit" class="btn btn-primary w-full mt-4" data-quiz-submit>Отримати розрахунок</button>
+        </form>
+
+        <div class="hidden mt-4" data-quiz-thanks>
+          <span class="inline-grid place-items-center w-14 h-14 rounded-full bg-success/15 text-success mx-auto">
+            <Icon name="check-circle" size={28} />
+          </span>
+          <p class="mt-4 text-lg font-display font-semibold">Дякуємо! Зв’яжемось протягом години в робочий час.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-quiz]');
+  if (root) {
+    const intro = root.querySelector<HTMLElement>('[data-quiz-intro]')!;
+    const steps = root.querySelector<HTMLElement>('[data-quiz-steps]')!;
+    const resultBox = root.querySelector<HTMLElement>('[data-quiz-result]')!;
+    const startBtn = root.querySelector<HTMLButtonElement>('[data-quiz-start]')!;
+    const backBtn = root.querySelector<HTMLButtonElement>('[data-quiz-back]')!;
+    const counter = root.querySelector<HTMLElement>('[data-quiz-counter]')!;
+    const progress = root.querySelector<HTMLElement>('[data-quiz-progress]')!;
+    const qCards = Array.from(root.querySelectorAll<HTMLElement>('[data-quiz-q]'));
+    const total = qCards.length;
+
+    const answers: Record<string, string> = {};
+    let current = 0;
+
+    function showStep(i: number) {
+      qCards.forEach((c, idx) => c.classList.toggle('hidden', idx !== i));
+      counter.textContent = `Питання ${i + 1} з ${total}`;
+      progress.style.width = `${((i + 1) / total) * 100}%`;
+      backBtn.hidden = i === 0;
+    }
+
+    startBtn.addEventListener('click', () => {
+      intro.classList.add('hidden');
+      steps.classList.remove('hidden');
+      showStep(0);
+    });
+
+    backBtn.addEventListener('click', () => {
+      if (current > 0) {
+        current--;
+        showStep(current);
+      }
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('[data-quiz-opt]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-key')!;
+        answers[key] = btn.getAttribute('data-value')!;
+        if (current < total - 1) {
+          current++;
+          showStep(current);
+        } else {
+          finish();
+        }
+      });
+    });
+
+    function fmt(n: number): string {
+      return n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
+    }
+
+    function computeLimit(): number {
+      const { status, jobs, region } = answers;
+      const kh = region === 'Харківська чи інша прифронтова';
+      if (status === 'Ветеран або член родини') return 1_000_000;
+      if (status === 'Молодь 18–25' && jobs === '0') return 200_000;
+      if (jobs === '2+') return kh ? 500_000 : 350_000;
+      if (jobs === '1') return kh ? 300_000 : 200_000;
+      return 100_000; // 0 робочих місць
+    }
+
+    let resultPayload = '';
+
+    function finish() {
+      steps.classList.add('hidden');
+      resultBox.classList.remove('hidden');
+      const iconWrap = resultBox.querySelector<HTMLElement>('[data-result-icon]')!;
+      const title = resultBox.querySelector<HTMLElement>('[data-result-title]')!;
+      const text = resultBox.querySelector<HTMLElement>('[data-result-text]')!;
+
+      const blocked = answers['debts'] === 'Так' || answers['commit'] === 'Ні';
+
+      if (blocked) {
+        iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-accent/15 text-accent';
+        iconWrap.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+        title.textContent = 'Поки що не варто подаватись — ось що виправити';
+        const reasons: string[] = [];
+        if (answers['debts'] === 'Так') reasons.push('закрити або реструктуризувати прострочені зобов’язання');
+        if (answers['commit'] === 'Ні') reasons.push('бути готовим офіційно працювати і платити податки 3 роки — це умова програми');
+        text.textContent = 'Щоб пройти: ' + reasons.join('; ') + '. Розкажемо детально на безкоштовному аудиті.';
+        resultPayload = 'РЕЗУЛЬТАТ: поки не проходить';
+      } else {
+        const limit = computeLimit();
+        iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-success/15 text-success';
+        iconWrap.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+        title.innerHTML = `Ваш орієнтовний ліміт — <span class="text-accent">до ${fmt(limit)}</span>`;
+        text.textContent = 'Це попередня оцінка за умовами програми. Точну суму й реальні шанси визначимо на безкоштовному аудиті.';
+        resultPayload = `РЕЗУЛЬТАТ: до ${fmt(limit)}`;
+      }
+
+      // Заповнюємо приховане поле основної форми (якщо є)
+      const mainQuiz = document.getElementById('lead-quiz') as HTMLInputElement | null;
+      if (mainQuiz) mainQuiz.value = JSON.stringify({ ...answers, result: resultPayload });
+
+      if ((window as any).plausible) (window as any).plausible('quiz_complete');
+    }
+
+    // Форма захоплення в квізі
+    const qform = resultBox.querySelector<HTMLFormElement>('[data-quiz-form]')!;
+    const qphone = resultBox.querySelector<HTMLInputElement>('[data-quiz-phone]')!;
+    qphone.addEventListener('input', () => {
+      let d = qphone.value.replace(/\D/g, '');
+      if (!d.startsWith('380')) d = '380' + d.replace(/^0+/, '');
+      qphone.value = '+' + d.slice(0, 12);
+    });
+    qform.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if ((qform.elements.namedItem('company') as HTMLInputElement)?.value) return;
+      if (!/^\+380\d{9}$/.test(qphone.value)) {
+        qphone.focus();
+        return;
+      }
+      const submit = qform.querySelector<HTMLButtonElement>('[data-quiz-submit]')!;
+      submit.disabled = true;
+      submit.textContent = 'Надсилаємо…';
+      const data = Object.fromEntries(new FormData(qform).entries());
+      const payload = { ...data, source: 'quiz', quiz: JSON.stringify({ ...answers, result: resultPayload }) };
+      try {
+        const res = await fetch('/.netlify/functions/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error();
+        qform.classList.add('hidden');
+        resultBox.querySelector('[data-quiz-thanks]')?.classList.remove('hidden');
+        if ((window as any).plausible) (window as any).plausible('submit_form');
+      } catch {
+        submit.disabled = false;
+        submit.textContent = 'Отримати розрахунок';
+        alert('Не вдалося надіслати. Напишіть нам у Telegram.');
+      }
+    });
+  }
+</script>

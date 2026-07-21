@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+<!-- Нижня sticky-панель CTA (тільки мобільні, з урахуванням safe-area) -->
+<div
+  class="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border header-blur"
+  style="padding-bottom: env(safe-area-inset-bottom);"
+>
+  <div class="flex items-center gap-3 px-4 py-3">
+    <a href="/#lead" class="btn btn-primary flex-1 !min-h-[48px]" data-analytics="click_cta_sticky">
+      Безкоштовний аудит
+    </a>
+    <a
+      href={site.telegram}
+      target="_blank" rel="noopener"
+      class="inline-grid place-items-center w-12 h-12 rounded-xl border border-border text-ink shrink-0"
+      aria-label="Написати в Telegram"
+      data-analytics="click_telegram"
+    >
+      <Icon name="send" size={22} />
+    </a>
+  </div>
+</div>

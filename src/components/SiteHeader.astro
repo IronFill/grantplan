@@ -1,0 +1,126 @@
+---
+import Icon from './Icon.astro';
+import { site, nav } from '../data/site';
+---
+<header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-colors" data-header>
+  <div class="container-site flex items-center justify-between h-16 md:h-[72px]">
+    <!-- Лого -->
+    <a href="/" class="font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
+      ГрантПлан<span class="text-accent">.</span>
+    </a>
+
+    <!-- Десктоп-навігація -->
+    <nav class="hidden lg:flex items-center gap-8" aria-label="Головна навігація">
+      {nav.map((item) => (
+        <a href={item.href} class="text-muted hover:text-ink transition-colors text-[0.95rem]">{item.label}</a>
+      ))}
+    </nav>
+
+    <!-- Праворуч -->
+    <div class="flex items-center gap-3">
+      <a
+        href={`tel:${site.phone}`}
+        class="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink hover:text-accent hover:border-accent transition-colors"
+        aria-label="Зателефонувати"
+        data-analytics="click_phone"
+      >
+        <Icon name="phone" size={20} />
+      </a>
+      <a href="/#lead" class="hidden md:inline-flex btn btn-primary !min-h-[44px] !py-2.5 !px-5 text-[0.95rem]">
+        Безкоштовний аудит
+      </a>
+
+      <!-- Бургер -->
+      <button
+        type="button"
+        class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink"
+        aria-label="Відкрити меню"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={22} />
+      </button>
+    </div>
+  </div>
+
+  <!-- Повноекранне мобільне меню -->
+  <div
+    id="mobile-menu"
+    class="lg:hidden fixed inset-0 z-50 bg-bg/98 backdrop-blur-sm flex-col hidden"
+    data-menu-panel
+  >
+    <div class="container-site flex items-center justify-between h-16">
+      <span class="font-display font-extrabold text-xl">ГрантПлан<span class="text-accent">.</span></span>
+      <button
+        type="button"
+        class="inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink"
+        aria-label="Закрити меню"
+        data-menu-close
+      >
+        <Icon name="x" size={22} />
+      </button>
+    </div>
+    <nav class="container-site flex flex-col gap-1 mt-6" aria-label="Мобільна навігація">
+      {nav.map((item) => (
+        <a
+          href={item.href}
+          class="py-4 text-2xl font-display font-semibold border-b border-border/60"
+          data-menu-link
+        >{item.label}</a>
+      ))}
+    </nav>
+    <div class="container-site mt-8 flex flex-col gap-3">
+      <a href="/#lead" class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
+      <a href={`tel:${site.phone}`} class="btn btn-ghost w-full" data-analytics="click_phone" data-menu-link>
+        <Icon name="phone" size={18} /> Подзвонити
+      </a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+  const links = document.querySelectorAll<HTMLAnchorElement>('[data-menu-link]');
+
+  function openMenu() {
+    if (!panel || !toggle) return;
+    panel.classList.remove('hidden');
+    panel.classList.add('flex');
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    if (!panel || !toggle) return;
+    panel.classList.add('hidden');
+    panel.classList.remove('flex');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+  toggle?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+  links.forEach((l) => l.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  // blur-фон при скролі
+  function onScroll() {
+    if (!header) return;
+    if (window.scrollY > 8) header.classList.add('header-blur');
+    else header.classList.remove('header-blur');
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Plausible-події для аналітики
+  document.querySelectorAll<HTMLElement>('[data-analytics]').forEach((el) => {
+    el.addEventListener('click', () => {
+      const ev = el.getAttribute('data-analytics');
+      if (ev && (window as any).plausible) (window as any).plausible(ev);
+    });
+  });
+</script>

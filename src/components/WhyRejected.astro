@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+
+const cards = [
+  {
+    icon: 'file-text',
+    title: 'План написаний «для себе»',
+    text: 'Банк оцінює не ідею, а логіку: звідки цифри, як окупляться витрати, які ризики. Без цієї структури — відмова.',
+  },
+  {
+    icon: 'calculator',
+    title: 'Цифри не сходяться',
+    text: 'Кошторис не збігається з розрахунками, ціни без обґрунтування, прогнози зі стелі. Оцінювач бачить це за хвилину.',
+  },
+  {
+    icon: 'mic',
+    title: 'Провалена співбесіда',
+    text: 'Заявник не може пояснити власний план. Ми готуємо не тільки документ, а й вас.',
+  },
+];
+---
+<section class="py-16 md:py-24">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <h2 class="text-3xl sm:text-4xl">Чому відмовляють</h2>
+      <p class="mt-3 text-muted text-lg">
+        Майже 7 із 10 заявок отримують відмову. Причини майже завжди одні й ті самі.
+      </p>
+    </div>
+
+    <div class="mt-10 grid md:grid-cols-3 gap-5">
+      {cards.map((c) => (
+        <article class="reveal rounded-[16px] bg-surface border border-border p-6">
+          <span class="inline-grid place-items-center w-12 h-12 rounded-xl bg-accent/10 text-accent">
+            <Icon name={c.icon} size={24} />
+          </span>
+          <h3 class="mt-5 text-xl font-display font-semibold">{c.title}</h3>
+          <p class="mt-2.5 text-muted">{c.text}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro';
+import { faq } from '../data/faq';
+---
+<section id="faq" class="py-16 md:py-24 scroll-mt-20">
+  <div class="container-site max-w-3xl">
+    <div class="reveal">
+      <h2 class="text-3xl sm:text-4xl">Часті питання</h2>
+      <p class="mt-3 text-muted text-lg">Коротко й чесно про головне.</p>
+    </div>
+
+    <div class="mt-10 space-y-3">
+      {faq.map((item, i) => (
+        <div class="reveal rounded-[16px] bg-surface border border-border overflow-hidden">
+          <h3>
+            <button
+              type="button"
+              class="w-full flex items-center justify-between gap-4 text-left px-5 md:px-6 py-4 md:py-5"
+              aria-expanded="false"
+              aria-controls={`faq-panel-${i}`}
+              id={`faq-btn-${i}`}
+              data-faq-btn
+            >
+              <span class="font-display font-semibold text-base md:text-lg">{item.q}</span>
+              <Icon name="chevron-down" size={20} class="text-accent shrink-0 transition-transform duration-300" />
+            </button>
+          </h3>
+          <div
+            id={`faq-panel-${i}`}
+            role="region"
+            aria-labelledby={`faq-btn-${i}`}
+            class="grid grid-rows-[0fr] transition-all duration-300"
+            data-faq-panel
+          >
+            <div class="overflow-hidden">
+              <p class="px-5 md:px-6 pb-5 text-muted">{item.a}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-faq-btn]').forEach((btn) => {
+    const panel = btn.parentElement?.parentElement?.querySelector<HTMLElement>('[data-faq-panel]');
+    const icon = btn.querySelector('svg');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      if (panel) panel.style.gridTemplateRows = open ? '0fr' : '1fr';
+      if (icon) icon.style.transform = open ? '' : 'rotate(180deg)';
+    });
+  });
+</script>

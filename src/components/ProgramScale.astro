@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+
+const rows = [
+  { label: 'Без найманих працівників', sum: 'до 100 000 ₴', kh: null },
+  { label: '1 робоче місце', sum: 'до 200 000 ₴', kh: 'Харківщина — до 300 000 ₴' },
+  { label: '2+ робочих місця', sum: 'до 350 000 ₴', kh: 'Харківщина — до 500 000 ₴' },
+  { label: 'Молодь 18–25', sum: 'до 200 000 ₴', kh: 'без робочих місць' },
+  { label: 'Ветеранський напрям', sum: 'до 1 000 000 ₴', kh: null },
+  { label: 'Повторний грант', sum: 'доступний з 2026 року', kh: null },
+];
+---
+<section class="py-16 md:py-24 border-t border-border/70 bg-surface/30">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <h2 class="text-3xl sm:text-4xl">Скільки можна отримати у 2026 році</h2>
+    </div>
+
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {rows.map((r) => (
+        <div class="reveal rounded-[16px] bg-surface border border-border p-5 flex flex-col">
+          <div class="flex items-center gap-2.5">
+            <Icon name="wallet" size={20} class="text-accent" />
+            <span class="font-medium">{r.label}</span>
+          </div>
+          <div class="mt-3 font-display font-extrabold text-xl text-accent">{r.sum}</div>
+          {r.kh && <div class="mt-1 text-sm text-success">{r.kh}</div>}
+        </div>
+      ))}
+    </div>
+
+    <p class="reveal mt-6 text-sm text-muted max-w-3xl">
+      Дані станом на липень 2026. З 1 вересня 2026 програма оновлюється — суми зростуть. Перевіряємо умови перед кожною заявкою.
+    </p>
+  </div>
+</section>
