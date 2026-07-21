@@ -36,160 +36,184 @@
 }
 
 /* ============ БАЗА ============ */
-:root {
-  color-scheme: dark;
+/* @layer base/components розташовує ці правила НИЖЧЕ за пріоритетом, ніж
+   utilities-класи Tailwind (hidden, md:flex тощо) — інакше "неслоїстий" CSS
+   завжди переміг би utility-класи незалежно від специфічності (баг: кнопка
+   з "hidden md:inline-flex btn" ніколи не ховалась, бо .btn був поза @layer). */
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* тонкий скролбар для Windows/Chromium у темній темі */
+    scrollbar-color: var(--color-border) transparent;
+    scrollbar-width: thin;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+    /* уникаємо горизонтального скролу */
+    overflow-x: hidden;
+  }
+
+  /* Заголовки — Manrope */
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  /* Кастомний скролбар (Windows) */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #45525f;
+  }
+
+  /* Focus-visible кільця — доступність */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-  /* тонкий скролбар для Windows/Chromium у темній темі */
-  scrollbar-color: var(--color-border) transparent;
-  scrollbar-width: thin;
-}
-
-body {
-  background-color: var(--color-bg);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-  font-weight: 400;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  -webkit-tap-highlight-color: transparent;
-  /* уникаємо горизонтального скролу */
-  overflow-x: hidden;
-}
-
-/* Заголовки — Manrope */
-h1, h2, h3, h4, .font-display {
-  font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-
-/* Кастомний скролбар (Windows) */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--color-border);
-  border-radius: 8px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #45525f;
-}
-
-/* Focus-visible кільця — доступність */
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* ============ УТИЛІТИ ============ */
-.container-site {
-  width: 100%;
-  max-width: var(--container-site);
-  margin-inline: auto;
-  padding-inline: 20px;
-}
-@media (min-width: 1024px) {
+/* ============ УТИЛІТИ ТА КОМПОНЕНТИ ============ */
+@layer components {
   .container-site {
-    padding-inline: 40px;
+    width: 100%;
+    max-width: var(--container-site);
+    margin-inline: auto;
+    padding-inline: 20px;
+  }
+  @media (min-width: 1024px) {
+    .container-site {
+      padding-inline: 40px;
+    }
+  }
+
+  /* Хедер blur при скролі */
+  .header-blur {
+    background-color: color-mix(in srgb, var(--color-bg) 82%, transparent);
+    backdrop-filter: saturate(140%) blur(12px);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Скляна картка (hero-макет) */
+  .glass-card {
+    background: linear-gradient(160deg, rgba(35, 43, 53, 0.9), rgba(31, 37, 45, 0.75));
+    border: 1px solid var(--color-border);
+    backdrop-filter: blur(6px);
+  }
+
+  /* Градієнтний акцентний текст */
+  .text-accent-gradient {
+    background: linear-gradient(120deg, var(--color-accent), var(--color-accent-hover));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ============ КНОПКИ ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-btn);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.2;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    border: 1px solid transparent;
+    text-align: center;
+  }
+  .btn-primary {
+    background-color: var(--color-accent);
+    color: #14181c;
+  }
+  .btn-ghost {
+    background-color: transparent;
+    color: var(--color-ink);
+    border-color: var(--color-border);
+  }
+  @media (hover: hover) {
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .btn-primary:hover {
+      background-color: var(--color-accent-hover);
+    }
+    .btn-ghost:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+  }
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  /* ============ АНІМАЦІЯ fade-up ============ */
+  /* Прогресивне покращення: ховаємо лише коли JS підтвердив підтримку
+     (клас .js-reveal на <html>). Без JS — контент завжди видимий. */
+  .js-reveal .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    will-change: opacity, transform;
+  }
+  .js-reveal .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Skip-link */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    background: var(--color-accent);
+    color: #14181c;
+    border-radius: 0 0 12px 0;
+    font-weight: 600;
+  }
+  .skip-link:focus {
+    left: 0;
   }
 }
 
-/* Хедер blur при скролі */
-.header-blur {
-  background-color: color-mix(in srgb, var(--color-bg) 82%, transparent);
-  backdrop-filter: saturate(140%) blur(12px);
-  -webkit-backdrop-filter: saturate(140%) blur(12px);
-  border-bottom: 1px solid var(--color-border);
-}
-
-/* Скляна картка (hero-макет) */
-.glass-card {
-  background: linear-gradient(160deg, rgba(35, 43, 53, 0.9), rgba(31, 37, 45, 0.75));
-  border: 1px solid var(--color-border);
-  backdrop-filter: blur(6px);
-}
-
-/* Градієнтний акцентний текст */
-.text-accent-gradient {
-  background: linear-gradient(120deg, var(--color-accent), var(--color-accent-hover));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-/* ============ КНОПКИ ============ */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  min-height: 48px;
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-btn);
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1rem;
-  line-height: 1.2;
-  cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
-  border: 1px solid transparent;
-  text-align: center;
-}
-.btn-primary {
-  background-color: var(--color-accent);
-  color: #14181c;
-}
-.btn-ghost {
-  background-color: transparent;
-  color: var(--color-ink);
-  border-color: var(--color-border);
-}
-@media (hover: hover) {
-  .btn:hover {
-    transform: translateY(-1px);
-  }
-  .btn-primary:hover {
-    background-color: var(--color-accent-hover);
-  }
-  .btn-ghost:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
-  }
-}
-.btn:active {
-  transform: translateY(0);
-}
-
-/* ============ АНІМАЦІЯ fade-up ============ */
-/* Прогресивне покращення: ховаємо лише коли JS підтвердив підтримку
-   (клас .js-reveal на <html>). Без JS — контент завжди видимий. */
-.js-reveal .reveal {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  will-change: opacity, transform;
-}
-.js-reveal .reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Reduced motion — вимикаємо все */
+/* Reduced motion — вимикаємо все (медіа-умова поза layer, щоб точно не програвала) */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -206,22 +230,6 @@ a {
     opacity: 1;
     transform: none;
   }
-}
-
-/* Skip-link */
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  z-index: 100;
-  padding: 0.75rem 1rem;
-  background: var(--color-accent);
-  color: #14181c;
-  border-radius: 0 0 12px 0;
-  font-weight: 600;
-}
-.skip-link:focus {
-  left: 0;
 }
 
 /* Приховані блоки (напр. відгуки) */
