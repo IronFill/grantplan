@@ -47,10 +47,12 @@
    з розділу доступності). */
 :root[data-theme='light'] {
   color-scheme: light;
-  --color-bg: #faf6f0;
+  /* Фон помітно темніший за карткові поверхні (раніше #FAF6F0 майже
+     збігався з білими картками — вони "губились" на сторінці). */
+  --color-bg: #f0e6d3;
   --color-surface: #ffffff;
-  --color-raised: #f4ede2;
-  --color-border: #e7dfd1;
+  --color-raised: #fdf5e8;
+  --color-border: #ddd0b8;
   --color-ink: #211c15;
   --color-muted: #6e6558;
   --color-accent: #c4600e;
