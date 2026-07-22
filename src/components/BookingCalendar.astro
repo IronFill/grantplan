@@ -52,8 +52,8 @@ import { site } from '../data/site';
           </div>
 
           <form id="bk-form" novalidate hidden>
-            <div class="absolute -left-[9999px]" aria-hidden="true">
-              <label>Не заповнюйте це поле<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+            <div class="hidden" aria-hidden="true">
+              <label>Не заповнюйте це поле<input type="text" name="hp_gp_2026" tabindex="-1" autocomplete="off" /></label>
             </div>
             <input type="hidden" name="source" value="booking" />
             <input type="hidden" name="date" data-bk-date value="" />
@@ -232,7 +232,7 @@ import { site } from '../data/site';
 
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const hp = (form.elements.namedItem('company') as HTMLInputElement)?.value;
+      const hp = (form.elements.namedItem('hp_gp_2026') as HTMLInputElement)?.value;
       if (hp) return;
       bkError?.classList.add('hidden');
       if (!dateInput.value || !timeInput.value) { showBkError('Оберіть дату й час.'); return; }

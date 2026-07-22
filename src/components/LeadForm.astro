@@ -31,8 +31,8 @@ import { site } from '../data/site';
     <div class="reveal rounded-[16px] bg-surface border border-border p-6 md:p-7">
       <form id="lead-form" novalidate>
         <!-- Honeypot (приховане поле від спаму) -->
-        <div class="absolute -left-[9999px]" aria-hidden="true">
-          <label>Не заповнюйте це поле<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
+        <div class="hidden" aria-hidden="true">
+          <label>Не заповнюйте це поле<input type="text" name="hp_gp_2026" tabindex="-1" autocomplete="off" /></label>
         </div>
         <!-- Прихований payload квізу (заповнюється JS) -->
         <input type="hidden" name="quiz" id="lead-quiz" value="" />
@@ -137,7 +137,7 @@ import { site } from '../data/site';
     if (!form) return;
 
     // Honeypot
-    const hp = (form.elements.namedItem('company') as HTMLInputElement)?.value;
+    const hp = (form.elements.namedItem('hp_gp_2026') as HTMLInputElement)?.value;
     if (hp) return; // бот
 
     hideError();

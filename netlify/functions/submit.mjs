@@ -20,8 +20,8 @@ export const handler = async (event) => {
     return { statusCode: 400, body: 'Bad JSON' };
   }
 
-  // Honeypot — тихо ігноруємо ботів
-  if (data.company) {
+  // Honeypot — тихо ігноруємо ботів (справжні заявки з цим полем не блокуємо жорстко)
+  if (data.hp_gp_2026) {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
 
