@@ -86,7 +86,7 @@ import { site } from '../data/site';
           <button type="submit" class="btn btn-primary w-full" data-submit>
             Отримати безкоштовний аудит
           </button>
-          <p class="text-sm text-accent-hover text-center hidden" data-lead-error></p>
+          <p class="text-sm text-accent-hover text-center hidden" data-lead-error data-tg={site.telegram}></p>
         </div>
       </form>
 
@@ -185,7 +185,11 @@ import { site } from '../data/site';
         submitBtn.disabled = false;
         submitBtn.textContent = 'Отримати безкоштовний аудит';
       }
-      showError('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
+      const tg = leadError?.dataset.tg || '';
+      if (leadError) {
+        leadError.innerHTML = `Не вдалося надіслати автоматично. Напишіть нам у <a href="${tg}" target="_blank" rel="noopener" class="underline font-semibold">Telegram</a> або зателефонуйте.`;
+        leadError.classList.remove('hidden');
+      }
     }
   });
 </script>

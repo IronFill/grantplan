@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import { site } from '../data/site';
 ---
 <section id="booking" class="py-16 md:py-24 scroll-mt-20">
   <div class="container-site">
@@ -90,7 +91,7 @@ import Icon from './Icon.astro';
               <button type="submit" class="btn btn-primary w-full" data-bk-submit>
                 Записатись на консультацію
               </button>
-              <p class="text-sm text-accent-hover text-center hidden" data-bk-error></p>
+              <p class="text-sm text-accent-hover text-center hidden" data-bk-error data-tg={site.telegram}></p>
             </div>
           </form>
         </div>
@@ -101,8 +102,8 @@ import Icon from './Icon.astro';
         <span class="inline-grid place-items-center w-16 h-16 rounded-full bg-success/15 text-success mx-auto">
           <Icon name="check-circle" size={32} />
         </span>
-        <h3 class="mt-5 text-2xl font-display font-semibold">Запис прийнято!</h3>
-        <p class="mt-2 text-muted">Ви обрали <span data-bk-summary class="text-ink font-medium">—</span>. Ми підтвердимо запис у Telegram або зателефонуємо найближчим часом.</p>
+        <h3 class="mt-5 text-2xl font-display font-semibold">Вашу заявку підтверджено ✓</h3>
+        <p class="mt-2 text-muted">Ви записані на <span data-bk-summary class="text-ink font-medium">—</span>. Заявка вже надійшла нам — звʼяжемося з вами для підтвердження у Telegram або телефоном найближчим часом.</p>
       </div>
     </div>
   </div>
@@ -261,7 +262,11 @@ import Icon from './Icon.astro';
         if ((window as any).plausible) (window as any).plausible('booking');
       } catch (err) {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Записатись на консультацію'; }
-        showBkError('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
+        const tg = bkError?.dataset.tg || '';
+        if (bkError) {
+          bkError.innerHTML = `Не вдалося надіслати автоматично. Напишіть нам у <a href="${tg}" target="_blank" rel="noopener" class="underline font-semibold">Telegram</a> або зателефонуйте — ми оформимо запис вручну.`;
+          bkError.classList.remove('hidden');
+        }
       }
     });
 
