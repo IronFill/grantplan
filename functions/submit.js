@@ -23,7 +23,7 @@ export async function onRequestPost(context) {
     return Response.json({ ok: true });
   }
 
-  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '' } = data;
+  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '', date = '', time = '' } = data;
 
   if (!name || !/^\+380\d{9}$/.test(phone)) {
     return Response.json({ ok: false, error: 'invalid' }, { status: 422 });
@@ -32,8 +32,11 @@ export async function onRequestPost(context) {
   const token = env.TG_BOT_TOKEN;
   const chatId = env.TG_CHAT_ID;
 
+  const isBooking = source === 'booking';
   const lines = [
-    '🟠 <b>Нова заявка — ГрантПлан</b>',
+    isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
+    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
+    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
     `👤 <b>Ім’я:</b> ${escape(name)}`,
     `📞 <b>Телефон:</b> ${escape(phone)}`,
     messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',

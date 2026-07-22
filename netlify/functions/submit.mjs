@@ -25,7 +25,7 @@ export const handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
 
-  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '' } = data;
+  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '', date = '', time = '' } = data;
 
   if (!name || !/^\+380\d{9}$/.test(phone)) {
     return { statusCode: 422, body: JSON.stringify({ ok: false, error: 'invalid' }) };
@@ -34,8 +34,11 @@ export const handler = async (event) => {
   const token = process.env.TG_BOT_TOKEN;
   const chatId = process.env.TG_CHAT_ID;
 
+  const isBooking = source === 'booking';
   const lines = [
-    '🟠 <b>Нова заявка — ГрантПлан</b>',
+    isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
+    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
+    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
     `👤 <b>Ім’я:</b> ${escape(name)}`,
     `📞 <b>Телефон:</b> ${escape(phone)}`,
     messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',
