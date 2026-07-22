@@ -15,6 +15,8 @@ export default defineConfig({
     }),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    // cast: @tailwindcss/vite типізовано під власний екземпляр Vite,
+    // Astro бандлить свій — конфлікт лише на рівні типів, збірка коректна.
+    plugins: [/** @type {any} */ (tailwindcss())],
   },
 });
