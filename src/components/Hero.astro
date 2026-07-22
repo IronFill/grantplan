@@ -47,52 +47,15 @@ import Icon from './Icon.astro';
       </ul>
     </div>
 
-    <!-- Права колонка: скляний макет першої сторінки плану -->
-    <div class="reveal hidden lg:block" aria-hidden="true">
-      <div class="glass-card rounded-[20px] p-5 shadow-xl rotate-[0.5deg]">
-        <!-- Заглушка макета документа. Власник замінить скрином демо-кейсу. -->
-        <div class="rounded-2xl bg-raised border border-border p-6">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="w-8 h-8 rounded-lg bg-accent/15 grid place-items-center text-accent">
-                <Icon name="file-text" size={18} />
-              </span>
-              <div>
-                <div class="text-xs text-muted">Бізнес-план · форма Дії</div>
-                <div class="text-sm font-semibold">Власна справа 2026</div>
-              </div>
-            </div>
-            <span class="text-xs rounded-md bg-success/15 text-success px-2 py-1">Перевірено</span>
-          </div>
-
-          <div class="mt-5 space-y-2.5">
-            <div class="h-2.5 rounded bg-border/80 w-[92%]"></div>
-            <div class="h-2.5 rounded bg-border/60 w-[78%]"></div>
-            <div class="h-2.5 rounded bg-border/60 w-[85%]"></div>
-          </div>
-
-          <div class="mt-5 grid grid-cols-3 gap-3">
-            <div class="rounded-xl bg-surface border border-border p-3">
-              <div class="text-xs text-muted">Грант</div>
-              <div class="text-accent font-display font-extrabold text-lg mt-1">500К</div>
-            </div>
-            <div class="rounded-xl bg-surface border border-border p-3">
-              <div class="text-xs text-muted">Строк</div>
-              <div class="font-display font-extrabold text-lg mt-1">2–3 дні</div>
-            </div>
-            <div class="rounded-xl bg-surface border border-border p-3">
-              <div class="text-xs text-muted">Правки</div>
-              <div class="font-display font-extrabold text-lg mt-1">×2</div>
-            </div>
-          </div>
-
-          <div class="mt-5 flex items-end gap-1.5 h-20">
-            {[38, 52, 46, 64, 72, 88].map((h) => (
-              <div class="flex-1 rounded-t bg-gradient-to-t from-accent/30 to-accent" style={`height:${h}%`}></div>
-            ))}
-          </div>
-          <div class="mt-2 text-xs text-muted">Фінмодель · 36 місяців</div>
-        </div>
+    <!-- Права колонка: приклад слайда бізнес-плану (реальний кейс) -->
+    <div class="reveal hidden lg:block">
+      <div class="glass-card rounded-[20px] p-3 shadow-xl rotate-[0.5deg]">
+        <img
+          src="/case/case-1-cover.png"
+          alt="Приклад бізнес-плану за формою Дії: майстерня БпЛА на грант 500 000 ₴"
+          width="1280" height="800" fetchpriority="high" decoding="async"
+          class="w-full rounded-2xl block"
+        />
       </div>
     </div>
   </div>

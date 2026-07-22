@@ -16,31 +16,27 @@ import Icon from './Icon.astro';
       </a>
     </div>
 
-    <!-- Візуал: 3 заглушки слайдів (власник підставить скрини) -->
-    <div class="reveal grid grid-cols-2 gap-4" aria-hidden="true">
-      <div class="glass-card rounded-2xl p-4 col-span-2">
-        <div class="text-xs text-muted">Слайд 1 · Кошторис</div>
-        <div class="mt-3 space-y-2">
-          {[95, 80, 88, 72].map((w) => (
-            <div class="flex items-center gap-3">
-              <div class="h-2 rounded bg-border/70" style={`width:${w}%`}></div>
-              <div class="h-2 w-10 rounded bg-accent/50"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div class="glass-card rounded-2xl p-4">
-        <div class="text-xs text-muted">Слайд 2 · Фінмодель</div>
-        <div class="mt-4 flex items-end gap-1.5 h-16">
-          {[40, 55, 50, 70, 82].map((h) => (
-            <div class="flex-1 rounded-t bg-gradient-to-t from-accent/30 to-accent" style={`height:${h}%`}></div>
-          ))}
-        </div>
-      </div>
-      <div class="glass-card rounded-2xl p-4">
-        <div class="text-xs text-muted">Слайд 3 · Податки</div>
-        <div class="mt-3 font-display font-extrabold text-2xl text-success">1,1 млн ₴</div>
-        <div class="text-xs text-muted mt-1">за 3 роки</div>
+    <!-- Слайди презентації кейсу -->
+    <div class="reveal grid gap-4">
+      <img
+        src="/case/case-1-cover.png"
+        alt="Слайд презентації: майстерня комплектуючих для БпЛА на грант 500 000 ₴"
+        width="1280" height="800" loading="lazy" decoding="async"
+        class="w-full rounded-2xl border border-border shadow-xl"
+      />
+      <div class="grid grid-cols-2 gap-4">
+        <img
+          src="/case/case-2-koshtorys.png"
+          alt="Слайд презентації: кошторис гранту на 500 000 ₴"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="w-full rounded-2xl border border-border"
+        />
+        <img
+          src="/case/case-3-finmodel.png"
+          alt="Слайд презентації: фінансова модель на 3 роки"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="w-full rounded-2xl border border-border"
+        />
       </div>
     </div>
   </div>
