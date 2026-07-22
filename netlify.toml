@@ -6,6 +6,13 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Той самий шлях /submit, що й у Cloudflare Pages Functions (functions/submit.js),
+# щоб фронтенд не залежав від конкретного хостингу.
+[[redirects]]
+  from = "/submit"
+  to = "/.netlify/functions/submit"
+  status = 200
+
 # SPA-подібні маршрути не потрібні (статичний сайт з окремими сторінками),
 # але лишаємо безпечні заголовки.
 [[headers]]
