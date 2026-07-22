@@ -4,6 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
+import ChecklistCta from '../components/ChecklistCta.astro';
 import Icon from '../components/Icon.astro';
 import { rejections } from '../data/rejections';
 
@@ -68,6 +69,7 @@ const schema = {
     </div>
   </section>
 
+  <ChecklistCta />
   <LeadForm />
 
   <SiteFooter slot="footer" />

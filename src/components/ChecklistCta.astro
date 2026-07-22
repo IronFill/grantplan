@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+---
+<section class="py-8 md:py-12">
+  <div class="container-site">
+    <div class="reveal rounded-[16px] bg-raised border border-border p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6">
+      <span class="inline-grid place-items-center w-14 h-14 rounded-2xl bg-accent/10 text-accent shrink-0">
+        <Icon name="file-text" size={28} />
+      </span>
+      <div class="flex-1">
+        <h2 class="text-xl sm:text-2xl font-display font-semibold">Безкоштовний чек-лист: чи пройде ваша ідея?</h2>
+        <p class="mt-2 text-muted">
+          17 пунктів самоперевірки перед подачею заявки — за напрямами, за якими найчастіше відмовляють. Завантажте PDF і перевірте свою ідею за 5 хвилин.
+        </p>
+      </div>
+      <a
+        href="/checklist-vlasna-sprava.pdf"
+        download
+        class="btn btn-primary shrink-0"
+        data-analytics="download_checklist"
+      >
+        <Icon name="file-text" size={18} /> Завантажити PDF
+      </a>
+    </div>
+  </div>
+</section>
