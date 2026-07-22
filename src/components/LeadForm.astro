@@ -112,7 +112,7 @@ import { site } from '../data/site';
   function formatPhone(v: string): string {
     let digits = v.replace(/\D/g, '');
     if (!digits.startsWith('380')) {
-      digits = digits.replace(/^0+/, ''); // прибираємо нацональний нуль (050 → 50)
+      digits = digits.replace(/^0+/, ''); // прибираємо національний нуль (050 → 50)
       digits = '380' + digits;
     }
     digits = digits.slice(0, 12);
