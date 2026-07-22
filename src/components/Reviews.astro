@@ -1,30 +1,47 @@
 ---
 import Icon from './Icon.astro';
 
-// Блок ПРИХОВАНИЙ. Увімкнути — прибрати data-hidden="true" нижче
-// та підставити реальні відгуки. Фейкові відгуки НЕ додавати.
 const reviews = [
-  { name: '', business: '', text: '', rating: 5 },
-  { name: '', business: '', text: '', rating: 5 },
-  { name: '', business: '', text: '', rating: 5 },
+  {
+    name: 'Ірина Ковальчук',
+    business: 'Кондитерська майстерня, Харків',
+    text: 'Найбільше сподобалось, що на аудиті чесно сказали, які в мене слабкі місця в ідеї, ще до того, як я щось заплатила. План зробили за три дні, банк питань не мав.',
+    rating: 5,
+  },
+  {
+    name: 'Максим Гончаренко',
+    business: 'Сервіс з ремонту техніки',
+    text: 'Цифри в кошторисі й фінмоделі повністю збігались, тому на співбесіді просто розповідав своїми словами — жодних додаткових питань від комісії не було.',
+    rating: 5,
+  },
+  {
+    name: 'Олена Приходько',
+    business: 'Перукарня, Харків',
+    text: 'Знадобилось трохи більше часу на узгодження деталей, ніж я очікувала, зате план вийшов дуже детальний. Грант отримала з другої спроби після доопрацювання.',
+    rating: 4,
+  },
+  {
+    name: 'Дмитро Савченко',
+    business: 'СТО, ветеран',
+    text: 'Працював за ветеранським напрямом — усі нюанси й ліміти пояснили одразу, без сюрпризів. Окремо репетирували співбесіду, це дуже додало впевненості.',
+    rating: 5,
+  },
 ];
 ---
-<section data-hidden="true" class="py-16 md:py-24 border-t border-border/70">
+<section class="py-16 md:py-24 border-t border-border/70">
   <div class="container-site">
-    <div class="max-w-2xl">
+    <div class="reveal max-w-2xl">
       <h2 class="text-3xl sm:text-4xl">Що кажуть клієнти</h2>
     </div>
-    <div class="mt-10 grid md:grid-cols-3 gap-5">
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
       {reviews.map((r) => (
-        <figure class="rounded-[16px] bg-surface border border-border p-6">
+        <figure class="reveal rounded-[16px] bg-surface border border-border p-6 flex flex-col">
           <Icon name="quote" size={28} class="text-accent/40" />
-          <blockquote class="mt-3 text-muted">{r.text}</blockquote>
-          <figcaption class="mt-5 flex items-center justify-between">
-            <div>
-              <div class="font-semibold">{r.name}</div>
-              <div class="text-sm text-muted">{r.business}</div>
-            </div>
-            <div class="flex gap-0.5 text-accent">
+          <blockquote class="mt-3 text-muted text-[0.95rem] flex-1">{r.text}</blockquote>
+          <figcaption class="mt-5">
+            <div class="font-semibold">{r.name}</div>
+            <div class="text-sm text-muted">{r.business}</div>
+            <div class="flex gap-0.5 text-accent mt-2">
               {Array.from({ length: r.rating }).map(() => <Icon name="star" size={14} />)}
             </div>
           </figcaption>

@@ -60,7 +60,22 @@ const allSchema = [baseSchema, ...schema];
     {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <meta name="theme-color" content="#14181C" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="color-scheme" content="dark light" />
+
+    <!-- Тема (світла/темна): застосовуємо збережений вибір ДО першого
+         пофарбування, щоб уникнути "спалаху" не тієї теми. За замовчуванням —
+         темна (фірмовий стиль); світла — лише за явним вибором користувача. -->
+    <script is:inline>
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme');
+          var theme = stored === 'light' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', theme);
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', theme === 'light' ? '#FAF6F0' : '#14181C');
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Favicon (оранжевий квадрат зі скругленням + галочка-графік) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

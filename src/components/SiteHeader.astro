@@ -30,6 +30,17 @@ import { site, nav } from '../data/site';
         Безкоштовний аудит
       </a>
 
+      <!-- Перемикач теми -->
+      <button
+        type="button"
+        class="inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink hover:text-accent hover:border-accent transition-colors"
+        aria-label="Перемкнути тему"
+        data-theme-toggle
+      >
+        <Icon name="sun" size={20} class="icon-sun" />
+        <Icon name="moon" size={20} class="icon-moon" />
+      </button>
+
       <!-- Бургер -->
       <button
         type="button"
@@ -121,6 +132,30 @@ import { site, nav } from '../data/site';
     el.addEventListener('click', () => {
       const ev = el.getAttribute('data-analytics');
       if (ev && (window as any).plausible) (window as any).plausible(ev);
+    });
+  });
+
+  // Перемикач теми (світла/темна), збереження вибору в localStorage
+  const themeToggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  function updateThemeLabels() {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    themeToggles.forEach((btn) => {
+      btn.setAttribute('aria-label', isLight ? 'Увімкнути темну тему' : 'Увімкнути світлу тему');
+    });
+  }
+  updateThemeLabels();
+  themeToggles.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      const next = isLight ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      if (themeMeta) themeMeta.setAttribute('content', next === 'light' ? '#FAF6F0' : '#14181C');
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {}
+      updateThemeLabels();
+      if ((window as any).plausible) (window as any).plausible('toggle_theme', { props: { theme: next } });
     });
   });
 </script>

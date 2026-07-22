@@ -35,6 +35,29 @@
   --container-site: 1280px;
 }
 
+/* ============ СВІТЛА ТЕМА ============ */
+/* Перевизначення тих самих токенів під data-theme="light" на <html>.
+   Правило навмисно поза @layer: @theme Tailwind генерує :root як частину
+   layered "theme"-шару, тож неслоїстий CSS тут гарантовано має вищий
+   пріоритет і коректно перекриває базові (темні) значення токенів —
+   усі utility-класи (bg-bg, text-ink, text-accent тощо) підхоплюють це
+   автоматично, без правок у компонентах.
+   Акцент трохи темніший за базовий (#FF8A2A), щоб зберегти контраст
+   тексту на світлому тлі (той самий принцип, що й "світліше — на темному"
+   з розділу доступності). */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #faf6f0;
+  --color-surface: #ffffff;
+  --color-raised: #f4ede2;
+  --color-border: #e7dfd1;
+  --color-ink: #211c15;
+  --color-muted: #6e6558;
+  --color-accent: #c4600e;
+  --color-accent-hover: #d9700f;
+  --color-success: #1e8f55;
+}
+
 /* ============ БАЗА ============ */
 /* @layer base/components розташовує ці правила НИЖЧЕ за пріоритетом, ніж
    utilities-класи Tailwind (hidden, md:flex тощо) — інакше "неслоїстий" CSS
@@ -63,6 +86,8 @@
     -webkit-tap-highlight-color: transparent;
     /* уникаємо горизонтального скролу */
     overflow-x: hidden;
+    /* плавна зміна кольорів при перемиканні теми */
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   /* Заголовки — Manrope */
@@ -124,9 +149,13 @@
     border-bottom: 1px solid var(--color-border);
   }
 
-  /* Скляна картка (hero-макет) */
+  /* Скляна картка (hero-макет) — на токенах, щоб адаптуватись під тему */
   .glass-card {
-    background: linear-gradient(160deg, rgba(35, 43, 53, 0.9), rgba(31, 37, 45, 0.75));
+    background: linear-gradient(
+      160deg,
+      color-mix(in srgb, var(--color-raised) 92%, transparent),
+      color-mix(in srgb, var(--color-surface) 80%, transparent)
+    );
     border: 1px solid var(--color-border);
     backdrop-filter: blur(6px);
   }
@@ -194,6 +223,20 @@
   .js-reveal .reveal.is-visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* Перемикач теми — показуємо іконку поточної теми (місяць = темна, сонце = світла) */
+  [data-theme-toggle] .icon-sun {
+    display: none;
+  }
+  [data-theme-toggle] .icon-moon {
+    display: inline-flex;
+  }
+  :root[data-theme='light'] [data-theme-toggle] .icon-sun {
+    display: inline-flex;
+  }
+  :root[data-theme='light'] [data-theme-toggle] .icon-moon {
+    display: none;
   }
 
   /* Skip-link */
