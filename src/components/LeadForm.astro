@@ -86,6 +86,7 @@ import { site } from '../data/site';
           <button type="submit" class="btn btn-primary w-full" data-submit>
             Отримати безкоштовний аудит
           </button>
+          <p class="text-sm text-accent-hover text-center hidden" data-lead-error></p>
         </div>
       </form>
 
@@ -107,6 +108,9 @@ import { site } from '../data/site';
   const phoneInput = document.getElementById('lf-phone') as HTMLInputElement | null;
   const phoneError = document.querySelector<HTMLElement>('[data-phone-error]');
   const submitBtn = document.querySelector<HTMLButtonElement>('[data-submit]');
+  const leadError = document.querySelector<HTMLElement>('[data-lead-error]');
+  const showError = (msg: string) => { if (leadError) { leadError.textContent = msg; leadError.classList.remove('hidden'); } };
+  const hideError = () => leadError?.classList.add('hidden');
 
   // Маска +380 — залишаємо тільки цифри, максимум 12 (380 + 9)
   function formatPhone(v: string): string {
@@ -136,6 +140,15 @@ import { site } from '../data/site';
     const hp = (form.elements.namedItem('company') as HTMLInputElement)?.value;
     if (hp) return; // бот
 
+    hideError();
+
+    const name = (form.elements.namedItem('name') as HTMLInputElement)?.value.trim();
+    if (!name) {
+      showError('Вкажіть, будь ласка, ваше імʼя.');
+      (form.elements.namedItem('name') as HTMLInputElement)?.focus();
+      return;
+    }
+
     const phone = phoneInput?.value ?? '';
     if (!validPhone(phone)) {
       phoneError?.classList.remove('hidden');
@@ -143,6 +156,12 @@ import { site } from '../data/site';
       return;
     }
     phoneError?.classList.add('hidden');
+
+    const consent = (form.elements.namedItem('consent') as HTMLInputElement)?.checked;
+    if (!consent) {
+      showError('Потрібна згода на обробку персональних даних.');
+      return;
+    }
 
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -166,7 +185,7 @@ import { site } from '../data/site';
         submitBtn.disabled = false;
         submitBtn.textContent = 'Отримати безкоштовний аудит';
       }
-      alert('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
+      showError('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
     }
   });
 </script>

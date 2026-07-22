@@ -90,6 +90,7 @@ import Icon from './Icon.astro';
               <button type="submit" class="btn btn-primary w-full" data-bk-submit>
                 Записатись на консультацію
               </button>
+              <p class="text-sm text-accent-hover text-center hidden" data-bk-error></p>
             </div>
           </form>
         </div>
@@ -132,6 +133,8 @@ import Icon from './Icon.astro';
     const success = root.querySelector('#bk-success') as HTMLElement;
     const formWrap = root.querySelector('#bk-form-wrap') as HTMLElement;
     const summaryEl = root.querySelector('[data-bk-summary]') as HTMLElement;
+    const bkError = root.querySelector('[data-bk-error]') as HTMLElement;
+    const showBkError = (msg: string) => { if (bkError) { bkError.textContent = msg; bkError.classList.remove('hidden'); } };
 
     const today = new Date(); today.setHours(0, 0, 0, 0);
     let viewYear = today.getFullYear();
@@ -230,13 +233,18 @@ import Icon from './Icon.astro';
       e.preventDefault();
       const hp = (form.elements.namedItem('company') as HTMLInputElement)?.value;
       if (hp) return;
-      if (!dateInput.value || !timeInput.value) return;
+      bkError?.classList.add('hidden');
+      if (!dateInput.value || !timeInput.value) { showBkError('Оберіть дату й час.'); return; }
+      const bkName = (form.elements.namedItem('name') as HTMLInputElement)?.value.trim();
+      if (!bkName) { showBkError('Вкажіть, будь ласка, ваше імʼя.'); (form.elements.namedItem('name') as HTMLInputElement)?.focus(); return; }
       if (!validPhone(phoneInput.value)) {
         phoneError?.classList.remove('hidden');
         phoneInput?.focus();
         return;
       }
       phoneError?.classList.add('hidden');
+      const bkConsent = (form.elements.namedItem('consent') as HTMLInputElement)?.checked;
+      if (!bkConsent) { showBkError('Потрібна згода на обробку персональних даних.'); return; }
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Надсилаємо…'; }
 
       const data = Object.fromEntries(new FormData(form).entries());
@@ -253,7 +261,7 @@ import Icon from './Icon.astro';
         if ((window as any).plausible) (window as any).plausible('booking');
       } catch (err) {
         if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Записатись на консультацію'; }
-        alert('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
+        showBkError('Не вдалося надіслати. Зателефонуйте нам або напишіть у Telegram.');
       }
     });
 
