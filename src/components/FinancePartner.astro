@@ -2,30 +2,42 @@
 import Icon from './Icon.astro';
 
 const bullets = [
-  'Перевірка кожної статті кошторису',
-  'Розрахунок податків і зборів на 36 місяців',
-  'Контроль відповідності вимогам форми Дії',
+  { icon: 'calculator', text: 'Перевірка кожної статті кошторису' },
+  { icon: 'file-text', text: 'Розрахунок податків і зборів на 36 місяців' },
+  { icon: 'shield-check', text: 'Контроль відповідності вимогам форми Дії' },
 ];
 ---
 <section class="pb-16 md:pb-24 scroll-mt-20">
-  <div class="container-site">
-    <div class="reveal rounded-[16px] bg-raised border border-border p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 md:items-center">
-      <span class="inline-grid place-items-center w-14 h-14 rounded-2xl bg-accent/10 text-accent shrink-0">
-        <Icon name="calculator" size={28} />
+  <div class="container-site grid lg:grid-cols-[1.2fr_0.8fr] gap-10 lg:gap-14 items-center">
+    <!-- Текст -->
+    <div class="reveal order-2 lg:order-1">
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm text-muted">
+        <Icon name="calculator" size={16} class="text-accent" /> Фінансовий партнер
       </span>
-      <div>
-        <h3 class="text-xl font-display font-semibold">Фінансову частину рахує окремий фахівець</h3>
-        <p class="mt-3 text-muted leading-relaxed">
-          Кошторис, податкове навантаження та фінансову модель у кожному плані додатково перевіряє партнер-бухгалтер. Це не формальність: цифри мають витримати перевірку банківського оцінювача, тож фінансові розрахунки веде саме фінансист, а не юрист.
-        </p>
-        <ul class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
-          {bullets.map((b) => (
-            <li class="inline-flex items-center gap-2">
-              <Icon name="check" size={15} class="text-success shrink-0" /> {b}
-            </li>
-          ))}
-        </ul>
-      </div>
+      <h2 class="mt-5 text-3xl sm:text-4xl">Хто рахує ваші цифри</h2>
+      <p class="mt-5 text-muted text-lg leading-relaxed">
+        Кошторис, податкове навантаження та фінансову модель у кожному плані веде окремий фахівець — партнер-бухгалтер. Це не формальність: цифри мають витримати перевірку банківського оцінювача, тож фінансові розрахунки робить фінансист, а не юрист.
+      </p>
+      <ul class="mt-7 space-y-3">
+        {bullets.map((b) => (
+          <li class="flex items-center gap-3">
+            <span class="inline-grid place-items-center w-10 h-10 rounded-xl bg-accent/10 text-accent shrink-0">
+              <Icon name={b.icon} size={20} />
+            </span>
+            <span class="font-medium">{b.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <!-- Фото фінансиста -->
+    <div class="reveal order-1 lg:order-2">
+      <img
+        src="/images/team/finance.webp"
+        alt="Фінансистка, яка рахує кошторис і податки в бізнес-плані"
+        width="1000" height="1250" loading="lazy" decoding="async"
+        class="aspect-[4/5] w-full object-cover rounded-[20px] border border-border"
+      />
     </div>
   </div>
 </section>

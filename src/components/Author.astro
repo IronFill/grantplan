@@ -8,15 +8,14 @@ const bullets = [
 ---
 <section class="py-16 md:py-24 scroll-mt-20">
   <div class="container-site grid lg:grid-cols-[0.8fr_1.2fr] gap-10 lg:gap-14 items-center">
-    <!-- Фото-плейсхолдер (без стокових фото) -->
+    <!-- Фото юриста -->
     <div class="reveal">
-      <div class="aspect-[4/5] rounded-[20px] bg-raised border border-border grid place-items-center relative overflow-hidden">
-        <div class="absolute inset-0 opacity-[0.05]" style="background-image:radial-gradient(circle at 30% 20%, #FF8A2A, transparent 60%);" aria-hidden="true"></div>
-        <div class="text-center text-muted px-6">
-          <Icon name="users" size={40} class="mx-auto text-border" />
-          <p class="mt-3 text-sm">Фото юриста<br /><span class="text-xs">(власник додасть реальне фото)</span></p>
-        </div>
-      </div>
+      <img
+        src="/images/team/lawyer.webp"
+        alt="Юрист, який готує бізнес-плани під грант «Власна справа»"
+        width="1000" height="1250" loading="lazy" decoding="async"
+        class="aspect-[4/5] w-full object-cover rounded-[20px] border border-border"
+      />
     </div>
 
     <div class="reveal">
