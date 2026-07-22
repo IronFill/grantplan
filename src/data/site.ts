@@ -22,6 +22,7 @@ export const site = {
 export const nav = [
   { label: 'Як це працює', href: '/#how' },
   { label: 'Тарифи', href: '/#pricing' },
+  { label: 'Послуги', href: '/#services' },
   { label: 'Приклад роботи', href: '/#case' },
   { label: 'Питання', href: '/#faq' },
 ] as const;

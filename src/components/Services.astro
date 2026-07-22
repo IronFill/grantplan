@@ -1,0 +1,55 @@
+---
+import Icon from './Icon.astro';
+
+const services = [
+  {
+    icon: 'badge-check',
+    title: 'Реєстрація ФОП і ТОВ',
+    text: 'Відкриваємо бізнес під ключ: вибір системи оподаткування та КВЕДів, подання документів, консультація перед стартом.',
+  },
+  {
+    icon: 'calculator',
+    title: 'Бухгалтерський супровід',
+    text: 'Ведення обліку, звітність, податкові декларації та фінансова документація. Ви займаєтесь справою — цифри тримаємо ми.',
+  },
+  {
+    icon: 'scale',
+    title: 'Юридичний супровід бізнесу',
+    text: 'Договори, перевірка контрагентів, консультації з поточних питань і взаємодія з держорганами без бюрократичного стресу.',
+  },
+  {
+    icon: 'shield-check',
+    title: 'Супровід після гранту',
+    text: 'Допомагаємо виконати зобов’язання програми: робочі місця, сплата податків і звітність протягом трьох років.',
+  },
+];
+---
+<section id="services" class="py-16 md:py-24 border-t border-border/70 bg-surface/30 scroll-mt-20">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <h2 class="text-3xl sm:text-4xl">Не тільки бізнес-план</h2>
+      <p class="mt-3 text-muted text-lg">
+        Супроводжуємо підприємця на всьому шляху — від реєстрації до звітності. Один партнер замість кількох підрядників.
+      </p>
+    </div>
+
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {services.map((s) => (
+        <article class="reveal rounded-[16px] bg-surface border border-border p-6 flex flex-col">
+          <span class="inline-grid place-items-center w-12 h-12 rounded-xl bg-accent/10 text-accent">
+            <Icon name={s.icon} size={24} />
+          </span>
+          <h3 class="mt-5 text-lg font-display font-semibold">{s.title}</h3>
+          <p class="mt-2.5 text-sm text-muted leading-relaxed flex-1">{s.text}</p>
+        </article>
+      ))}
+    </div>
+
+    <div class="reveal mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+      <a href="/#lead" class="btn btn-primary" data-analytics="click_services">
+        Обговорити задачу
+      </a>
+      <p class="text-sm text-muted">Вартість залежить від обсягу — розрахуємо після короткої консультації.</p>
+    </div>
+  </div>
+</section>
