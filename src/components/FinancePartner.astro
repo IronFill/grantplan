@@ -2,9 +2,10 @@
 import Icon from './Icon.astro';
 
 const bullets = [
-  { icon: 'calculator', text: 'Перевірка кожної статті кошторису' },
+  { icon: 'award', text: 'Багаторічний досвід у фінансах і бухгалтерії' },
+  { icon: 'calculator', text: 'Перевірка кожної статті кошторису й податків' },
   { icon: 'file-text', text: 'Розрахунок податків і зборів на 36 місяців' },
-  { icon: 'shield-check', text: 'Контроль відповідності вимогам форми Дії' },
+  { icon: 'handshake', text: 'Волонтерство: підтримка ВПО з працевлаштуванням' },
 ];
 ---
 <section class="pb-16 md:pb-24 scroll-mt-20">
@@ -16,7 +17,7 @@ const bullets = [
       </span>
       <h2 class="mt-5 text-3xl sm:text-4xl">Хто рахує ваші цифри</h2>
       <p class="mt-5 text-muted text-lg leading-relaxed">
-        Кошторис, податкове навантаження та фінансову модель у кожному плані веде окремий фахівець — партнер-бухгалтер. Це не формальність: цифри мають витримати перевірку банківського оцінювача, тож фінансові розрахунки робить фінансист, а не юрист.
+        Фінансову частину кожного плану — кошторис, податкове навантаження та модель на 3 роки — веде окрема фахівчиня з багаторічним досвідом бухгалтерського й фінансового супроводу бізнесу. Цифри мають витримати перевірку банківського оцінювача, тож рахує їх професійний фінансист, а не юрист. Поза роботою — активна волонтерка: допомагає внутрішньо переміщеним особам із фінансовою грамотністю та працевлаштуванням.
       </p>
       <ul class="mt-7 space-y-3">
         {bullets.map((b) => (
@@ -33,10 +34,10 @@ const bullets = [
     <!-- Фото фінансиста -->
     <div class="reveal order-1 lg:order-2">
       <img
-        src="/images/team/finance-v2.webp"
+        src="/images/team/finance-v3.webp"
         alt="Фінансистка, яка рахує кошторис і податки в бізнес-плані"
-        width="1306" height="1205" loading="lazy" decoding="async"
-        class="w-full h-auto rounded-[20px] border border-border"
+        width="1000" height="1250" loading="lazy" decoding="async"
+        class="aspect-[4/5] w-full object-cover rounded-[20px] border border-border"
       />
     </div>
   </div>
