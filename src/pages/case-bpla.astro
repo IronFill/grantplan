@@ -13,14 +13,13 @@ const facts = [
 ];
 
 const estimate = [
-  { item: 'Верстат ЧПК', sum: 180_300 },
-  { item: '3 × 3D-принтери', sum: 150_000 },
-  { item: 'Лазерний гравер', sum: 24_700 },
-  { item: 'Резервне живлення', sum: 45_000 },
-  { item: 'Витяжка', sum: 25_000 },
-  { item: 'Вакуумний стіл', sum: 20_000 },
-  { item: 'ПК + CAD/CAM', sum: 30_000 },
-  { item: 'Оснастка', sum: 25_000 },
+  { item: 'Фрезерний верстат з ЧПК (поле 600×900 мм)', sum: 180_300 },
+  { item: '3D-принтери FDM, 3 шт', sum: 150_000 },
+  { item: 'Термопрес для ламінування карбону', sum: 65_000 },
+  { item: 'Витяжка та фільтрація повітря', sum: 25_000 },
+  { item: 'Комп’ютер із ПЗ CAD/CAM', sum: 30_000 },
+  { item: 'Оснастка, фрези по композитах, інструмент', sum: 24_700 },
+  { item: 'Стелажі та складська зона', sum: 25_000 },
 ];
 const estimateTotal = estimate.reduce((a, b) => a + b.sum, 0);
 const uah = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
@@ -44,6 +43,20 @@ const checks = [
   'Консервативний прогноз доходу — без завищених очікувань',
   '2 робочі місця з календарем найму — виконання зобов’язань програми',
   'Податки пораховані на 3 роки — 1,11 млн ₴ надходжень для бюджету',
+];
+
+const products = [
+  { name: 'Карбонові рами 7"/10"', desc: 'ЧПУ-фрезерування, карбон 2–5 мм', price: '1 200–1 600 ₴' },
+  { name: 'Комплекти друкованих деталей', desc: 'Канопи, кріплення АКБ, маунти', price: '200–450 ₴' },
+  { name: 'Окремі запчастини', desc: 'Захист моторів, тримачі, ніжки', price: '100–300 ₴' },
+  { name: 'Кастом за кресленням', desc: 'Деталі під ТЗ замовника', price: 'від 300 ₴' },
+];
+
+const risks = [
+  { title: 'Безпекова ситуація та енергетика', text: 'Резервне живлення, страховий запас сировини, мобільність обладнання.' },
+  { title: 'Концентрація на кількох клієнтах', text: 'Мінімум 3 якірні B2B-договори + постійний ритейл-канал.' },
+  { title: 'Цінова конкуренція', text: 'Захист через швидкість, кастом і ремонтопридатність.' },
+  { title: 'Кадри', text: 'Навчання працівника, документовані техпроцеси.' },
 ];
 ---
 <Layout
@@ -100,8 +113,28 @@ const checks = [
     </div>
   </section>
 
-  <!-- Кошторис -->
+  <!-- Продуктова лінійка -->
   <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Продуктова лінійка</h2>
+      <p class="reveal mt-2 text-muted">Цивільний і навчальний сегмент: FPV, школи операторів, агро- та інспекційні платформи.</p>
+      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {products.map((p) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-5 flex flex-col">
+            <div class="font-display font-semibold flex-1">{p.name}</div>
+            <div class="mt-1.5 text-sm text-muted">{p.desc}</div>
+            <div class="mt-4 font-display font-extrabold text-accent">{p.price}</div>
+          </div>
+        ))}
+      </div>
+      <p class="reveal mt-4 text-sm text-muted flex items-center gap-2">
+        <Icon name="wallet" size={16} class="text-accent" /> Середній чек B2B-замовлення (дрібний опт, 10–30 рам): 15 000–25 000 ₴
+      </p>
+    </div>
+  </section>
+
+  <!-- Кошторис -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
     <div class="container-site">
       <h2 class="reveal text-2xl sm:text-3xl">Кошторис обладнання</h2>
       <p class="reveal mt-2 text-muted">Кожна позиція — з комерційною пропозицією постачальника.</p>
@@ -177,8 +210,29 @@ const checks = [
     </div>
   </section>
 
+  <!-- Ризики та мінімізація -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Ризики та їх мінімізація</h2>
+      <p class="reveal mt-2 text-muted">Комісія цінує реалістичність: у сильному плані ризики не приховані, а прораховані.</p>
+      <div class="mt-6 grid sm:grid-cols-2 gap-4">
+        {risks.map((r) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <div class="flex items-start gap-3">
+              <Icon name="shield-check" size={22} class="text-accent shrink-0 mt-0.5" />
+              <div>
+                <h3 class="font-display font-semibold">{r.title}</h3>
+                <p class="mt-1.5 text-sm text-muted">{r.text}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
-  <section class="py-16 md:py-24">
+  <section class="py-16 md:py-24 border-t border-border/70">
     <div class="container-site">
       <div class="reveal rounded-[20px] bg-raised border border-accent/70 p-8 md:p-12 text-center relative overflow-hidden">
         <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-[100px] opacity-15" style="background:radial-gradient(circle,#FF8A2A,transparent 70%)" aria-hidden="true"></div>
