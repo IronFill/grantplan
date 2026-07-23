@@ -1,18 +1,67 @@
 ---
+// Для чисел, які має сенс "рахувати" (не діапазони на кшталт "2–3 дні"),
+// задаємо prefix/to/suffix — JS анімує підрахунок при появі в в'юпорті.
+// Значення value — фінальний текст, він же фолбек без JS.
+const fmt = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ');
+
 const stats = [
-  { value: 'до 500 000 ₴', label: 'грант для Харківщини' },
-  { value: '~70%', label: 'відмов через слабкий бізнес-план' },
+  { prefix: 'до ', to: 500000, suffix: ' ₴', value: `до ${fmt(500000)} ₴`, label: 'грант для Харківщини' },
+  { prefix: '~', to: 70, suffix: '%', value: '~70%', label: 'відмов через слабкий бізнес-план' },
   { value: '2–3 дні', label: 'строк підготовки' },
-  { value: '34 000+', label: 'підприємців по Україні вже отримали грант за програмою' },
+  { to: 34000, suffix: '+', value: `${fmt(34000)}+`, label: 'підприємців по Україні вже отримали грант за програмою' },
 ];
 ---
 <section class="py-12 md:py-16 border-y border-border/70 bg-surface/40">
   <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
     {stats.map((s) => (
       <div class="reveal text-center lg:text-left">
-        <div class="font-display font-extrabold text-2xl sm:text-3xl lg:text-[2rem] text-accent">{s.value}</div>
+        <div
+          class="font-display font-extrabold text-2xl sm:text-3xl lg:text-[2rem] text-accent"
+          {...(s.to != null ? { 'data-counter': '', 'data-to': s.to, 'data-prefix': s.prefix ?? '', 'data-suffix': s.suffix ?? '' } : {})}
+        >{s.value}</div>
         <div class="mt-1.5 text-sm text-muted max-w-[16rem] mx-auto lg:mx-0">{s.label}</div>
       </div>
     ))}
   </div>
 </section>
+
+<script>
+  const counters = document.querySelectorAll<HTMLElement>('[data-counter]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const fmt = (n: number) => Math.round(n).toLocaleString('uk-UA').replace(/,/g, ' ');
+  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+  function animate(el: HTMLElement) {
+    const to = Number(el.dataset.to || '0');
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    if (reduceMotion || !to) return; // фінальне значення вже в розмітці
+
+    const duration = 1200;
+    const start = performance.now();
+
+    function frame(now: number) {
+      const t = Math.min((now - start) / duration, 1);
+      const val = to * easeOutCubic(t);
+      el.textContent = `${prefix}${fmt(val)}${suffix}`;
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  if (counters.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animate(entry.target as HTMLElement);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    counters.forEach((el) => io.observe(el));
+  }
+</script>

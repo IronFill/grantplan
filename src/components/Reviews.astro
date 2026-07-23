@@ -30,23 +30,117 @@ const reviews = [
 ---
 <section class="py-16 md:py-24 border-t border-border/70">
   <div class="container-site">
-    <div class="reveal max-w-2xl">
+    <div class="reveal flex items-end justify-between gap-4 max-w-2xl mb-2">
       <h2 class="text-3xl sm:text-4xl">Що кажуть клієнти</h2>
     </div>
-    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-      {reviews.map((r) => (
-        <figure class="reveal card-hover rounded-[16px] bg-surface border border-border p-6 flex flex-col">
-          <Icon name="quote" size={28} class="text-accent/40" />
-          <blockquote class="mt-3 text-muted text-[0.95rem] flex-1">{r.text}</blockquote>
-          <figcaption class="mt-5">
-            <div class="font-semibold">{r.name}</div>
-            <div class="text-sm text-muted">{r.business}</div>
-            <div class="flex gap-0.5 text-accent mt-2">
-              {Array.from({ length: r.rating }).map(() => <Icon name="star" size={14} />)}
-            </div>
-          </figcaption>
-        </figure>
-      ))}
+
+    <div class="reveal relative mt-8" data-reviews>
+      <div class="overflow-hidden -mx-1 px-1">
+        <div data-reviews-track class="flex transition-transform duration-500 ease-out">
+          {reviews.map((r) => (
+            <figure class="w-full shrink-0 basis-full sm:basis-1/2 lg:basis-1/3 px-2">
+              <div class="h-full rounded-[16px] bg-surface border border-border p-6 flex flex-col">
+                <Icon name="quote" size={28} class="text-accent/40" />
+                <blockquote class="mt-3 text-muted text-[0.95rem] flex-1">{r.text}</blockquote>
+                <figcaption class="mt-5">
+                  <div class="font-semibold">{r.name}</div>
+                  <div class="text-sm text-muted">{r.business}</div>
+                  <div class="flex gap-0.5 text-accent mt-2">
+                    {Array.from({ length: r.rating }).map(() => <Icon name="star" size={14} />)}
+                  </div>
+                </figcaption>
+              </div>
+            </figure>
+          ))}
+        </div>
+      </div>
+
+      <!-- Стрілки -->
+      <button type="button" data-reviews-prev aria-label="Попередній відгук"
+        class="hidden md:inline-grid absolute -left-4 top-1/2 -translate-y-1/2 place-items-center w-10 h-10 rounded-full bg-surface border border-border text-muted hover:text-accent hover:border-accent transition-colors">
+        <Icon name="chevron-down" size={18} class="rotate-90" />
+      </button>
+      <button type="button" data-reviews-next aria-label="Наступний відгук"
+        class="hidden md:inline-grid absolute -right-4 top-1/2 -translate-y-1/2 place-items-center w-10 h-10 rounded-full bg-surface border border-border text-muted hover:text-accent hover:border-accent transition-colors">
+        <Icon name="chevron-down" size={18} class="-rotate-90" />
+      </button>
+
+      <!-- Крапки -->
+      <div data-reviews-dots class="flex justify-center gap-2 mt-6"></div>
     </div>
   </div>
 </section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-reviews]');
+  if (root) {
+    const track = root.querySelector<HTMLElement>('[data-reviews-track]');
+    const slides = Array.from(track?.children ?? []) as HTMLElement[];
+    const dotsWrap = root.querySelector<HTMLElement>('[data-reviews-dots]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-reviews-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-reviews-next]');
+
+    let perView = 1;
+    let index = 0;
+    let auto: ReturnType<typeof setInterval> | null = null;
+
+    function computePerView() {
+      const w = window.innerWidth;
+      perView = w >= 1024 ? 3 : w >= 640 ? 2 : 1;
+    }
+
+    function maxIndex() {
+      return Math.max(0, slides.length - perView);
+    }
+
+    function renderDots() {
+      if (!dotsWrap) return;
+      const count = maxIndex() + 1;
+      dotsWrap.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.setAttribute('aria-label', `Відгук ${i + 1}`);
+        dot.className = 'w-2 h-2 rounded-full transition-colors ' + (i === index ? 'bg-accent' : 'bg-border');
+        dot.addEventListener('click', () => goTo(i, true));
+        dotsWrap.appendChild(dot);
+      }
+    }
+
+    function update() {
+      if (!track || !slides.length) return;
+      const slideWidth = slides[0].getBoundingClientRect().width;
+      track.style.transform = `translateX(-${index * slideWidth}px)`;
+      renderDots();
+    }
+
+    function goTo(i: number, manual = false) {
+      index = Math.max(0, Math.min(i, maxIndex()));
+      update();
+      if (manual) restartAuto();
+    }
+
+    function next() { goTo(index + 1 > maxIndex() ? 0 : index + 1); }
+    function prev() { goTo(index - 1 < 0 ? maxIndex() : index - 1); }
+
+    function restartAuto() {
+      if (auto) clearInterval(auto);
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+      auto = setInterval(next, 6000);
+    }
+
+    prevBtn?.addEventListener('click', () => { prev(); restartAuto(); });
+    nextBtn?.addEventListener('click', () => { next(); restartAuto(); });
+
+    window.addEventListener('resize', () => {
+      computePerView();
+      index = Math.min(index, maxIndex());
+      update();
+    });
+
+    computePerView();
+    update();
+    restartAuto();
+  }
+</script>
