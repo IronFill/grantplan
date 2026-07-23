@@ -15,7 +15,7 @@ export const site = {
   whatsapp: 'https://wa.me/380930963393',
   // Основний домен (для canonical / OG). Дублює astro.config.mjs site.
   url: 'https://grantplan.com.ua',
-  email: 'hello@grantplan.com.ua',
+  email: 'grantplan@ukr.net',
 } as const;
 
 // Навігація (якорі лендингу)
