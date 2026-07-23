@@ -1,5 +1,8 @@
 ---
 import Icon from './Icon.astro';
+import { cases } from '../data/cases';
+
+const [caseA, caseB] = cases;
 ---
 <section class="relative overflow-hidden pt-28 md:pt-36 pb-16 md:pb-24">
   <!-- Ледь помітна карбонова фактура -->
@@ -47,16 +50,79 @@ import Icon from './Icon.astro';
       </ul>
     </div>
 
-    <!-- Права колонка: приклад слайда бізнес-плану (реальний кейс) -->
+    <!-- Права колонка: приклади слайдів реальних кейсів (переворот) -->
     <div class="reveal hidden lg:block">
-      <div class="glass-card rounded-[20px] p-3 shadow-xl rotate-[0.5deg]">
-        <img
-          src="/case/case-1-cover.png"
-          alt="Приклад бізнес-плану за формою Дії: майстерня БпЛА на грант 500 000 ₴"
-          width="1280" height="800" fetchpriority="high" decoding="async"
-          class="w-full rounded-2xl block"
-        />
-      </div>
+      <button
+        type="button"
+        data-hero-flip
+        aria-label="Показати інший приклад бізнес-плану"
+        class="hero-flip block w-full text-left rotate-[0.5deg] cursor-pointer"
+      >
+        <div class="hero-flip-inner">
+          <div class="hero-flip-face glass-card rounded-[20px] p-3 shadow-xl">
+            <img
+              src={caseA.cover}
+              alt={`Приклад бізнес-плану за формою Дії: ${caseA.title}`}
+              width="1280" height="800" fetchpriority="high" decoding="async"
+              class="w-full rounded-2xl block"
+            />
+          </div>
+          <div class="hero-flip-face hero-flip-back glass-card rounded-[20px] p-3 shadow-xl">
+            <img
+              src={caseB.cover}
+              alt={`Приклад бізнес-плану за формою Дії: ${caseB.title}`}
+              width="1280" height="800" decoding="async"
+              class="w-full rounded-2xl block"
+            />
+          </div>
+        </div>
+      </button>
     </div>
   </div>
 </section>
+
+<style>
+  .hero-flip {
+    perspective: 1600px;
+  }
+  .hero-flip-inner {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1280 / 800;
+    transform-style: preserve-3d;
+    transition: transform 0.9s cubic-bezier(0.4, 0.2, 0.2, 1);
+  }
+  .hero-flip.is-flipped .hero-flip-inner {
+    transform: rotateY(180deg);
+  }
+  .hero-flip-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .hero-flip-back {
+    transform: rotateY(180deg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-flip-inner { transition: none; }
+  }
+</style>
+
+<script>
+  const flipEls = document.querySelectorAll<HTMLElement>('[data-hero-flip]');
+  flipEls.forEach((el) => {
+    let auto: ReturnType<typeof setInterval> | null = null;
+    const toggle = () => el.classList.toggle('is-flipped');
+    const startAuto = () => {
+      if (auto) clearInterval(auto);
+      auto = setInterval(toggle, 6000);
+    };
+    el.addEventListener('click', () => {
+      toggle();
+      startAuto(); // клік скидає таймер, щоб не перевернулось одразу після ручного кліку
+    });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reduceMotion) startAuto();
+  });
+</script>
