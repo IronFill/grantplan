@@ -1,0 +1,266 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import Icon from '../components/Icon.astro';
+
+const facts = [
+  { label: 'Проєкт', value: 'Салон краси повного циклу', icon: 'badge-check' },
+  { label: 'Напрями', value: 'Перукар, манікюр, косметологія, масаж', icon: 'sparkles' },
+  { label: 'Локація', value: 'Харків, 42 м²', icon: 'map-pin' },
+  { label: 'Сума гранту', value: '500 000 ₴', icon: 'wallet' },
+];
+
+const estimate = [
+  { item: 'Обладнання перукарського напряму (2 робочі місця)', sum: 73_000 },
+  { item: 'Обладнання манікюру та педикюру', sum: 70_400 },
+  { item: 'Обладнання косметологічного кабінету', sum: 76_500 },
+  { item: 'Обладнання масажного кабінету', sum: 28_900 },
+  { item: 'Загальносалонне обладнання', sum: 164_000 },
+  { item: 'Охоронна сигналізація та підключення до пульта', sum: 25_000 },
+  { item: 'Ремонт та оздоблення приміщення', sum: 62_200 },
+];
+const estimateTotal = estimate.reduce((a, b) => a + b.sum, 0);
+const uah = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
+
+const financials = [
+  { label: 'Дохід за перший рік', value: '1,47 млн ₴' },
+  { label: 'Дохід за третій рік', value: '2,21 млн ₴' },
+  { label: 'Сплачені податки за 3 роки', value: '750,2 тис ₴' },
+];
+
+const stages = [
+  { n: '1', title: 'Тижні 1–3', text: 'Реєстрація ФОП і КВЕД, договір оренди, замовлення обладнання за грантові кошти.' },
+  { n: '2', title: 'Тижні 4–8', text: 'Ремонт під санітарні вимоги, монтаж обладнання, підбір майстрів, м’яке відкриття.' },
+  { n: '3', title: 'Місяці 2–4', text: 'Офіційне відкриття, найм двох майстрів, заїзд косметолога й масажиста на договір.' },
+  { n: '4', title: 'Місяці 5–7', text: 'Вихід на точку беззбитковості та планову потужність — 155,0 тис ₴/міс.' },
+];
+
+const checks = [
+  'Ринкові ціни з комерційних пропозицій — кожна позиція кошторису підтверджена КП двох постачальників',
+  'Цифри сходяться: кошторис = 500 000 ₴, окремо пораховано власний внесок 95 000 ₴',
+  'Консервативний прогноз доходу — середній чек нижчий за середню ціну прайсу через структуру попиту',
+  '2 наймані робочі місця з 2-го місяця — виконання умови гранту для прифронтової області',
+  'Податки пораховані на 3 роки — 750,2 тис ₴ надходжень для бюджету',
+];
+
+const directions = [
+  { name: 'Перукарський напрям', desc: 'Найманий стиліст, уся виручка йде салону', price: '72,7 тис ₴/міс' },
+  { name: 'Манікюр і педикюр', desc: 'Найманий майстер, уся виручка йде салону', price: '62,3 тис ₴/міс' },
+  { name: 'Косметологія', desc: 'Майстер-ФОП на договорі, сервісний збір', price: '11 000 ₴/міс' },
+  { name: 'Масаж', desc: 'Майстер-ФОП на договорі, сервісний збір', price: '9 000 ₴/міс' },
+];
+
+const risks = [
+  { title: 'Майстер-ФОП іде разом з клієнтською базою', text: 'Попередження за 30 днів у договорі, база ведеться в CRM салону, частина запису — через рецепцію.' },
+  { title: 'Майстер переходить на загальну систему оподаткування', text: 'Умова в договорі про перебування на єдиному податку та письмове повідомлення про зміну.' },
+  { title: 'Плинність найманих майстрів', text: 'Ставка плюс відсоток від виручки, навчання за рахунок салону з відпрацюванням.' },
+  { title: 'Крадіжка обладнання, проникнення у неробочий час', text: 'Сигналізація Ajax під пультовою охороною з виїздом групи реагування, тривожна кнопка на рецепції.' },
+];
+---
+<Layout
+  title="Кейс: бізнес-план салону краси на 4 напрями, який отримав грант 500 000 грн | ГрантПлан"
+  description="Реальний кейс гранту «Власна справа»: салон краси повного циклу — перукар, манікюр, косметологія, масаж. Кошторис із ринковими цінами, фінмодель на 3 роки, 750 тис грн податків. План пройшов перевірку — грант отримано."
+  path="/case-salon-krasy"
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero кейса -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site">
+      <a href="/#case" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">
+        ← На головну
+      </a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="badge-check" size={14} class="text-success" /> Реальний кейс · грант отримано
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl max-w-3xl">
+        Салон краси повного циклу на <span class="text-accent">500 000 ₴</span> — чотири напрями під одним дахом
+      </h1>
+      <p class="mt-5 text-muted text-lg max-w-2xl">
+        За цим планом заявку подано через Дію, перевірку банку та співбесіду пройдено — грант отримано. Розбираємо, як він побудований.
+      </p>
+    </div>
+  </section>
+
+  <!-- Факти -->
+  <section class="py-12 md:py-16">
+    <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {facts.map((f) => (
+        <div class="reveal rounded-[16px] bg-surface border border-border p-5">
+          <Icon name={f.icon} size={22} class="text-accent" />
+          <div class="mt-3 text-xs text-muted uppercase tracking-wide">{f.label}</div>
+          <div class="mt-1 font-display font-semibold">{f.value}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Слайди презентації -->
+  <section class="pb-4">
+    <div class="container-site">
+      <div class="grid md:grid-cols-2 gap-4">
+        <img src="/case/salon-1-cover.png" alt="Слайд презентації: салон краси повного циклу на грант 500 000 ₴"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="reveal w-full rounded-2xl border border-border md:col-span-2" />
+        <img src="/case/salon-2-koshtorys.png" alt="Слайд презентації: кошторис гранту на 500 000 ₴"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="reveal w-full rounded-2xl border border-border" />
+        <img src="/case/salon-3-finmodel.png" alt="Слайд презентації: фінансова модель на 3 роки"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="reveal w-full rounded-2xl border border-border" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Проблема і мета -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site grid md:grid-cols-2 gap-6">
+      <div class="reveal rounded-[16px] bg-surface border border-border p-7">
+        <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent"><Icon name="alert-triangle" size={22} /></span>
+        <h2 class="mt-4 text-2xl">Проблема</h2>
+        <p class="mt-3 text-muted">Попит на бьюті-послуги стабільний, але пропозиція фрагментована: клієнтці доводиться відвідувати кілька окремих закладів для перукарських, нігтьових, косметологічних і масажних послуг.</p>
+      </div>
+      <div class="reveal rounded-[16px] bg-surface border border-border p-7">
+        <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-success/10 text-success"><Icon name="target" size={22} /></span>
+        <h2 class="mt-4 text-2xl">Мета</h2>
+        <p class="mt-3 text-muted">Відкрити салон повного циклу на 42 м² з чотирма напрямами під одним дахом, створити 2 офіційні робочі місця та вийти на точку беззбитковості до 5-го місяця, використавши грант 500 000 ₴ на обладнання.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Напрями роботи -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Напрями роботи та формат співпраці</h2>
+      <p class="reveal mt-2 text-muted">Змішана модель: два напрями — наймані майстри салону, два — майстри-ФОП за договором про надання послуг робочого місця.</p>
+      <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {directions.map((d) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-5 flex flex-col">
+            <div class="font-display font-semibold flex-1">{d.name}</div>
+            <div class="mt-1.5 text-sm text-muted">{d.desc}</div>
+            <div class="mt-4 font-display font-extrabold text-accent">{d.price}</div>
+          </div>
+        ))}
+      </div>
+      <p class="reveal mt-4 text-sm text-muted flex items-center gap-2">
+        <Icon name="wallet" size={16} class="text-accent" /> Змішана модель знижує ефективну матеріаломісткість салону з 23,4% до 20,4% від доходу
+      </p>
+    </div>
+  </section>
+
+  <!-- Кошторис -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Кошторис обладнання</h2>
+      <p class="reveal mt-2 text-muted">Кожна позиція — з комерційною пропозицією постачальника.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-[16px] border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Позиція</th>
+              <th class="py-3.5 px-5 font-medium text-right">Вартість</th>
+            </tr>
+          </thead>
+          <tbody>
+            {estimate.map((row) => (
+              <tr class="border-t border-border">
+                <td class="py-3.5 px-5">{row.item}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{uah(row.sum)}</td>
+              </tr>
+            ))}
+            <tr class="border-t border-border bg-surface/60">
+              <td class="py-4 px-5 font-display font-semibold">Разом</td>
+              <td class="py-4 px-5 text-right font-display font-extrabold text-accent tabular-nums">{uah(estimateTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">Плюс власний внесок заявника 95 000 ₴ — стартові витратні матеріали, оренда за перші два місяці, оформлення документів.</p>
+    </div>
+  </section>
+
+  <!-- Фінрезультати -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Фінансові результати</h2>
+      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+        {financials.map((f) => (
+          <div class="reveal rounded-[16px] bg-raised border border-border p-6 text-center sm:text-left">
+            <Icon name="trending-up" size={22} class="text-success mx-auto sm:mx-0" />
+            <div class="mt-3 font-display font-extrabold text-2xl sm:text-3xl text-accent">{f.value}</div>
+            <div class="mt-1 text-sm text-muted">{f.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Етапи запуску -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Етапи запуску — 7 місяців</h2>
+      <div class="mt-6 grid md:grid-cols-4 gap-4">
+        {stages.map((s) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent text-[#14181C] font-display font-extrabold">{s.n}</span>
+            <h3 class="mt-4 font-display font-semibold">{s.title}</h3>
+            <p class="mt-2 text-sm text-muted">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Чому пройшов перевірку -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site max-w-3xl">
+      <h2 class="reveal text-2xl sm:text-3xl">Чому цей план пройшов перевірку</h2>
+      <ul class="mt-6 space-y-3">
+        {checks.map((c) => (
+          <li class="reveal flex items-start gap-3 rounded-[16px] bg-surface border border-border p-5">
+            <Icon name="check-circle" size={22} class="text-success shrink-0 mt-0.5" />
+            <span>{c}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ризики та мінімізація -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Ризики та їх мінімізація</h2>
+      <p class="reveal mt-2 text-muted">Комісія цінує реалістичність: у сильному плані ризики не приховані, а прораховані.</p>
+      <div class="mt-6 grid sm:grid-cols-2 gap-4">
+        {risks.map((r) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <div class="flex items-start gap-3">
+              <Icon name="shield-check" size={22} class="text-accent shrink-0 mt-0.5" />
+              <div>
+                <h3 class="font-display font-semibold">{r.title}</h3>
+                <p class="mt-1.5 text-sm text-muted">{r.text}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 md:py-24 border-t border-border/70">
+    <div class="container-site">
+      <div class="reveal rounded-[20px] bg-raised border border-accent/70 p-8 md:p-12 text-center relative overflow-hidden">
+        <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-[100px] opacity-15" style="background:radial-gradient(circle,#FF8A2A,transparent 70%)" aria-hidden="true"></div>
+        <h2 class="relative text-2xl sm:text-4xl">Хочу такий план під свою ідею</h2>
+        <p class="relative mt-4 text-muted text-lg max-w-xl mx-auto">Почніть із безкоштовного аудиту — чесно скажемо, чи проходить ваша ідея, ще до оплати.</p>
+        <a href="/#lead" class="relative btn btn-primary mt-7" data-analytics="click_cta_case">Отримати безкоштовний аудит</a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>
