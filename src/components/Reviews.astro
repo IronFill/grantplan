@@ -35,7 +35,7 @@ const reviews = [
     </div>
     <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
       {reviews.map((r) => (
-        <figure class="reveal rounded-[16px] bg-surface border border-border p-6 flex flex-col">
+        <figure class="reveal card-hover rounded-[16px] bg-surface border border-border p-6 flex flex-col">
           <Icon name="quote" size={28} class="text-accent/40" />
           <blockquote class="mt-3 text-muted text-[0.95rem] flex-1">{r.text}</blockquote>
           <figcaption class="mt-5">

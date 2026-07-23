@@ -203,6 +203,7 @@
     }
     .btn-primary:hover {
       background-color: var(--color-accent-hover);
+      box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--color-accent) 60%, transparent);
     }
     .btn-ghost:hover {
       border-color: var(--color-accent);
@@ -211,6 +212,7 @@
   }
   .btn:active {
     transform: translateY(0);
+    box-shadow: none;
   }
 
   /* ============ АНІМАЦІЯ fade-up ============ */
@@ -225,6 +227,27 @@
   .js-reveal .reveal.is-visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* Легкий "преміальний" hover для карток (тарифи, послуги, кейси, відгуки) —
+     підйом + м'яка тінь + акцентне кільце замість плаского стану.
+     Селектор навмисно повторює .js-reveal .reveal (з accent на .card-hover),
+     щоб мати вищу специфічність за .js-reveal .reveal(.is-visible) —
+     інакше transform/transition звідти "перемагають" у каскаді (однакова
+     специфічність — і .reveal.is-visible завжди зверху). Кільце — через
+     box-shadow, а не border-color: border-color утиліта (.border-border)
+     живе у шарі utilities, який у Tailwind v4 завжди має пріоритет над
+     @layer components незалежно від специфічності. */
+  .js-reveal .reveal.card-hover {
+    transition: opacity 0.4s ease, transform 0.3s ease, box-shadow 0.25s ease;
+  }
+  @media (hover: hover) {
+    .js-reveal .reveal.card-hover:hover {
+      transform: translateY(-4px);
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--color-accent) 55%, transparent),
+        0 20px 40px -20px color-mix(in srgb, #000000 45%, transparent);
+    }
   }
 
   /* Перемикач теми — показуємо іконку поточної теми (місяць = темна, сонце = світла) */
