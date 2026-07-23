@@ -19,8 +19,8 @@
   --color-border: #313b47;
   --color-ink: #f3f6f9;
   --color-muted: #9aa7b4;
-  --color-accent: #ff8a2a;
-  --color-accent-hover: #ff9d4d;
+  --color-accent: #e86a00;
+  --color-accent-hover: #f2801e;
   --color-success: #3fbf7f;
 
   /* Радіуси */
@@ -42,7 +42,7 @@
    пріоритет і коректно перекриває базові (темні) значення токенів —
    усі utility-класи (bg-bg, text-ink, text-accent тощо) підхоплюють це
    автоматично, без правок у компонентах.
-   Акцент трохи темніший за базовий (#FF8A2A), щоб зберегти контраст
+   Акцент трохи темніший за базовий (#E86A00), щоб зберегти контраст
    тексту на світлому тлі (той самий принцип, що й "світліше — на темному"
    з розділу доступності). */
 :root[data-theme='light'] {
@@ -55,8 +55,8 @@
   --color-border: #ddd0b8;
   --color-ink: #211c15;
   --color-muted: #6e6558;
-  --color-accent: #c4600e;
-  --color-accent-hover: #d9700f;
+  --color-accent: #c25a00;
+  --color-accent-hover: #d66600;
   --color-success: #1e8f55;
 }
 
