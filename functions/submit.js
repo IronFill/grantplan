@@ -32,7 +32,7 @@ export async function onRequestPost(context) {
   const token = env.TG_BOT_TOKEN;
   const chatId = env.TG_CHAT_ID;
 
-  const isBooking = source === 'booking';
+  const isBooking = Boolean(date && time);
   const lines = [
     isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
     date ? `📅 <b>Дата:</b> ${escape(date)}` : '',

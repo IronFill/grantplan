@@ -34,7 +34,7 @@ export const handler = async (event) => {
   const token = process.env.TG_BOT_TOKEN;
   const chatId = process.env.TG_CHAT_ID;
 
-  const isBooking = source === 'booking';
+  const isBooking = Boolean(date && time);
   const lines = [
     isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
     date ? `📅 <b>Дата:</b> ${escape(date)}` : '',

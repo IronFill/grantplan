@@ -24,6 +24,6 @@ export const nav = [
   { label: 'Тарифи', href: '/#pricing' },
   { label: 'Послуги', href: '/#services' },
   { label: 'Приклад роботи', href: '/#case' },
-  { label: 'Консультація', href: '/#booking' },
+  { label: 'Запис на аудит', href: '/#lead' },
   { label: 'Питання', href: '/#faq' },
 ] as const;

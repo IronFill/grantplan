@@ -3,15 +3,15 @@ import Icon from './Icon.astro';
 import { site } from '../data/site';
 ---
 <section id="lead" class="py-16 md:py-24 border-t border-border/70 bg-surface/30 scroll-mt-20">
-  <div class="container-site grid lg:grid-cols-[1fr_0.9fr] gap-10 lg:gap-14 items-start">
-    <div class="reveal">
-      <h2 class="text-3xl sm:text-4xl">Дізнайтесь за 15 хвилин, чи світить вам грант</h2>
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <h2 class="text-3xl sm:text-4xl">Запишіться на безкоштовний аудит ідеї</h2>
       <p class="mt-4 text-muted text-lg">
-        Безкоштовно і без зобов’язань. Якщо не проходите — чесно скажемо і пояснимо чому.
+        До 20 хвилин: чесно скажемо, чи проходить ваша ідея під умови програми, — ще до оплати. Оберіть зручні дату й час нижче, або напишіть напряму:
       </p>
 
       <!-- Прямі кнопки-месенджери -->
-      <div class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
         <a href={site.telegram} target="_blank" rel="noopener" class="btn btn-ghost !min-h-[52px]" data-analytics="click_telegram">
           <Icon name="send" size={18} /> Telegram
         </a>
@@ -27,169 +27,313 @@ import { site } from '../data/site';
       </div>
     </div>
 
-    <!-- Форма -->
-    <div class="reveal rounded-[16px] bg-surface border border-border p-6 md:p-7">
-      <form id="lead-form" novalidate>
-        <!-- Honeypot (приховане поле від спаму) -->
-        <div class="hidden" aria-hidden="true">
-          <label>Не заповнюйте це поле<input type="text" name="hp_gp_2026" tabindex="-1" autocomplete="off" /></label>
+    <div class="reveal mt-8 rounded-[20px] bg-surface border border-border p-5 md:p-8">
+      <div id="lf-form-wrap" class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+        <!-- Календар -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" data-lf-prev aria-label="Попередній місяць"
+              class="inline-grid place-items-center w-10 h-10 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors disabled:opacity-30 disabled:pointer-events-none">
+              <Icon name="chevron-down" size={18} class="rotate-90" />
+            </button>
+            <div data-lf-month class="font-display font-semibold text-lg capitalize">—</div>
+            <button type="button" data-lf-next aria-label="Наступний місяць"
+              class="inline-grid place-items-center w-10 h-10 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors">
+              <Icon name="chevron-down" size={18} class="-rotate-90" />
+            </button>
+          </div>
+          <div class="grid grid-cols-7 gap-1.5 text-center text-xs text-muted mb-2">
+            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span>
+          </div>
+          <div data-lf-days class="grid grid-cols-7 gap-1.5"></div>
+          <p class="mt-4 text-xs text-muted flex items-center gap-2">
+            <span class="inline-block w-3 h-3 rounded-full bg-accent"></span> обрана дата · неділя — вихідний
+          </p>
         </div>
-        <!-- Прихований payload квізу (заповнюється JS) -->
-        <input type="hidden" name="quiz" id="lead-quiz" value="" />
 
-        <div class="space-y-4">
-          <div>
-            <label for="lf-name" class="block text-sm font-medium mb-1.5">Ім’я <span class="text-accent">*</span></label>
-            <input
-              id="lf-name" name="name" type="text" required autocomplete="name"
-              class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
-              placeholder="Ваше ім’я"
-            />
+        <!-- Час + контакти -->
+        <div class="lg:border-l lg:border-border/70 lg:pl-12">
+          <div data-lf-time-empty class="text-muted text-sm py-4">
+            Спочатку оберіть день у календарі ←
           </div>
 
-          <div>
-            <label for="lf-phone" class="block text-sm font-medium mb-1.5">Телефон <span class="text-accent">*</span></label>
-            <input
-              id="lf-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
-              class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
-              placeholder="+380 __ ___ __ __" value="+380"
-            />
-            <p class="mt-1 text-xs hidden text-accent-hover" data-phone-error>Введіть коректний номер у форматі +380XXXXXXXXX</p>
-          </div>
-
-          <fieldset>
-            <legend class="block text-sm font-medium mb-2">Зручний месенджер</legend>
-            <div class="flex flex-wrap gap-2">
-              {['Telegram', 'Viber', 'Дзвінок'].map((m, i) => (
-                <label class="cursor-pointer">
-                  <input type="radio" name="messenger" value={m} class="peer sr-only" checked={i === 0} />
-                  <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 transition-colors">{m}</span>
-                </label>
-              ))}
+          <div data-lf-time-wrap hidden>
+            <div class="text-sm font-medium mb-3">
+              Вільний час на <span data-lf-picked-date class="text-accent">—</span>
             </div>
-          </fieldset>
-
-          <div>
-            <label for="lf-idea" class="block text-sm font-medium mb-1.5">Коротко про ідею <span class="text-muted font-normal">(необов’язково)</span></label>
-            <textarea
-              id="lf-idea" name="idea" rows="3"
-              class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none resize-y"
-              placeholder="Наприклад: майстерня з ремонту техніки, 1 робоче місце"
-            ></textarea>
+            <div data-lf-slots class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6"></div>
           </div>
 
-          <label class="flex items-start gap-3 text-sm text-muted">
-            <input type="checkbox" name="consent" required class="mt-1 w-4 h-4 accent-[#FF8A2A] shrink-0" />
-            <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою конфіденційності</a></span>
-          </label>
+          <form id="lead-form" novalidate hidden>
+            <!-- Honeypot (приховане поле від спаму) -->
+            <div class="hidden" aria-hidden="true">
+              <label>Не заповнюйте це поле<input type="text" name="hp_gp_2026" tabindex="-1" autocomplete="off" /></label>
+            </div>
+            <!-- Прихований payload квізу (заповнюється JS) -->
+            <input type="hidden" name="quiz" id="lead-quiz" value="" />
+            <input type="hidden" name="source" value="audit" />
+            <input type="hidden" name="date" data-lf-date value="" />
+            <input type="hidden" name="time" data-lf-time value="" />
 
-          <button type="submit" class="btn btn-primary w-full" data-submit>
-            Отримати безкоштовний аудит
-          </button>
-          <p class="text-sm text-accent-hover text-center hidden" data-lead-error data-tg={site.telegram}></p>
+            <div class="space-y-4">
+              <div>
+                <label for="lf-name" class="block text-sm font-medium mb-1.5">Ім’я <span class="text-accent">*</span></label>
+                <input
+                  id="lf-name" name="name" type="text" required autocomplete="name"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+                  placeholder="Ваше ім’я"
+                />
+              </div>
+
+              <div>
+                <label for="lf-phone" class="block text-sm font-medium mb-1.5">Телефон <span class="text-accent">*</span></label>
+                <input
+                  id="lf-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+                  placeholder="+380 __ ___ __ __" value="+380"
+                />
+                <p class="mt-1 text-xs hidden text-accent-hover" data-phone-error>Введіть коректний номер у форматі +380XXXXXXXXX</p>
+              </div>
+
+              <fieldset>
+                <legend class="block text-sm font-medium mb-2">Зручний месенджер</legend>
+                <div class="flex flex-wrap gap-2">
+                  {['Telegram', 'Viber', 'Дзвінок'].map((m, i) => (
+                    <label class="cursor-pointer">
+                      <input type="radio" name="messenger" value={m} class="peer sr-only" checked={i === 0} />
+                      <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 transition-colors">{m}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div>
+                <label for="lf-idea" class="block text-sm font-medium mb-1.5">Коротко про ідею <span class="text-muted font-normal">(необов’язково)</span></label>
+                <textarea
+                  id="lf-idea" name="idea" rows="3"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none resize-y"
+                  placeholder="Наприклад: майстерня з ремонту техніки, 1 робоче місце"
+                ></textarea>
+              </div>
+
+              <label class="flex items-start gap-3 text-sm text-muted">
+                <input type="checkbox" name="consent" required class="mt-1 w-4 h-4 accent-[#FF8A2A] shrink-0" />
+                <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою конфіденційності</a></span>
+              </label>
+
+              <button type="submit" class="btn btn-primary w-full" data-submit>
+                Записатись на безкоштовний аудит
+              </button>
+              <p class="text-sm text-accent-hover text-center hidden" data-lead-error data-tg={site.telegram}></p>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
 
       <!-- Екран подяки -->
-      <div id="lead-success" class="hidden text-center py-8">
+      <div id="lead-success" class="hidden text-center py-10">
         <span class="inline-grid place-items-center w-16 h-16 rounded-full bg-success/15 text-success mx-auto">
           <Icon name="check-circle" size={32} />
         </span>
-        <h3 class="mt-5 text-2xl font-display font-semibold">Дякуємо!</h3>
-        <p class="mt-2 text-muted">Зателефонуємо протягом години в робочий час.</p>
+        <h3 class="mt-5 text-2xl font-display font-semibold">Вашу заявку підтверджено ✓</h3>
+        <p class="mt-2 text-muted">Ви записані на <span data-lf-summary class="text-ink font-medium">—</span>. Зв’яжемося з вами у Telegram або телефоном для підтвердження.</p>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  const form = document.getElementById('lead-form') as HTMLFormElement | null;
-  const success = document.getElementById('lead-success');
-  const phoneInput = document.getElementById('lf-phone') as HTMLInputElement | null;
-  const phoneError = document.querySelector<HTMLElement>('[data-phone-error]');
-  const submitBtn = document.querySelector<HTMLButtonElement>('[data-submit]');
-  const leadError = document.querySelector<HTMLElement>('[data-lead-error]');
-  const showError = (msg: string) => { if (leadError) { leadError.textContent = msg; leadError.classList.remove('hidden'); } };
-  const hideError = () => leadError?.classList.add('hidden');
+  const root = document.getElementById('lead');
+  if (root) {
+    const MONTHS = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
+    const MONTHS_GEN = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+    const WEEKDAYS = ['неділя','понеділок','вівторок','середа','четвер','пʼятниця','субота'];
+    const SLOTS = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00'];
 
-  // Маска +380 — залишаємо тільки цифри, максимум 12 (380 + 9)
-  function formatPhone(v: string): string {
-    let digits = v.replace(/\D/g, '');
-    if (!digits.startsWith('380')) {
-      digits = digits.replace(/^0+/, ''); // прибираємо національний нуль (050 → 50)
-      digits = '380' + digits;
+    const monthLabel = root.querySelector('[data-lf-month]') as HTMLElement;
+    const daysGrid = root.querySelector('[data-lf-days]') as HTMLElement;
+    const prevBtn = root.querySelector('[data-lf-prev]') as HTMLButtonElement;
+    const nextBtn = root.querySelector('[data-lf-next]') as HTMLButtonElement;
+    const timeEmpty = root.querySelector('[data-lf-time-empty]') as HTMLElement;
+    const timeWrap = root.querySelector('[data-lf-time-wrap]') as HTMLElement;
+    const slotsGrid = root.querySelector('[data-lf-slots]') as HTMLElement;
+    const pickedDateEl = root.querySelector('[data-lf-picked-date]') as HTMLElement;
+    const form = root.querySelector('#lead-form') as HTMLFormElement;
+    const dateInput = root.querySelector('[data-lf-date]') as HTMLInputElement;
+    const timeInput = root.querySelector('[data-lf-time]') as HTMLInputElement;
+    const phoneInput = root.querySelector('#lf-phone') as HTMLInputElement;
+    const phoneError = root.querySelector('[data-phone-error]') as HTMLElement;
+    const submitBtn = root.querySelector('[data-submit]') as HTMLButtonElement;
+    const success = root.querySelector('#lead-success') as HTMLElement;
+    const formWrap = root.querySelector('#lf-form-wrap') as HTMLElement;
+    const summaryEl = root.querySelector('[data-lf-summary]') as HTMLElement;
+    const leadError = root.querySelector('[data-lead-error]') as HTMLElement;
+    const showError = (msg: string) => { if (leadError) { leadError.textContent = msg; leadError.classList.remove('hidden'); } };
+    const hideError = () => leadError?.classList.add('hidden');
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    let viewYear = today.getFullYear();
+    let viewMonth = today.getMonth();
+    let selected: Date | null = null;
+
+    const fmtLong = (d: Date) => `${WEEKDAYS[d.getDay()]}, ${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+
+    function renderCalendar() {
+      monthLabel.textContent = `${MONTHS[viewMonth]} ${viewYear}`;
+      prevBtn.disabled = (viewYear === today.getFullYear() && viewMonth === today.getMonth());
+
+      daysGrid.innerHTML = '';
+      const first = new Date(viewYear, viewMonth, 1);
+      const offset = (first.getDay() + 6) % 7;
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+
+      for (let i = 0; i < offset; i++) {
+        daysGrid.appendChild(document.createElement('span'));
+      }
+      for (let day = 1; day <= daysInMonth; day++) {
+        const d = new Date(viewYear, viewMonth, day);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = String(day);
+        const isPast = d < today;
+        const isSunday = d.getDay() === 0;
+        const disabled = isPast || isSunday;
+        btn.className = 'aspect-square rounded-xl text-sm font-medium transition-colors ' +
+          (disabled
+            ? 'text-muted/30 pointer-events-none'
+            : 'border border-border hover:border-accent hover:text-accent');
+        if (disabled) btn.disabled = true;
+        if (selected && d.getTime() === selected.getTime()) {
+          btn.className = 'aspect-square rounded-xl text-sm font-semibold bg-accent text-white';
+        }
+        btn.addEventListener('click', () => pickDate(d));
+        daysGrid.appendChild(btn);
+      }
     }
-    digits = digits.slice(0, 12);
-    return '+' + digits;
-  }
-  phoneInput?.addEventListener('input', () => {
-    const pos = phoneInput.selectionStart;
-    phoneInput.value = formatPhone(phoneInput.value);
-    if (pos) phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
-  });
 
-  function validPhone(v: string): boolean {
-    return /^\+380\d{9}$/.test(v);
-  }
-
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!form) return;
-
-    // Honeypot
-    const hp = (form.elements.namedItem('hp_gp_2026') as HTMLInputElement)?.value;
-    if (hp) return; // бот
-
-    hideError();
-
-    const name = (form.elements.namedItem('name') as HTMLInputElement)?.value.trim();
-    if (!name) {
-      showError('Вкажіть, будь ласка, ваше імʼя.');
-      (form.elements.namedItem('name') as HTMLInputElement)?.focus();
-      return;
-    }
-
-    const phone = phoneInput?.value ?? '';
-    if (!validPhone(phone)) {
-      phoneError?.classList.remove('hidden');
-      phoneInput?.focus();
-      return;
-    }
-    phoneError?.classList.add('hidden');
-
-    const consent = (form.elements.namedItem('consent') as HTMLInputElement)?.checked;
-    if (!consent) {
-      showError('Потрібна згода на обробку персональних даних.');
-      return;
-    }
-
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Надсилаємо…';
-    }
-
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    try {
-      const res = await fetch('/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+    function pickDate(d: Date) {
+      selected = d;
+      dateInput.value = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()} (${WEEKDAYS[d.getDay()]})`;
+      timeInput.value = '';
+      renderCalendar();
+      pickedDateEl.textContent = fmtLong(d);
+      slotsGrid.innerHTML = '';
+      SLOTS.forEach((t) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.textContent = t;
+        b.className = 'rounded-xl border border-border px-2 py-2.5 text-sm hover:border-accent hover:text-accent transition-colors';
+        b.addEventListener('click', () => pickTime(t, b));
+        slotsGrid.appendChild(b);
       });
-      if (!res.ok) throw new Error('bad response');
-      form.classList.add('hidden');
-      success?.classList.remove('hidden');
-      if ((window as any).plausible) (window as any).plausible('submit_form');
-    } catch (err) {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Отримати безкоштовний аудит';
-      }
-      const tg = leadError?.dataset.tg || '';
-      if (leadError) {
-        leadError.innerHTML = `Не вдалося надіслати автоматично. Напишіть нам у <a href="${tg}" target="_blank" rel="noopener" class="underline font-semibold">Telegram</a> або зателефонуйте.`;
-        leadError.classList.remove('hidden');
-      }
+      timeEmpty.setAttribute('hidden', '');
+      timeWrap.removeAttribute('hidden');
+      form.setAttribute('hidden', '');
     }
-  });
+
+    function pickTime(t: string, el: HTMLButtonElement) {
+      timeInput.value = t;
+      slotsGrid.querySelectorAll('button').forEach((b) => {
+        b.className = 'rounded-xl border border-border px-2 py-2.5 text-sm hover:border-accent hover:text-accent transition-colors';
+      });
+      el.className = 'rounded-xl border border-accent bg-accent/10 text-accent px-2 py-2.5 text-sm font-semibold';
+      form.removeAttribute('hidden');
+    }
+
+    prevBtn.addEventListener('click', () => {
+      viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+      renderCalendar();
+    });
+    nextBtn.addEventListener('click', () => {
+      viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+      renderCalendar();
+    });
+
+    // Маска +380 — залишаємо тільки цифри, максимум 12 (380 + 9)
+    function formatPhone(v: string): string {
+      let digits = v.replace(/\D/g, '');
+      if (!digits.startsWith('380')) {
+        digits = digits.replace(/^0+/, ''); // прибираємо національний нуль (050 → 50)
+        digits = '380' + digits;
+      }
+      return '+' + digits.slice(0, 12);
+    }
+    phoneInput?.addEventListener('input', () => {
+      const pos = phoneInput.selectionStart;
+      phoneInput.value = formatPhone(phoneInput.value);
+      if (pos) phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+    });
+
+    function validPhone(v: string): boolean {
+      return /^\+380\d{9}$/.test(v);
+    }
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form) return;
+
+      const hp = (form.elements.namedItem('hp_gp_2026') as HTMLInputElement)?.value;
+      if (hp) return; // бот
+
+      hideError();
+
+      if (!dateInput.value || !timeInput.value) {
+        showError('Оберіть дату й час у календарі вище.');
+        return;
+      }
+
+      const name = (form.elements.namedItem('name') as HTMLInputElement)?.value.trim();
+      if (!name) {
+        showError('Вкажіть, будь ласка, ваше імʼя.');
+        (form.elements.namedItem('name') as HTMLInputElement)?.focus();
+        return;
+      }
+
+      const phone = phoneInput?.value ?? '';
+      if (!validPhone(phone)) {
+        phoneError?.classList.remove('hidden');
+        phoneInput?.focus();
+        return;
+      }
+      phoneError?.classList.add('hidden');
+
+      const consent = (form.elements.namedItem('consent') as HTMLInputElement)?.checked;
+      if (!consent) {
+        showError('Потрібна згода на обробку персональних даних.');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Надсилаємо…';
+      }
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch('/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('bad response');
+        if (summaryEl && selected) summaryEl.textContent = `${fmtLong(selected)}, ${timeInput.value}`;
+        formWrap.classList.add('hidden');
+        success?.classList.remove('hidden');
+        if ((window as any).plausible) (window as any).plausible('submit_form');
+      } catch (err) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Записатись на безкоштовний аудит';
+        }
+        const tg = leadError?.dataset.tg || '';
+        if (leadError) {
+          leadError.innerHTML = `Не вдалося надіслати автоматично. Напишіть нам у <a href="${tg}" target="_blank" rel="noopener" class="underline font-semibold">Telegram</a> або зателефонуйте.`;
+          leadError.classList.remove('hidden');
+        }
+      }
+    });
+
+    renderCalendar();
+  }
 </script>
