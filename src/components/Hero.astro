@@ -5,6 +5,18 @@ import { cases } from '../data/cases';
 const [caseA, caseB] = cases;
 ---
 <section class="relative overflow-hidden pt-28 md:pt-36 pb-16 md:pb-24">
+  <!-- Фото Харкова (нічна аерозйомка) як фон hero -->
+  <div
+    class="pointer-events-none absolute inset-0 opacity-[0.22]"
+    style={`background-image: url('/images/hero-kharkiv.webp'); background-size: cover; background-position: center 60%;`}
+    aria-hidden="true"
+  ></div>
+  <!-- Затемнення поверх фото: зліва майже суцільне (читабельність тексту), праворуч м'якше -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: linear-gradient(90deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 88%, transparent) 55%, color-mix(in srgb, var(--color-bg) 60%, transparent) 100%);"
+    aria-hidden="true"
+  ></div>
   <!-- Ледь помітна карбонова фактура -->
   <div
     class="pointer-events-none absolute inset-0 opacity-[0.04]"
