@@ -12,14 +12,14 @@ const stats = [
 ];
 ---
 <section class="py-12 md:py-16 border-y border-border/70 bg-surface/40">
-  <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-8">
-    {stats.map((s) => (
-      <div class="reveal text-center lg:text-left">
+  <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-y-8">
+    {stats.map((s, i) => (
+      <div class={`reveal text-center lg:text-left px-4 sm:px-6 ${i % 2 === 1 ? 'border-l border-border/60' : ''} ${i > 0 ? 'lg:border-l lg:border-border/60' : ''}`}>
         <div
-          class="font-display font-extrabold text-2xl sm:text-3xl lg:text-[2rem] text-accent"
+          class="font-display font-extrabold text-3xl sm:text-4xl lg:text-[2.5rem] leading-none text-accent tabular-nums"
           {...(s.to != null ? { 'data-counter': '', 'data-to': s.to, 'data-prefix': s.prefix ?? '', 'data-suffix': s.suffix ?? '' } : {})}
         >{s.value}</div>
-        <div class="mt-1.5 text-sm text-muted max-w-[16rem] mx-auto lg:mx-0">{s.label}</div>
+        <div class="mt-2.5 text-sm text-muted max-w-[16rem] mx-auto lg:mx-0 leading-snug">{s.label}</div>
       </div>
     ))}
   </div>

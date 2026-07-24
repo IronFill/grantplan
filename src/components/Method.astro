@@ -7,24 +7,28 @@ const steps = [
     icon: 'shield-check',
     title: 'Аудит (безкоштовно)',
     text: 'До 20 хвилин чесно кажемо: проходить ідея під умови програми чи ні, і що виправити. Якщо шансів немає — не беремо гроші.',
+    time: 'до 20 хвилин',
   },
   {
     n: '02',
     icon: 'calculator',
     title: 'Розрахунок',
     text: 'Бізнес-план за формою Дії: кошторис із комерційними пропозиціями, фінмодель на 36 місяців, податки, точка беззбитковості. Кожна цифра має джерело.',
+    time: '2–3 робочі дні',
   },
   {
     n: '03',
     icon: 'file-text',
     title: 'Подання',
     text: 'Переносимо у XLS-форму, перевіряємо КВЕДи й поля, супроводжуємо подачу через Дію з вашим підписом.',
+    time: '1 день',
   },
   {
     n: '04',
     icon: 'mic',
     title: 'Співбесіда',
     text: 'Репетируємо захист плану: типові питання, ваші відповіді своїми словами. План ви знатимете як власний — бо він і є ваш.',
+    time: 'перед комісією',
   },
 ];
 ---
@@ -36,9 +40,9 @@ const steps = [
       <p class="mt-3 text-muted text-lg">Прозорий процес: ви завжди розумієте, що відбувається і чому.</p>
     </div>
 
-    <ol class="mt-12 grid md:grid-cols-4 gap-5 relative">
+    <ol class="mt-12 grid md:grid-cols-4 gap-5 relative items-stretch">
       {steps.map((s, i) => (
-        <li class="reveal card-hover relative rounded-[16px] bg-raised border border-border p-6" style={`transition-delay:${i * 60}ms`}>
+        <li class="reveal card-hover relative flex flex-col rounded-[16px] bg-raised border border-border p-6" style={`transition-delay:${i * 60}ms`}>
           <div class="flex items-center justify-between">
             <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">
               <Icon name={s.icon} size={22} />
@@ -46,7 +50,10 @@ const steps = [
             <span class="font-display font-extrabold text-2xl text-border">{s.n}</span>
           </div>
           <h3 class="mt-5 text-lg font-display font-semibold">{s.title}</h3>
-          <p class="mt-2.5 text-sm text-muted leading-relaxed">{s.text}</p>
+          <p class="mt-2.5 text-sm text-muted leading-relaxed flex-1">{s.text}</p>
+          <div class="mt-5 pt-4 border-t border-border/70 flex items-center gap-2 text-xs font-medium text-accent">
+            <Icon name="clock" size={14} /> {s.time}
+          </div>
         </li>
       ))}
     </ol>
