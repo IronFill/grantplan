@@ -13,6 +13,12 @@
   to = "/.netlify/functions/submit"
   status = 200
 
+# Той самий шлях /comments, що й у Cloudflare Pages Functions (functions/comments.js).
+[[redirects]]
+  from = "/comments"
+  to = "/.netlify/functions/comments"
+  status = 200
+
 # SPA-подібні маршрути не потрібні (статичний сайт з окремими сторінками),
 # але лишаємо безпечні заголовки.
 [[headers]]
