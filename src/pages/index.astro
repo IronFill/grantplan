@@ -51,20 +51,23 @@ const serviceSchema = {
 <Layout schema={[faqSchema, serviceSchema]}>
   <SiteHeader slot="header" />
 
+  <!-- Порядок блоків: спершу відповідаємо на два перші питання клієнта
+       («скільки дають» і «чи підходжу я»), далі — доказова база,
+       і лише після неї ціна. -->
   <Hero />
   <StatsBelt />
+  <ProgramScale />
+  <Quiz />
   <WhyRejected />
   <Method />
   <Expertise />
   <PlanContents />
-  <Pricing />
   <CaseTeaser />
   <Author />
   <FinancePartner />
+  <Pricing />
   <Services />
   <HonestyBlock />
-  <ProgramScale />
-  <Quiz />
   <ChecklistCta />
   <Faq />
   <Reviews />

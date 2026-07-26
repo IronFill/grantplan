@@ -28,6 +28,19 @@ const questions = [
     options: ['Так', 'Ні'],
   },
 ];
+
+// Останній крок — блокуючі умови. Це не «бали», а жорсткий відсів:
+// банк-партнер перевіряє їх ще до того, як хтось прочитає бізнес-план.
+const blockers = [
+  { id: 'tot', label: 'Бізнес зареєстрований або фактично працює на тимчасово окупованій території' },
+  { id: 'rf', label: 'Є економічна діяльність на території РФ' },
+  { id: 'sanctions', label: 'Щодо вас або компанії застосовані санкції' },
+  { id: 'bankrupt', label: 'Порушено справу про банкрутство' },
+  { id: 'budget', label: 'Є непогашені борги перед бюджетом України' },
+  { id: 'criminal', label: 'Є судове рішення у кримінальній справі, зокрема за корупційні злочини' },
+];
+
+const totalSteps = questions.length + 1;
 ---
 <section id="quiz" class="py-16 md:py-24 scroll-mt-20">
   <div class="container-site max-w-3xl">
@@ -40,7 +53,7 @@ const questions = [
           <Icon name="sparkles" size={28} />
         </span>
         <h2 class="mt-5 text-2xl sm:text-3xl">Пройти тест: чи підходить вам грант?</h2>
-        <p class="mt-3 text-muted max-w-lg mx-auto">5 коротких питань — і ви побачите орієнтовний ліміт та наступні кроки. Без реєстрації.</p>
+        <p class="mt-3 text-muted max-w-lg mx-auto">{totalSteps} коротких питань — і ви побачите орієнтовний ліміт, блокуючі умови та наступні кроки. Без реєстрації.</p>
         <button type="button" class="btn btn-primary mt-7" data-quiz-start>Почати тест</button>
       </div>
 
@@ -48,7 +61,7 @@ const questions = [
       <div class="relative hidden" data-quiz-steps>
         <!-- Прогрес -->
         <div class="flex items-center justify-between text-sm text-muted mb-2">
-          <span data-quiz-counter>Питання 1 з {questions.length}</span>
+          <span data-quiz-counter>Питання 1 з {totalSteps}</span>
           <button type="button" class="hover:text-ink" data-quiz-back hidden>← Назад</button>
         </div>
         <div class="h-1.5 rounded-full bg-border overflow-hidden">
@@ -72,6 +85,29 @@ const questions = [
             </div>
           </div>
         ))}
+
+        <!-- Останній крок: блокуючі умови (мультивибір) -->
+        <div class="mt-7 hidden" data-quiz-q={questions.length} data-quiz-blockers>
+          <h3 class="text-xl sm:text-2xl font-display font-semibold">
+            Позначте те, що стосується вас або вашого бізнесу
+          </h3>
+          <p class="mt-2 text-sm text-muted">
+            Ці умови банк-партнер перевіряє першими — ще до того, як хтось прочитає ваш бізнес-план.
+          </p>
+          <div class="mt-5 grid gap-2.5">
+            {blockers.map((b) => (
+              <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface px-5 py-4 cursor-pointer hover:border-accent transition-colors">
+                <input type="checkbox" class="mt-1 w-4 h-4 accent-[#E86A00] shrink-0" data-blocker value={b.id} data-label={b.label} />
+                <span class="text-[0.95rem] leading-snug">{b.label}</span>
+              </label>
+            ))}
+            <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-raised px-5 py-4 cursor-pointer hover:border-accent transition-colors">
+              <input type="checkbox" class="mt-1 w-4 h-4 accent-[#E86A00] shrink-0" data-blocker-none />
+              <span class="text-[0.95rem] leading-snug font-medium">Нічого з переліченого</span>
+            </label>
+          </div>
+          <button type="button" class="btn btn-primary w-full mt-5" data-quiz-finish>Показати результат</button>
+        </div>
       </div>
 
       <!-- Результат -->
@@ -159,6 +195,19 @@ const questions = [
       });
     });
 
+    // Крок блокуючих умов: «нічого з переліченого» взаємовиключне з рештою
+    const blockerBoxes = Array.from(root.querySelectorAll<HTMLInputElement>('[data-blocker]'));
+    const noneBox = root.querySelector<HTMLInputElement>('[data-blocker-none]');
+    blockerBoxes.forEach((box) => {
+      box.addEventListener('change', () => {
+        if (box.checked && noneBox) noneBox.checked = false;
+      });
+    });
+    noneBox?.addEventListener('change', () => {
+      if (noneBox.checked) blockerBoxes.forEach((b) => (b.checked = false));
+    });
+    root.querySelector<HTMLButtonElement>('[data-quiz-finish]')?.addEventListener('click', finish);
+
     function fmt(n: number): string {
       return n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
     }
@@ -182,9 +231,24 @@ const questions = [
       const title = resultBox.querySelector<HTMLElement>('[data-result-title]')!;
       const text = resultBox.querySelector<HTMLElement>('[data-result-text]')!;
 
+      // 1) Жорсткий відсів: блокуючі умови програми
+      const hardBlockers = Array.from(root!.querySelectorAll<HTMLInputElement>('[data-blocker]'))
+        .filter((b) => b.checked)
+        .map((b) => b.getAttribute('data-label') || '');
+
       const blocked = answers['debts'] === 'Так' || answers['commit'] === 'Ні';
 
-      if (blocked) {
+      if (hardBlockers.length) {
+        iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-accent/15 text-accent';
+        iconWrap.innerHTML =
+          '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>';
+        title.textContent = 'Це блокуючі умови — заявку відхилять автоматично';
+        text.textContent =
+          'Ви позначили: ' +
+          hardBlockers.join('; ') +
+          '. За чинними правилами це підстава для відмови ще на етапі перевірки в банку — до розгляду бізнес-плану. Ми не візьмемо з вас гроші за план, який завідомо не пройде. Напишіть нам: розберемо, чи можна усунути перешкоду і за який строк.';
+        resultPayload = 'РЕЗУЛЬТАТ: блокуючі умови — ' + hardBlockers.join('; ');
+      } else if (blocked) {
         iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-accent/15 text-accent';
         iconWrap.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
@@ -200,7 +264,10 @@ const questions = [
         iconWrap.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
         title.innerHTML = `Ваш орієнтовний ліміт — <span class="text-accent">до ${fmt(limit)}</span>`;
-        text.textContent = 'Це попередня оцінка за умовами програми. Точну суму й реальні шанси визначимо на безкоштовному аудиті.';
+        text.textContent =
+          answers['status'] === 'Ветеран або член родини'
+            ? 'Ветеранський напрям має окремі умови та документи — точний ліміт для вашого випадку уточнимо на безкоштовному аудиті. Блокуючих умов ви не позначили.'
+            : 'Це попередня оцінка за умовами програми. Блокуючих умов ви не позначили. Точну суму й реальні шанси визначимо на безкоштовному аудиті.';
         resultPayload = `РЕЗУЛЬТАТ: до ${fmt(limit)}`;
       }
 
