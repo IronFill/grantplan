@@ -1,0 +1,186 @@
+---
+// Замінює ProgramScale на головній: замість статичної сітки карток —
+// три вкладки з реальними лімітами, включно з переробною
+// промисловістю (раніше була лише рядком у примітці). ProgramScale.astro
+// лишається без змін і далі використовується на /grant/[slug].
+//
+// Суми звірені з /umovy-prohramy (ця ж сторінка сайту) і з відкритих
+// джерел КМУ/business.diia.gov.ua — не з чернетки цього компонента.
+import Icon from './Icon.astro';
+
+const tabs = [
+  {
+    id: 'vlasna',
+    icon: 'users',
+    label: 'Власна справа',
+    limit: 'до 500 000 ₴',
+    audience:
+      'Малий бізнес, стартапи, сфера послуг, торгівля — без обмежень за галуззю, крім заборонених видів діяльності.',
+    tiers: [
+      { sum: 'до 100 000 ₴', cond: 'без створення робочих місць — для нового бізнесу, до реєстрації ФОП чи юрособи' },
+      { sum: 'до 200 000 ₴', cond: '1 робоче місце · Харківщина та інші прифронтові області — до 300 000 ₴' },
+      { sum: 'до 500 000 ₴', cond: '2 і більше робочих місць на Харківщині чи в іншій із 8 прифронтових областей (в решті України — до 300 000 ₴)' },
+    ],
+    chip: 'Подання через Дію · рішення — 10 робочих днів',
+    spend: ['Обладнання для бізнесу', 'Сировина та матеріали', 'Оренда приміщення й обладнання', 'Маркетинг і реклама'],
+    note: null,
+    cta: { text: 'Пройти скоринг шансів', href: '/#quiz' },
+  },
+  {
+    id: 'veterany',
+    icon: 'shield-check',
+    label: 'Грант для ветеранів',
+    limit: 'до 1 000 000 ₴',
+    audience: 'Учасники бойових дій, особи з інвалідністю внаслідок війни та другий із подружжя.',
+    tiers: [
+      { sum: 'до 250 000 ₴', cond: '1 робоче місце · повністю за кошти держави, без співфінансування' },
+      { sum: 'до 500 000 ₴', cond: '2 робочих місця · повністю за кошти держави, без співфінансування' },
+      { sum: 'до 1 000 000 ₴', cond: '4 робочих місця · співфінансування 70/30 — грант покриває 70%, не менше 30% — власні або кредитні кошти отримувача' },
+    ],
+    chip: 'Робочі місця створити за 6 місяців · зберегти 24 місяці',
+    spend: ['Обладнання для бізнесу', 'Сировина та матеріали', 'Оренда приміщення й обладнання', 'Маркетинг і реклама'],
+    note: 'Строк збереження робочих місць у ветеранському напрямі коротший за стандартні 3 роки програми — уточнюємо точні умови під ваш випадок на аудиті.',
+    cta: { text: 'Пройти скоринг шансів', href: '/#quiz' },
+  },
+  {
+    id: 'pererobka',
+    icon: 'rocket',
+    label: 'Переробна промисловість',
+    limit: 'до 8 000 000 ₴',
+    audience: 'Виробництво: меблі, харчова промисловість, легка промисловість, металообробка, безпілотники та інші переробні напрями.',
+    tiers: [
+      { sum: 'до 8 000 000 ₴', cond: 'обов’язкове співфінансування з боку бізнесу та створення нових робочих місць — точні пороги залежать від напряму й діючої редакції порядку' },
+    ],
+    chip: '61 підприємство вже отримало 282 млн ₴ за цим напрямом',
+    spend: ['Виробниче обладнання', 'Лінії та станки під конкретний напрям виробництва'],
+    note:
+      'Це реальний державний напрям програми єРобота «Новий рівень» для переробних підприємств, а не маркетингова назва. Ми свідомо не вказуємо тут універсальний % співфінансування чи мінімальну кількість робочих місць — вони залежать від напряму й чинної редакції порядку, тож перевіряємо їх під ваш конкретний проєкт. Це інший масштаб роботи, ніж наші базові тарифи — обговорюємо індивідуально.',
+    cta: { text: 'Обговорити проєкт', href: '/#lead' },
+  },
+];
+---
+<section id="programs" class="py-16 md:py-24 border-t border-border/70 bg-surface/30 scroll-mt-20">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Грантові напрями 2026</span>
+      <h2 class="mt-2 text-3xl sm:text-4xl">Скільки можна отримати</h2>
+      <p class="mt-3 text-muted text-lg">Три напрями, три різні ліміти — оберіть свій, щоб побачити умови.</p>
+    </div>
+
+    <div class="reveal mt-10" data-tabs>
+      <!-- Перемикач: горизонтальний скрол на мобільному, ряд на десктопі -->
+      <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory md:overflow-visible" role="tablist" aria-label="Грантові напрями">
+        {tabs.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-btn-${t.id}`}
+            aria-controls={`tab-panel-${t.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            data-tab-btn={t.id}
+            class={`shrink-0 snap-start flex items-center gap-2.5 rounded-xl border px-4 py-3.5 text-left transition-colors ${
+              i === 0 ? 'border-accent bg-raised' : 'border-border bg-surface hover:border-accent/60'
+            }`}
+          >
+            <span class={`inline-grid place-items-center w-9 h-9 rounded-lg shrink-0 ${i === 0 ? 'bg-accent/15 text-accent' : 'bg-accent/10 text-accent'}`}>
+              <Icon name={t.icon} size={18} />
+            </span>
+            <span>
+              <span class="block text-sm font-display font-semibold whitespace-nowrap">{t.label}</span>
+              <span class="block text-xs text-accent font-medium whitespace-nowrap">{t.limit}</span>
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <!-- Панелі -->
+      <div class="mt-6">
+        {tabs.map((t, i) => (
+          <div
+            id={`tab-panel-${t.id}`}
+            role="tabpanel"
+            aria-labelledby={`tab-btn-${t.id}`}
+            data-tab-panel={t.id}
+            class={i === 0 ? '' : 'hidden'}
+          >
+            <div class="rounded-[20px] bg-surface border border-border p-6 md:p-8">
+              <div class="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                  <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">
+                    <Icon name={t.icon} size={22} />
+                  </span>
+                  <h3 class="mt-4 text-xl font-display font-semibold">{t.label}</h3>
+                  <p class="mt-2 text-muted max-w-xl">{t.audience}</p>
+                </div>
+                <div class="font-display font-extrabold text-2xl sm:text-3xl text-accent whitespace-nowrap">{t.limit}</div>
+              </div>
+
+              <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {t.tiers.map((tier) => (
+                  <div class="rounded-[14px] border border-border bg-raised p-4">
+                    <div class="font-display font-extrabold text-lg text-accent">{tier.sum}</div>
+                    <p class="mt-1.5 text-sm text-muted leading-relaxed">{tier.cond}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div class="mt-5 inline-flex items-center gap-2 rounded-full border border-border bg-raised px-3.5 py-1.5 text-xs font-medium text-accent">
+                <Icon name="clock" size={14} /> {t.chip}
+              </div>
+
+              <div class="mt-6 pt-6 border-t border-border/70 grid md:grid-cols-2 gap-6">
+                <div>
+                  <div class="text-sm font-semibold">На що можна витрачати</div>
+                  <ul class="mt-3 space-y-2">
+                    {t.spend.map((s) => (
+                      <li class="flex items-start gap-2 text-sm text-muted">
+                        <Icon name="check" size={16} class="text-success shrink-0 mt-0.5" /> {s}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {t.note && (
+                  <div class="rounded-[14px] border border-border bg-raised p-4">
+                    <p class="text-sm text-muted leading-relaxed">{t.note}</p>
+                  </div>
+                )}
+              </div>
+
+              <a href={t.cta.href} class="btn btn-primary mt-7" data-analytics={`click_tab_${t.id}`}>
+                {t.cta.text}
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <p class="reveal mt-6 text-sm text-muted max-w-3xl">
+      Дані станом на липень 2026, звірені з <a href="/umovy-prohramy" class="text-accent hover:underline">офіційними джерелами</a>. З 1 вересня 2026 умови «Власної справи» оновлюються.
+    </p>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-tabs]');
+  if (root) {
+    const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-tab-btn]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-tab-panel]'));
+
+    function activate(id: string) {
+      buttons.forEach((b) => {
+        const active = b.dataset.tabBtn === id;
+        b.setAttribute('aria-selected', String(active));
+        b.classList.toggle('border-accent', active);
+        b.classList.toggle('bg-raised', active);
+        b.classList.toggle('border-border', !active);
+        b.classList.toggle('bg-surface', !active);
+      });
+      panels.forEach((p) => p.classList.toggle('hidden', p.dataset.tabPanel !== id));
+    }
+
+    buttons.forEach((b) => {
+      b.addEventListener('click', () => activate(b.dataset.tabBtn!));
+    });
+  }
+</script>

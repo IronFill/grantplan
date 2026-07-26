@@ -1,0 +1,103 @@
+---
+// Компактні спойлери замість повторення того, що вже детально
+// розписано на /umovy-prohramy, /spivbesida і /pislya-hrantu:
+// тут — по 2-3 речення на кожен пункт і посилання «детальніше».
+// Це навмисно НЕ дублює ті сторінки — мета компонента (за задумом
+// «розвантажити головну») суперечила б собі, якщо тут же відтворити
+// їх повний текст.
+import Icon from './Icon.astro';
+
+const items = [
+  {
+    icon: 'shield-alert',
+    q: 'Критичні критерії відмови банку',
+    a: 'Банк-партнер перевіряє шість умов ще до розгляду бізнес-плану: діяльність на тимчасово окупованій території чи в РФ, санкції, банкрутство, борги перед бюджетом, судове рішення у кримінальній справі. Будь-яка з них — автоматична відмова.',
+    href: '/umovy-prohramy',
+    linkText: 'Повний перелік і бальна система',
+  },
+  {
+    icon: 'mic',
+    q: 'Як проходить співбесіда в центрі зайнятості',
+    a: 'Формат дистанційний, за відеозв’язком, і триває недовго — це не іспит на години, а перевірка, що план писали саме ви. Комісія питає про мотивацію, ринок, операційну частину і фінансові розрахунки.',
+    href: '/spivbesida',
+    linkText: 'Типові питання за темами',
+  },
+  {
+    icon: 'wallet',
+    q: 'Цільове використання коштів: на що можна і не можна витрачати',
+    a: 'Дозволено те, що зафіксовано в затвердженому кошторисі: обладнання, сировина й матеріали, оренда приміщення та обладнання, маркетинг і реклама. Будь-яка витрата поза кошторисом — підстава для повернення коштів, тому кожну покупку варто підтверджувати документами.',
+    href: '/pislya-hrantu',
+    linkText: 'Детальний розбір і ризикові сценарії',
+  },
+  {
+    icon: 'handshake',
+    q: 'Обов’язки після отримання гранту',
+    a: 'Мінімум 3 роки офіційної діяльності (для ветеранського напряму — коротший строк), сплата податків, створення та збереження робочих місць. Закрили бізнес раніше — повертаєте суму гранту за вирахуванням уже сплачених податків.',
+    href: '/pislya-hrantu',
+    linkText: 'Повний таймлайн обов’язків',
+  },
+];
+---
+<section class="py-16 md:py-24 border-t border-border/70">
+  <div class="container-site max-w-3xl">
+    <div class="reveal">
+      <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Перш ніж подаватись</span>
+      <h2 class="mt-2 text-3xl sm:text-4xl">Юридичні нюанси коротко</h2>
+      <p class="mt-3 text-muted text-lg">Розгорніть те, що вас цікавить. Деталі — на окремих сторінках, тут — суть за 30 секунд.</p>
+    </div>
+
+    <div class="mt-10 space-y-3">
+      {items.map((item, i) => (
+        <div class="reveal rounded-[16px] bg-surface border border-border overflow-hidden">
+          <h3>
+            <button
+              type="button"
+              class="w-full flex items-center justify-between gap-4 text-left px-5 md:px-6 py-4 md:py-5"
+              aria-expanded="false"
+              aria-controls={`risk-panel-${i}`}
+              id={`risk-btn-${i}`}
+              data-risk-btn
+            >
+              <span class="flex items-center gap-3">
+                <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent/10 text-accent shrink-0">
+                  <Icon name={item.icon} size={18} />
+                </span>
+                <span class="font-display font-semibold text-base md:text-lg">{item.q}</span>
+              </span>
+              <Icon name="chevron-down" size={20} class="text-accent shrink-0 transition-transform duration-300" />
+            </button>
+          </h3>
+          <div
+            id={`risk-panel-${i}`}
+            role="region"
+            aria-labelledby={`risk-btn-${i}`}
+            class="grid grid-rows-[0fr] transition-all duration-300"
+            data-risk-panel
+          >
+            <div class="overflow-hidden">
+              <div class="px-5 md:px-6 pb-5 pl-[3.25rem]">
+                <p class="text-muted">{item.a}</p>
+                <a href={item.href} class="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
+                  {item.linkText} <Icon name="arrow-right" size={15} />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-risk-btn]').forEach((btn) => {
+    const panel = btn.parentElement?.parentElement?.querySelector<HTMLElement>('[data-risk-panel]');
+    const icon = btn.querySelector('svg');
+    btn.addEventListener('click', () => {
+      const open = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!open));
+      if (panel) panel.style.gridTemplateRows = open ? '0fr' : '1fr';
+      if (icon) icon.style.transform = open ? '' : 'rotate(180deg)';
+    });
+  });
+</script>
