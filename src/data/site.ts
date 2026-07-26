@@ -20,10 +20,10 @@ export const site = {
 
 // Навігація (якорі лендингу)
 export const nav = [
+  { label: 'Умови програми', href: '/umovy-prohramy' },
   { label: 'Як це працює', href: '/#how' },
   { label: 'Тарифи', href: '/#pricing' },
   { label: 'Послуги', href: '/#services' },
   { label: 'Приклад роботи', href: '/#case' },
-  { label: 'Запис на аудит', href: '/#lead' },
   { label: 'Питання', href: '/#faq' },
 ] as const;

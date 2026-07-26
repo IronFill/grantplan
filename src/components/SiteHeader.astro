@@ -10,9 +10,9 @@ import { site, nav } from '../data/site';
     </a>
 
     <!-- Десктоп-навігація -->
-    <nav class="hidden lg:flex items-center gap-8" aria-label="Головна навігація">
+    <nav class="hidden xl:flex items-center gap-6" aria-label="Головна навігація">
       {nav.map((item) => (
-        <a href={item.href} class="text-muted hover:text-ink transition-colors text-[0.95rem]">{item.label}</a>
+        <a href={item.href} class="text-muted hover:text-ink transition-colors text-[0.95rem] whitespace-nowrap">{item.label}</a>
       ))}
     </nav>
 
@@ -26,7 +26,7 @@ import { site, nav } from '../data/site';
       >
         <Icon name="phone" size={20} />
       </a>
-      <a href="/#lead" class="hidden md:inline-flex btn btn-primary !min-h-[44px] !py-2.5 !px-5 text-[0.95rem]">
+      <a href="/#lead" class="hidden md:inline-flex btn btn-primary !min-h-[44px] !py-2.5 !px-5 text-[0.95rem] whitespace-nowrap">
         Безкоштовний аудит
       </a>
 
@@ -44,7 +44,7 @@ import { site, nav } from '../data/site';
       <!-- Бургер -->
       <button
         type="button"
-        class="lg:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink"
+        class="xl:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink"
         aria-label="Відкрити меню"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -58,7 +58,7 @@ import { site, nav } from '../data/site';
   <!-- Повноекранне мобільне меню -->
   <div
     id="mobile-menu"
-    class="lg:hidden fixed inset-0 z-50 bg-bg/98 backdrop-blur-sm flex-col hidden"
+    class="xl:hidden fixed inset-0 z-50 bg-bg/98 backdrop-blur-sm flex-col hidden"
     data-menu-panel
   >
     <div class="container-site flex items-center justify-between h-16">

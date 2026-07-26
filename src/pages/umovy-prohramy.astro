@@ -1,0 +1,496 @@
+---
+// Публічна довідка про офіційні умови програми «Власна справа».
+// Принцип сторінки: ми НЕ підміняємо офіційне джерело, а стисло переказуємо
+// його і поруч даємо прямі посилання на першоджерела (ДСЗ, Дія, КМУ),
+// щоб людина могла перевірити кожен факт самостійно.
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Icon from '../components/Icon.astro';
+
+// Дата останньої звірки з офіційними джерелами. Оновлювати руками
+// разом зі змістом — вона показана користувачеві у шапці сторінки.
+const updated = '26 липня 2026';
+
+// --- Суми за чинними правилами (редакція, що діє з 1 січня 2026) ---
+const sums = [
+  {
+    label: 'Без створення робочих місць',
+    base: 'до 100 000 ₴',
+    note: 'За умови реєстрації ФОП',
+    front: null,
+  },
+  {
+    label: '1 робоче місце',
+    base: 'до 200 000 ₴',
+    note: 'Офіційне працевлаштування на повний день',
+    front: 'Прифронтові області — більше',
+  },
+  {
+    label: 'Від 2 робочих місць',
+    base: 'до 350 000 ₴',
+    note: 'Два і більше офіційних робочих місця',
+    front: 'Харківщина — до 500 000 ₴',
+  },
+  {
+    label: 'Молодь 18–25 років',
+    base: 'до 200 000 ₴',
+    note: 'Окремі умови щодо робочих місць',
+    front: null,
+  },
+  {
+    label: 'Ветерани та їхні родини',
+    base: 'до 1 000 000 ₴',
+    note: 'Окремий ветеранський напрям',
+    front: null,
+  },
+  {
+    label: 'Повторний грант',
+    base: 'доступний з 2026 року',
+    note: 'За умови виконання зобов’язань за попереднім',
+    front: null,
+  },
+];
+
+// Дев'ять областей із підвищеним лімітом (прифронтові).
+const frontRegions = [
+  'Харківська',
+  'Донецька',
+  'Дніпропетровська',
+  'Запорізька',
+  'Миколаївська',
+  'Херсонська',
+  'Чернігівська',
+  'Сумська',
+  'Одеська',
+];
+
+// --- Процедура подання: офіційні етапи і строки ---
+const steps = [
+  {
+    n: '01',
+    icon: 'file-text',
+    title: 'Заявка та бізнес-план',
+    text:
+      'Подання через портал Дія: розділ «єРобота» → «Власна справа». Авторизація через BankID або кваліфікований електронний підпис. До заявки додається бізнес-план за формою Служби зайнятості з кошторисом.',
+    meta: 'Портал Дія',
+  },
+  {
+    n: '02',
+    icon: 'landmark',
+    title: 'Перевірка в уповноваженому банку',
+    text:
+      'Пакет документів передається до банку-партнера, який проводить фінансовий скоринг і перевірку ділової репутації заявника. На цьому етапі відсіюється значна частина заявок.',
+    meta: 'Банк-партнер',
+  },
+  {
+    n: '03',
+    icon: 'mic',
+    title: 'Онлайн-співбесіда',
+    text:
+      'Якщо перевірку пройдено, призначається співбесіда з фахівцями регіонального центру зайнятості. Оцінюють мотивацію, розуміння ринку та операційної частини, наявність досвіду і реалістичність розрахунків.',
+    meta: 'Регіональний центр зайнятості',
+  },
+  {
+    n: '04',
+    icon: 'badge-check',
+    title: 'Рішення Державного центру зайнятості',
+    text:
+      'Усі висновки, бали та документи надходять до Державного центру зайнятості, який ухвалює остаточне рішення про надання або відмову в мікрогранті.',
+    meta: 'До 30 робочих днів',
+  },
+  {
+    n: '05',
+    icon: 'handshake',
+    title: 'Договір і рахунок',
+    text:
+      'Після позитивного рішення потрібно укласти договір і відкрити рахунок в уповноваженому банку. Пропуск цього строку означає втрату права на грант.',
+    meta: '15 календарних днів',
+  },
+];
+
+// --- Бальна система ---
+const scoring = [
+  { label: 'Перевірка ділової репутації', value: 'до 200 балів' },
+  { label: 'Співбесіда', value: 'до 50 балів' },
+  { label: 'Максимум', value: '250 балів' },
+  { label: 'Прохідний поріг', value: 'від 130 балів' },
+];
+
+// --- Обов'язки після отримання ---
+const duties = [
+  {
+    icon: 'target',
+    t: 'Цільове використання коштів',
+    d: 'Витрачати грант можна лише на позиції, зафіксовані в затвердженому кошторисі. Кожна покупка підтверджується документами.',
+  },
+  {
+    icon: 'users',
+    t: 'Створення та збереження робочих місць',
+    d: 'Якщо сума гранту прив’язана до робочих місць, їх треба створити у визначений строк і зберігати протягом періоду, встановленого договором.',
+  },
+  {
+    icon: 'coins',
+    t: 'Сплата податків',
+    d: 'Сплачені податки (ПДФО, ЄСВ, єдиний податок, військовий збір) — основне підтвердження того, що бізнес реально працює, а грант використано за призначенням.',
+  },
+  {
+    icon: 'file-text',
+    t: 'Звітність перед центром зайнятості',
+    d: 'Отримувач звітує про використання коштів і виконання зобов’язань у порядку та строки, визначені договором.',
+  },
+  {
+    icon: 'shield-alert',
+    t: 'Повернення коштів у разі невиконання',
+    d: 'Невиконання умов договору — підстава для повернення гранту. Передбачено призупинення зобов’язань у разі мобілізації або полону отримувача.',
+  },
+];
+
+// --- Підстави для відмови ---
+const refusals = [
+  'Невідповідність заявника вимогам програми',
+  'Менше ніж 99 балів за перевірку ділової репутації',
+  'Підсумковий бал нижче 130',
+  'Непрозорі або сумнівні очікувані результати бізнес-плану',
+  'Негативна ділова репутація, зокрема за даними з відкритих джерел',
+  'Заявник уже отримував грант за програмою',
+  'Відмова від участі у співбесіді',
+];
+
+// --- Що не можна фінансувати ---
+const bans = ['Виробництво та реалізація зброї', 'Алкогольні напої', 'Тютюнові вироби'];
+
+// --- Офіційні джерела ---
+const sources = [
+  {
+    t: 'Державна служба зайнятості — мікрогрант «Власна справа»',
+    d: 'Основна офіційна сторінка програми: умови, роз’яснення, контакти регіональних центрів.',
+    href: 'https://www.dcz.gov.ua/people/micro',
+    host: 'dcz.gov.ua',
+  },
+  {
+    t: 'Дія — послуга «Грант на власну справу»',
+    d: 'Портал, через який подається заявка. Тут же — актуальний перелік документів.',
+    href: 'https://diia.gov.ua/services/grant-na-vlasnu-spravu',
+    host: 'diia.gov.ua',
+  },
+  {
+    t: 'Гід онлайн-послуг Дія',
+    d: 'Покроковий опис послуги надання мікрогранту на створення або розвиток власного бізнесу.',
+    href: 'https://guide.diia.gov.ua/',
+    host: 'guide.diia.gov.ua',
+  },
+  {
+    t: 'Постанова КМУ № 738 «Деякі питання надання грантів бізнесу»',
+    d: 'Нормативний акт, на якому тримається програма. Саме його редакція на дату подання є визначальною.',
+    href: 'https://www.kmu.gov.ua/npas/deyaki-pitannya-nadannya-grantiv-biznesu-738-210622',
+    host: 'kmu.gov.ua',
+  },
+  {
+    t: 'Дія.Бізнес — новини грантових програм',
+    d: 'Оперативні повідомлення про зміни умов програми «Власна справа».',
+    href: 'https://business.diia.gov.ua/',
+    host: 'business.diia.gov.ua',
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Умови програми «Власна справа» у 2026 році — офіційні джерела',
+  datePublished: '2026-07-26',
+  author: { '@type': 'Organization', name: 'ГрантПлан' },
+  about: 'Мікрогрант «Власна справа» від Державної служби зайнятості',
+};
+---
+<Layout
+  title="Умови гранту «Власна справа» 2026: суми, вимоги, строки — за офіційними джерелами | ГрантПлан"
+  description="Стислий і чесний переказ офіційних умов мікрогранту «Власна справа»: суми до 500 000 ₴, вимоги до заявника, бальна система, підстави для відмови, строки. З прямими посиланнями на dcz.gov.ua, Дію та постанову КМУ."
+  path="/umovy-prohramy"
+  schema={[schema]}
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site max-w-3xl">
+      <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="landmark" size={14} class="text-accent" /> Довідка за офіційними джерелами
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">
+        Умови гранту <span class="text-accent">«Власна справа»</span> у 2026 році
+      </h1>
+      <p class="mt-5 text-muted text-lg leading-relaxed">
+        Ми зібрали в одному місці те, що зараз написано на сторінках Державної служби зайнятості, Дії та в постанові Кабінету Міністрів — простою мовою і без «продажного» тону. Біля кожного розділу є посилання на першоджерело, щоб ви могли перевірити будь-яку цифру самостійно.
+      </p>
+      <div class="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted">
+        <span class="inline-flex items-center gap-2">
+          <Icon name="calendar-clock" size={16} class="text-accent" /> Звірено: {updated}
+        </span>
+        <a
+          href="https://www.dcz.gov.ua/people/micro"
+          target="_blank"
+          rel="noopener nofollow"
+          class="inline-flex items-center gap-2 text-accent hover:underline"
+        >
+          <Icon name="external-link" size={16} /> Оригінал на dcz.gov.ua
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Головне попередження: програма оновлюється -->
+  <section class="py-10 md:py-14">
+    <div class="container-site max-w-3xl">
+      <div class="reveal rounded-[20px] border border-accent/70 bg-raised p-6 md:p-7">
+        <div class="flex items-start gap-4">
+          <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
+            <Icon name="alert-triangle" size={22} />
+          </span>
+          <div>
+            <h2 class="text-xl font-display font-semibold">Найважливіше на липень 2026: програма змінює модель</h2>
+            <p class="mt-3 text-muted leading-relaxed">
+              За повідомленнями Мінекономіки та Уряду, чинні правила діють до <span class="text-ink font-medium">1 серпня 2026</span>, а з <span class="text-ink font-medium">1 вересня 2026</span> запрацює оновлена модель: замість фіксованих сум — гнучкі діапазони, нова система бонусів, спрощені умови щодо робочих місць і окремий напрям на масштабування вже діючого бізнесу.
+            </p>
+            <div class="mt-5 grid sm:grid-cols-2 gap-4">
+              <div class="rounded-[14px] border border-border bg-surface p-4">
+                <div class="text-sm text-muted">Старт бізнесу</div>
+                <div class="mt-1 font-display font-extrabold text-lg text-accent">100 000 – 300 000 ₴</div>
+                <div class="mt-1 text-sm text-success">з можливістю збільшення до 500 000 ₴</div>
+              </div>
+              <div class="rounded-[14px] border border-border bg-surface p-4">
+                <div class="text-sm text-muted">Масштабування</div>
+                <div class="mt-1 font-display font-extrabold text-lg text-accent">500 000 – 1 500 000 ₴</div>
+                <div class="mt-1 text-sm text-success">з можливістю збільшення до 2 500 000 ₴</div>
+              </div>
+            </div>
+            <p class="mt-4 text-sm text-muted">
+              Розмір фінансування залежатиме від кількості створених робочих місць, регіону, галузі та категорії заявника. Точні параметри визначає редакція порядку, чинна на дату подання, — саме її ми звіряємо перед кожною заявкою.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Суми -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <div class="reveal max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl">Скільки дають за чинними правилами</h2>
+        <p class="mt-3 text-muted">
+          Суми, що діють у редакції з 1 січня 2026 року. Сума прив’язана не до ідеї, а до кількості офіційних робочих місць, які ви зобов’язуєтесь створити.
+        </p>
+      </div>
+
+      <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sums.map((s) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-5 flex flex-col">
+            <div class="flex items-center gap-2.5">
+              <Icon name="wallet" size={20} class="text-accent shrink-0" />
+              <span class="font-medium">{s.label}</span>
+            </div>
+            <div class="mt-3 font-display font-extrabold text-xl text-accent">{s.base}</div>
+            {s.front && <div class="mt-1 text-sm text-success">{s.front}</div>}
+            <p class="mt-3 text-sm text-muted leading-relaxed">{s.note}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="reveal mt-6 rounded-[16px] border border-border bg-raised p-5 md:p-6">
+        <div class="flex items-start gap-3">
+          <Icon name="map-pin" size={20} class="text-accent shrink-0 mt-0.5" />
+          <div>
+            <div class="font-medium">Підвищений ліміт для прифронтових областей</div>
+            <p class="mt-2 text-sm text-muted leading-relaxed">
+              Підприємці з дев’яти областей можуть претендувати на суму до 500 000 ₴: {frontRegions.join(', ')}.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Процедура -->
+  <section class="py-12 md:py-16 border-t border-border/70">
+    <div class="container-site">
+      <div class="reveal max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl">Як проходить розгляд заявки</h2>
+        <p class="mt-3 text-muted">
+          Офіційна процедура складається з п’яти етапів. Загальний строк розгляду — до 30 робочих днів.
+        </p>
+      </div>
+
+      <ol class="mt-8 grid md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+        {steps.map((s, i) => (
+          <li class="reveal card-hover flex flex-col rounded-[16px] bg-surface border border-border p-6" style={`transition-delay:${i * 60}ms`}>
+            <div class="flex items-center justify-between">
+              <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">
+                <Icon name={s.icon} size={22} />
+              </span>
+              <span class="font-display font-extrabold text-2xl text-border">{s.n}</span>
+            </div>
+            <h3 class="mt-5 text-lg font-display font-semibold">{s.title}</h3>
+            <p class="mt-2.5 text-sm text-muted leading-relaxed flex-1">{s.text}</p>
+            <div class="mt-5 pt-4 border-t border-border/70 flex items-center gap-2 text-xs font-medium text-accent">
+              <Icon name="clock" size={14} /> {s.meta}
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <p class="reveal mt-6 text-sm text-muted max-w-3xl">
+        Якщо бізнес-план повертають на доопрацювання, виправлений документ потрібно подати протягом 15 днів із моменту отримання повідомлення.
+      </p>
+    </div>
+  </section>
+
+  <!-- Бали -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <div class="reveal max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl">Як рахують бали</h2>
+        <p class="mt-3 text-muted">
+          Рішення ухвалюється не «на око»: заявка отримує підсумковий бал, і саме він визначає результат.
+        </p>
+      </div>
+
+      <div class="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {scoring.map((s) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-5 text-center lg:text-left">
+            <div class="font-display font-extrabold text-2xl text-accent tabular-nums">{s.value}</div>
+            <div class="mt-2 text-sm text-muted leading-snug">{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div class="reveal mt-6 rounded-[16px] border border-border bg-raised p-5 md:p-6 max-w-3xl">
+        <p class="text-sm text-muted leading-relaxed">
+          <span class="text-ink font-medium">Що це означає на практиці.</span> Найбільша вага — у перевірки ділової репутації, і саме там заявку «зрізають» ще до співбесіди: результат 98 балів або менше на цьому етапі є самостійною підставою для відмови. Тому чистота кредитної історії, відсутність боргів і прозорість заявника важать не менше, ніж сама ідея.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Обов'язки -->
+  <section class="py-12 md:py-16 border-t border-border/70">
+    <div class="container-site">
+      <div class="reveal max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl">Що ви зобов’язані після отримання коштів</h2>
+        <p class="mt-3 text-muted">
+          Грант — безповоротний лише за умови виконання договору. Це головне, що варто зрозуміти до подання заявки.
+        </p>
+      </div>
+
+      <div class="mt-8 grid md:grid-cols-2 gap-4">
+        {duties.map((d) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <div class="flex items-start gap-3">
+              <span class="inline-grid place-items-center w-10 h-10 rounded-xl bg-accent/10 text-accent shrink-0">
+                <Icon name={d.icon} size={20} />
+              </span>
+              <div>
+                <div class="font-display font-semibold">{d.t}</div>
+                <p class="mt-2 text-sm text-muted leading-relaxed">{d.d}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Відмови + заборони -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site grid lg:grid-cols-2 gap-6 lg:gap-8">
+      <div class="reveal rounded-[20px] bg-surface border border-border p-6 md:p-7">
+        <div class="flex items-center gap-3">
+          <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
+            <Icon name="shield-alert" size={22} />
+          </span>
+          <h2 class="text-xl font-display font-semibold">Підстави для відмови</h2>
+        </div>
+        <ul class="mt-5 space-y-3">
+          {refusals.map((r) => (
+            <li class="flex items-start gap-3 text-sm text-muted leading-relaxed">
+              <Icon name="x" size={16} class="text-accent shrink-0 mt-1" />
+              <span>{r}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-5 pt-5 border-t border-border/70 text-sm text-muted">
+          Детальний розбір кожної причини з прикладами — у нашій статті
+          <a href="/prychyny-vidmov" class="text-accent hover:underline">«Чому відмовляють у гранті»</a>.
+        </p>
+      </div>
+
+      <div class="reveal rounded-[20px] bg-surface border border-border p-6 md:p-7">
+        <div class="flex items-center gap-3">
+          <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
+            <Icon name="ban" size={22} />
+          </span>
+          <h2 class="text-xl font-display font-semibold">Що не можна фінансувати</h2>
+        </div>
+        <ul class="mt-5 space-y-3">
+          {bans.map((b) => (
+            <li class="flex items-start gap-3 text-sm text-muted leading-relaxed">
+              <Icon name="x" size={16} class="text-accent shrink-0 mt-1" />
+              <span>{b}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-5 pt-5 border-t border-border/70 text-sm text-muted leading-relaxed">
+          Перелік обмежень ширший за ці три позиції й залежить від редакції порядку та обраних КВЕДів. Непрофільні та заборонені види діяльності ми відсікаємо ще на безкоштовному аудиті — до того, як ви витратите час на підготовку документів.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Офіційні джерела -->
+  <section class="py-12 md:py-16 border-t border-border/70">
+    <div class="container-site">
+      <div class="reveal max-w-3xl">
+        <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Перевірте самі</span>
+        <h2 class="mt-2 text-2xl sm:text-3xl">Офіційні джерела</h2>
+        <p class="mt-3 text-muted">
+          Ми — приватна консалтингова практика, а не державна установа. Усе, що написано вище, — переказ відкритої інформації. Якщо між цією сторінкою та офіційним джерелом виникне розбіжність, чинним є офіційне джерело.
+        </p>
+      </div>
+
+      <div class="mt-8 grid md:grid-cols-2 gap-4">
+        {sources.map((s) => (
+          <a
+            href={s.href}
+            target="_blank"
+            rel="noopener nofollow"
+            class="reveal card-hover group flex flex-col rounded-[16px] bg-surface border border-border p-6"
+          >
+            <div class="flex items-start justify-between gap-4">
+              <span class="font-display font-semibold group-hover:text-accent transition-colors">{s.t}</span>
+              <Icon name="external-link" size={18} class="text-muted shrink-0 mt-1" />
+            </div>
+            <p class="mt-2.5 text-sm text-muted leading-relaxed flex-1">{s.d}</p>
+            <span class="mt-4 pt-3 border-t border-border/70 text-xs font-medium text-accent">{s.host}</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="reveal mt-8 rounded-[16px] border border-border bg-raised p-6 max-w-3xl">
+        <div class="flex items-start gap-3">
+          <Icon name="shield-check" size={20} class="text-success shrink-0 mt-0.5" />
+          <p class="text-sm text-muted leading-relaxed">
+            <span class="text-ink font-medium">Наша позиція.</span> Рішення про надання гранту ухвалює виключно Державна служба зайнятості. Жоден консультант не може його гарантувати чи прискорити — і той, хто обіцяє протилежне, вводить вас в оману. Ми відповідаємо лише за те, що справді від нас залежить: якість бізнес-плану, обґрунтованість кошторису і вашу готовність до співбесіди.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>
