@@ -1,0 +1,155 @@
+---
+// Друга зайнята нішова сторінка: конкуренти закінчують статтю на
+// моменті отримання рішення. Що відбувається ПІСЛЯ — найдорожчий
+// страх клієнта (звітність, повернення коштів, мобілізація) — ніхто
+// не розбирає. Факти узгоджені з /umovy-prohramy (той самий блок
+// duties), тут — детальніше і з практичними порадами.
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Icon from '../components/Icon.astro';
+
+const timeline = [
+  {
+    icon: 'calendar-clock',
+    title: 'Договір і рахунок — 15 календарних днів',
+    text: 'Після позитивного рішення потрібно укласти договір і відкрити рахунок в уповноваженому банку. Це календарні, а не робочі дні — вихідні враховуються. Пропустили строк — втрачаєте право на грант, і повторно подати ту саму заявку вже не можна.',
+  },
+  {
+    icon: 'target',
+    title: 'Цільове використання коштів',
+    text: 'Витрачати можна лише на позиції, зафіксовані в затвердженому кошторисі: обладнання, сировина й матеріали, оренда приміщення та обладнання, маркетинг і реклама. Кожна покупка підтверджується документами — чеком, накладною, актом. Витрата поза кошторисом — підстава для повернення коштів.',
+  },
+  {
+    icon: 'users',
+    title: 'Створення та збереження робочих місць',
+    text: 'Якщо сума гранту прив’язана до робочих місць, їх потрібно створити у визначений договором строк і зберігати протягом усього періоду зобов’язань. Офіційне працевлаштування — не «оформлення на папері» раз на рік, а робоче місце, яке реально існує на перевірках.',
+  },
+  {
+    icon: 'coins',
+    title: 'Сплата податків — 3 роки',
+    text: 'Сплачені податки (єдиний податок, ЄСВ, ПДФО, військовий збір) — головне підтвердження того, що бізнес реально працює. Мінімальний строк ведення діяльності — 3 роки з моменту отримання коштів.',
+  },
+  {
+    icon: 'file-text',
+    title: 'Звітність перед центром зайнятості',
+    text: 'Отримувач звітує про використання коштів і виконання зобов’язань у порядку та строки, визначені договором. Зберігайте всі підтвердні документи одразу, а не збирайте їх заднім числом перед звітом.',
+  },
+];
+
+const risks = [
+  {
+    icon: 'shield-alert',
+    title: 'Закрили бізнес раніше строку',
+    text: 'Потрібно повернути суму гранту за вирахуванням уже сплачених податків. Що довше бізнес пропрацював і що більше податків сплачено — то менша сума повернення.',
+  },
+  {
+    icon: 'shield-alert',
+    title: 'Мобілізація або полон отримувача',
+    text: 'Програма передбачає призупинення зобов’язань за грантом на цей період — зобов’язання не «згорають», а ставляться на паузу. Це варто задокументувати через центр зайнятості одразу, а не постфактум.',
+  },
+  {
+    icon: 'shield-alert',
+    title: 'Витрата не за кошторисом',
+    text: 'Навіть виправдана з бізнес-погляду покупка поза затвердженим переліком підстав вважається нецільовим використанням і тягне повернення відповідної суми.',
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Що буде після отримання гранту «Власна справа»',
+  author: { '@type': 'Organization', name: 'ГрантПлан' },
+  about: 'Обов’язки, звітність і ризики після отримання мікрогранту «Власна справа»',
+};
+---
+<Layout
+  title="Що буде після отримання гранту «Власна справа»: обов'язки і звітність | ГрантПлан"
+  description="Договір і рахунок за 15 днів, цільове використання коштів, робочі місця на 3 роки, звітність і що станеться, якщо закрити бізнес раніше строку. Детальний розбір обов'язків після гранту."
+  path="/pislya-hrantu"
+  schema={[schema]}
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site max-w-3xl">
+      <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="handshake" size={14} class="text-accent" /> Після рішення
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">
+        Що буде <span class="text-accent">після</span> отримання гранту
+      </h1>
+      <p class="mt-5 text-muted text-lg leading-relaxed">
+        Гроші на рахунку — не фінал, а початок трирічних зобов’язань. Більшість матеріалів про грант закінчуються на моменті рішення комісії. Тут — що саме потрібно зробити далі, у які строки і що станеться, якщо щось піде не так.
+      </p>
+    </div>
+  </section>
+
+  <!-- Таймлайн обов'язків -->
+  <section class="py-12 md:py-16">
+    <div class="container-site max-w-3xl">
+      <h2 class="text-2xl sm:text-3xl">Що потрібно зробити і коли</h2>
+      <ol class="mt-8 space-y-4">
+        {timeline.map((t, i) => (
+          <li class="reveal flex gap-4 rounded-[16px] bg-surface border border-border p-6">
+            <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
+              <Icon name={t.icon} size={22} />
+            </span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-display font-extrabold text-sm text-border">{String(i + 1).padStart(2, '0')}</span>
+                <h3 class="font-display font-semibold">{t.title}</h3>
+              </div>
+              <p class="mt-2 text-sm text-muted leading-relaxed">{t.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Ризики -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site max-w-3xl">
+      <h2 class="text-2xl sm:text-3xl">Що станеться, якщо щось піде не так</h2>
+      <p class="mt-3 text-muted">Три ситуації, про які варто знати заздалегідь, а не з’ясовувати постфактум.</p>
+      <div class="mt-8 grid gap-4">
+        {risks.map((r) => (
+          <div class="reveal rounded-[16px] border border-border bg-surface p-6">
+            <div class="flex items-start gap-3">
+              <Icon name={r.icon} size={20} class="text-accent shrink-0 mt-0.5" />
+              <div>
+                <div class="font-medium">{r.title}</div>
+                <p class="mt-2 text-sm text-muted leading-relaxed">{r.text}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Наш супровід -->
+  <section class="py-10 md:py-14">
+    <div class="container-site max-w-3xl">
+      <div class="reveal rounded-[16px] border border-accent/70 bg-raised p-6 md:p-7">
+        <h2 class="text-xl font-display font-semibold">Ми не зникаємо після подання заявки</h2>
+        <p class="mt-3 text-muted leading-relaxed">
+          У тарифі «Під ключ» супровід триває до рішення комісії, але базові поради щодо договору, рахунку та звітності даємо кожному клієнту незалежно від тарифу — просто тому, що бачили, як люди губили грант через пропущений строк на відкриття рахунку, а не через слабку ідею.
+        </p>
+        <a href="/#lead" class="btn btn-primary mt-5" data-analytics="click_pislya_lead">
+          Записатися на безкоштовний аудит
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

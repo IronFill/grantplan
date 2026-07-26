@@ -1,0 +1,166 @@
+---
+// Найбільш недооцінена сторінка на ринку: конкуренти згадують
+// співбесіду одним реченням («проведення інтерв'ю»), жодних прикладів
+// питань чи розбору. Тут — предметно, з чіткою межею чесності: це
+// ТИПОВІ питання за практикою підготовки і причинами відмов (rejections.ts,
+// п. 6), а не «злитий» офіційний білет — такого не існує і обіцяти
+// його не можна.
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import LeadForm from '../components/LeadForm.astro';
+import Icon from '../components/Icon.astro';
+
+const categories = [
+  {
+    icon: 'target',
+    title: 'Мотивація та розуміння ідеї',
+    text: 'Комісія перевіряє, чи ідея дійсно ваша, чи ви просто підписали готовий текст.',
+    questions: [
+      'Чому саме цей вид діяльності, а не інший?',
+      'Що ви робили в цій сфері до заявки — досвід, освіта, попередня робота?',
+      'Що ви робитимете, якщо перші три місяці продажі будуть нижчі за план?',
+    ],
+  },
+  {
+    icon: 'trending-up',
+    title: 'Ринок і маркетинг',
+    text: 'Перевіряють, чи розумієте ви клієнта і конкурентів, а не лише вартість обладнання.',
+    questions: [
+      'Хто ваш клієнт — опишіть його конкретно, а не «усі бажаючі»?',
+      'Хто ваші основні конкуренти в цьому місті чи районі та чим ви кращі?',
+      'Звідки клієнти дізнаються про вас у перший місяць роботи?',
+    ],
+  },
+  {
+    icon: 'shield-check',
+    title: 'Операційна частина',
+    text: 'Чи продумано, як бізнес фізично працюватиме день у день.',
+    questions: [
+      'Де розташоване приміщення і чому саме там?',
+      'Хто постачає сировину чи товар і що робите, якщо постачальник підведе?',
+      'Як розподілені обов’язки між вами і найманими працівниками?',
+    ],
+  },
+  {
+    icon: 'calculator',
+    title: 'Фінансові розрахунки',
+    text: 'Найчастіша точка провалу: план писала фінансистка, а пояснювати цифри — заявнику.',
+    questions: [
+      'Звідки взялася сума виручки в першому місяці — порахуйте вголос?',
+      'Яка у вас точка беззбитковості і коли ви її досягнете?',
+      'Чому саме ці постачальники обладнання і чому такі ціни в кошторисі?',
+    ],
+  },
+];
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Співбесіда в центрі зайнятості за грантом «Власна справа»: типові питання',
+  author: { '@type': 'Organization', name: 'ГрантПлан' },
+  about: 'Підготовка до співбесіди з комісією Державного центру зайнятості за програмою «Власна справа»',
+};
+---
+<Layout
+  title="Співбесіда в центрі зайнятості: типові питання комісії — «Власна справа» | ГрантПлан"
+  description="Співбесіда важить до 50 балів із 250. Розбираємо, за якими критеріями оцінює комісія, і типові питання за чотирма темами: мотивація, ринок, операції, фінанси."
+  path="/spivbesida"
+  schema={[schema]}
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site max-w-3xl">
+      <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="mic" size={14} class="text-accent" /> Підготовка до співбесіди
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">
+        Співбесіда в центрі зайнятості: <span class="text-accent">типові питання</span> комісії
+      </h1>
+      <p class="mt-5 text-muted text-lg leading-relaxed">
+        Співбесіда важить до 50 балів зі 250 максимальних — і саме на ній «сипляться» люди з непоганими планами: не можуть своїми словами пояснити цифри, які самі ж подали. Тут — за якими критеріями оцінює комісія і які питання ставлять найчастіше.
+      </p>
+    </div>
+  </section>
+
+  <!-- Критерії оцінювання -->
+  <section class="py-12 md:py-16">
+    <div class="container-site max-w-3xl">
+      <div class="reveal rounded-[20px] border border-accent/70 bg-raised p-6 md:p-7">
+        <div class="flex items-start gap-4">
+          <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
+            <Icon name="badge-check" size={22} />
+          </span>
+          <div>
+            <h2 class="text-xl font-display font-semibold">Що саме оцінює комісія</h2>
+            <p class="mt-3 text-muted leading-relaxed">
+              За офіційними критеріями оцінювання бізнес-плану комісія дивиться на чотири речі: наскільки переконлива мотивація заявника, чи чітко він розуміє маркетинг і операційну частину власного бізнесу, чи є потрібні знання й досвід, і наскільки реалістичні фінансові розрахунки. Нижче — типові питання за кожним із цих чотирьох напрямів.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Категорії питань -->
+  <section class="py-4 md:py-8">
+    <div class="container-site max-w-3xl space-y-4">
+      {categories.map((c) => (
+        <article class="reveal rounded-[16px] bg-surface border border-border p-6 md:p-7">
+          <div class="flex items-center gap-3">
+            <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
+              <Icon name={c.icon} size={22} />
+            </span>
+            <div>
+              <h2 class="text-lg font-display font-semibold">{c.title}</h2>
+              <p class="text-sm text-muted">{c.text}</p>
+            </div>
+          </div>
+          <ul class="mt-5 space-y-3">
+            {c.questions.map((q) => (
+              <li class="flex items-start gap-3 pl-14">
+                <Icon name="message-circle" size={16} class="text-accent shrink-0 mt-1" />
+                <span class="text-[0.95rem] leading-relaxed">{q}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <!-- Чесна оговорка -->
+  <section class="py-10 md:py-14">
+    <div class="container-site max-w-3xl">
+      <div class="reveal rounded-[16px] border border-border bg-raised p-6">
+        <div class="flex items-start gap-3">
+          <Icon name="shield-check" size={20} class="text-success shrink-0 mt-0.5" />
+          <p class="text-sm text-muted leading-relaxed">
+            <span class="text-ink font-medium">Чесно.</span> Це не «злиті» офіційні питання — такого списку не існує і публічно ніхто ним не володіє. Це типові питання, зібрані на основі практики підготовки заявників і найпоширенішої причини відмов на співбесіді (<a href="/prychyny-vidmov" class="text-accent hover:underline">пункт 6 у переліку причин</a>): заявник не може своїми словами пояснити план, який подав. Мета — щоб ви вільно відповідали на подібні питання, а не завчили конкретні відповіді.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Як ми готуємо -->
+  <section class="py-10 md:py-14 border-t border-border/70 bg-surface/30">
+    <div class="container-site max-w-3xl">
+      <h2 class="text-2xl sm:text-3xl">Як проходить репетиція з нами</h2>
+      <p class="mt-3 text-muted leading-relaxed">
+        У тарифі «Під ключ» репетиція співбесіди — окремий етап після готового плану. Ми ставимо питання за всіма чотирма темами вище, ви відповідаєте вголос своїми словами, а ми фіксуємо формулювання, які викликають додаткові запитання, і допомагаємо їх прибрати — до того, як це побачить комісія.
+      </p>
+      <a href="/#pricing" class="mt-5 inline-flex items-center gap-2 text-accent font-display font-semibold hover:gap-3 transition-all">
+        Дивитись тариф «Під ключ» <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </section>
+
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

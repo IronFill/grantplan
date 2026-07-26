@@ -1,0 +1,82 @@
+---
+// Місток між «WhyRejected» (де називаємо причини відмов) і «Method»
+// (детальний таймлайн). Тут — які саме рубежі ми ставимо проти кожної
+// причини, включно з тим, що відбувається вже ПІСЛЯ рішення — це
+// єдине місце на сайті, де про це сказано наперед.
+import Icon from './Icon.astro';
+
+const stages = [
+  {
+    n: '01',
+    icon: 'shield-check',
+    title: 'Юридичний скринінг',
+    lead: 'Спершу перевіряємо, чи вас узагалі допустять',
+    text: 'Шість блокуючих умов, КВЕД, форма й система оподаткування, відповідність чинній редакції постанови на дату подання — не «як було торік». Якщо є непереборна перешкода, ви дізнаєтесь про це на безкоштовному аудиті, а не через місяць від банку.',
+    chip: 'До 20 хвилин · безкоштовно',
+    href: null,
+  },
+  {
+    n: '02',
+    icon: 'calculator',
+    title: 'Адаптивна фінмодель',
+    lead: 'Цифри, які витримують банківського оцінювача',
+    text: 'Кошторис із комерційними пропозиціями двох постачальників за ринковими цінами на дату подання. Фінмодель на 36 місяців: виручка від ємності ринку й цін конкурентів, а не «зі стелі». Суми в описовій частині, кошторисі та моделі збігаються до копійки — саме це оцінювач перевіряє першим.',
+    chip: '2–3 робочі дні · веде фінансистка',
+    href: null,
+  },
+  {
+    n: '03',
+    icon: 'mic',
+    title: 'Тренування перед комісією',
+    lead: 'План ви знатимете як власний — бо він і є ваш',
+    text: 'Співбесіда важить до 50 балів із 250, і на ній «сипляться» люди з нормальними планами: не можуть своїми словами пояснити, звідки взялася цифра виручки. Розбираємо типові питання комісії і прибираємо формулювання, які викликають додаткові запитання.',
+    chip: 'Приклади питань комісії →',
+    href: '/spivbesida',
+  },
+  {
+    n: '04',
+    icon: 'handshake',
+    title: 'Супровід до виплати',
+    lead: 'Відмова можлива і після «так»',
+    text: 'Після позитивного рішення є 15 календарних днів, щоб укласти договір і відкрити рахунок в уповноваженому банку. Пропустили строк — втратили грант. Далі — цільове використання коштів суворо за кошторисом і звітність.',
+    chip: 'Що буде далі →',
+    href: '/pislya-hrantu',
+  },
+];
+---
+<section class="py-16 md:py-24 border-t border-border/70">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Чотири рубежі</span>
+      <h2 class="mt-2 text-3xl sm:text-4xl">Де ми зупиняємо відмову</h2>
+      <p class="mt-3 text-muted text-lg">
+        Майже 7 із 10 відмов — не через ідею, а через те, що заявник не побачив. Ось чотири точки, де ми ловимо проблему до того, як її побачить комісія.
+      </p>
+    </div>
+
+    <ol class="mt-10 grid md:grid-cols-2 gap-5 items-stretch">
+      {stages.map((s, i) => (
+        <li class="reveal card-hover relative flex flex-col rounded-[16px] bg-surface border border-border p-6 md:p-7" style={`transition-delay:${i * 60}ms`}>
+          <div class="flex items-center justify-between">
+            <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">
+              <Icon name={s.icon} size={22} />
+            </span>
+            <span class="font-display font-extrabold text-2xl text-border">{s.n}</span>
+          </div>
+          <div class="mt-5 text-sm font-medium text-accent">{s.title}</div>
+          <h3 class="mt-1.5 text-lg font-display font-semibold">{s.lead}</h3>
+          <p class="mt-2.5 text-sm text-muted leading-relaxed flex-1">{s.text}</p>
+          {s.href ? (
+            <a href={s.href} class="mt-5 pt-4 border-t border-border/70 inline-flex items-center gap-2 text-xs font-medium text-accent hover:gap-2.5 transition-all">
+              <Icon name="clock" size={14} /> {s.chip}
+            </a>
+          ) : (
+            <div class="mt-5 pt-4 border-t border-border/70 flex items-center gap-2 text-xs font-medium text-accent">
+              <Icon name="clock" size={14} /> {s.chip}
+            </div>
+          )}
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
