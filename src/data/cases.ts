@@ -5,7 +5,7 @@ export const cases = [
     slug: 'case-bpla',
     title: 'Майстерня комплектуючих для БпЛА',
     pitch: 'Карбонові рами та 3D-друковані деталі для цивільних безпілотників — заявку подано, грант отримано.',
-    cover: '/case/case-1-cover.png',
+    cover: '/case/case-1-cover.webp',
     stats: [
       { label: 'Грант', value: '500 000 ₴' },
       { label: 'Робочі місця', value: '2' },
@@ -16,7 +16,7 @@ export const cases = [
     slug: 'case-salon-krasy',
     title: 'Салон краси повного циклу — 4 напрями',
     pitch: 'Перукар, манікюр, косметологія й масаж під одним дахом — заявку подано, грант отримано.',
-    cover: '/case/salon-1-cover.png',
+    cover: '/case/salon-1-cover.webp',
     stats: [
       { label: 'Грант', value: '500 000 ₴' },
       { label: 'Робочі місця', value: '2' },
