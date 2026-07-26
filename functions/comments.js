@@ -8,12 +8,13 @@
 //
 // Ендпоінти:
 //   GET    /comments         — список коментарів (без email)
-//   POST   /comments         — додати коментар { name, email, text }
+//   POST   /comments         — додати коментар { name, business?, email, text }
 //   DELETE /comments?id=...  — видалити спам-коментар, потрібен заголовок
 //     X-Admin-Token, що збігається з env COMMENTS_ADMIN_TOKEN.
 
 const MAX_COMMENTS = 300;
 const NAME_MAX = 80;
+const BUSINESS_MAX = 100;
 const EMAIL_MAX = 120;
 const TEXT_MIN = 5;
 const TEXT_MAX = 1000;
@@ -31,7 +32,7 @@ async function getList(kv) {
   return (await kv.get('list', { type: 'json' })) || [];
 }
 
-async function notifyTelegram(env, name, email, text) {
+async function notifyTelegram(env, name, business, email, text) {
   const token = env.TG_BOT_TOKEN;
   const chatId = env.TG_CHAT_ID;
   if (!token || !chatId) return;
@@ -39,9 +40,10 @@ async function notifyTelegram(env, name, email, text) {
   const lines = [
     '💬 <b>Новий коментар на сайті — ГрантПлан</b>',
     `👤 <b>Ім'я:</b> ${escapeHtml(name)}`,
+    business ? `🏢 <b>Напрямок:</b> ${escapeHtml(business)}` : '',
     `✉️ <b>Email:</b> ${escapeHtml(email)}`,
     `📝 <b>Текст:</b> ${escapeHtml(text)}`,
-  ];
+  ].filter(Boolean);
 
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -82,10 +84,12 @@ export async function onRequestPost(context) {
   }
 
   const name = cleanText(String(data.name ?? '')).slice(0, NAME_MAX);
+  const business = cleanText(String(data.business ?? '')).slice(0, BUSINESS_MAX);
   const email = String(data.email ?? '').trim().slice(0, EMAIL_MAX);
   const text = cleanText(String(data.text ?? '')).slice(0, TEXT_MAX);
 
-  if (name.length < 2) {
+  // Ім'я та прізвище — хоча б два слова.
+  if (name.split(/\s+/).filter(Boolean).length < 2) {
     return Response.json({ ok: false, error: 'invalid_name' }, { status: 422 });
   }
   if (!EMAIL_RE.test(email)) {
@@ -98,6 +102,7 @@ export async function onRequestPost(context) {
   const comment = {
     id: crypto.randomUUID(),
     name,
+    business,
     email,
     text,
     createdAt: new Date().toISOString(),
@@ -108,7 +113,7 @@ export async function onRequestPost(context) {
   if (list.length > MAX_COMMENTS) list.length = MAX_COMMENTS;
   await kv.put('list', JSON.stringify(list));
 
-  await notifyTelegram(env, name, email, text);
+  await notifyTelegram(env, name, business, email, text);
 
   return Response.json({ ok: true, comment: publicView(comment) });
 }

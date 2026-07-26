@@ -3,7 +3,7 @@
 //
 // Ендпоінти:
 //   GET    /.netlify/functions/comments         — список коментарів (без email)
-//   POST   /.netlify/functions/comments         — додати коментар { name, email, text }
+//   POST   /.netlify/functions/comments         — додати коментар { name, business?, email, text }
 //   DELETE /.netlify/functions/comments?id=...  — видалити спам-коментар,
 //     потрібен заголовок X-Admin-Token, що збігається з env COMMENTS_ADMIN_TOKEN
 //     (якщо змінна не задана — видалення вимкнене).
@@ -16,6 +16,7 @@ import { getStore } from '@netlify/blobs';
 
 const MAX_COMMENTS = 300;
 const NAME_MAX = 80;
+const BUSINESS_MAX = 100;
 const EMAIL_MAX = 120;
 const TEXT_MIN = 5;
 const TEXT_MAX = 1000;
@@ -32,6 +33,7 @@ const escapeHtml = (s = '') =>
 type StoredComment = {
   id: string;
   name: string;
+  business: string;
   email: string;
   text: string;
   createdAt: string;
@@ -49,7 +51,7 @@ function publicView(c: StoredComment) {
   return rest;
 }
 
-async function notifyTelegram(name: string, email: string, text: string) {
+async function notifyTelegram(name: string, business: string, email: string, text: string) {
   const token = process.env.TG_BOT_TOKEN;
   const chatId = process.env.TG_CHAT_ID;
   if (!token || !chatId) return;
@@ -57,9 +59,10 @@ async function notifyTelegram(name: string, email: string, text: string) {
   const lines = [
     '\u{1F4AC} <b>Новий коментар на сайті — ГрантПлан</b>',
     `\u{1F464} <b>Ім'я:</b> ${escapeHtml(name)}`,
+    business ? `\u{1F3E2} <b>Напрямок:</b> ${escapeHtml(business)}` : '',
     `✉️ <b>Email:</b> ${escapeHtml(email)}`,
     `\u{1F4DD} <b>Текст:</b> ${escapeHtml(text)}`,
-  ];
+  ].filter(Boolean);
 
   try {
     await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -95,10 +98,12 @@ export default async (request: Request) => {
     }
 
     const name = cleanText(String(data.name ?? '')).slice(0, NAME_MAX);
+    const business = cleanText(String(data.business ?? '')).slice(0, BUSINESS_MAX);
     const email = String(data.email ?? '').trim().slice(0, EMAIL_MAX);
     const text = cleanText(String(data.text ?? '')).slice(0, TEXT_MAX);
 
-    if (name.length < 2) {
+    // Ім'я та прізвище — хоча б два слова.
+    if (name.split(/\s+/).filter(Boolean).length < 2) {
       return json({ ok: false, error: 'invalid_name' }, 422);
     }
     if (!EMAIL_RE.test(email)) {
@@ -111,6 +116,7 @@ export default async (request: Request) => {
     const comment: StoredComment = {
       id: crypto.randomUUID(),
       name,
+      business,
       email,
       text,
       createdAt: new Date().toISOString(),
@@ -121,7 +127,7 @@ export default async (request: Request) => {
     if (list.length > MAX_COMMENTS) list.length = MAX_COMMENTS;
     await store.setJSON('list', list);
 
-    await notifyTelegram(name, email, text);
+    await notifyTelegram(name, business, email, text);
 
     return json({ ok: true, comment: publicView(comment) });
   }
