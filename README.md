@@ -75,7 +75,7 @@ Node ≥ 20.
 
 Секція «Коментарі» (`src/components/Comments.astro`, унизу головної сторінки) — публічна форма з обов'язковими полями «Ім'я та прізвище» (сервер вимагає хоча б два слова) та «Email», і необов'язковим «Напрямок діяльності» (наприклад: кондитерська, СТО). Коментар публікується одразу, без модерації; **email ніколи не показується на сайті** — зберігається лише на бекенді, щоб можна було зв'язатися або відрізнити спам.
 
-Бекенд — `netlify/functions/comments.mts`, зберігання на **Netlify Blobs** (працює одразу після деплою на Netlify, без окремого налаштування бази чи env-змінних).
+Бекенд на проді (Cloudflare Pages, `grantplan.com.ua`) — `functions/comments.js`, зберігання в **Workers KV** namespace `COMMENTS_KV` (уже створений і прив'язаний у Settings → Bindings проєкту). Є також парний варіант `netlify/functions/comments.mts` на **Netlify Blobs** — якщо колись повернетесь на Netlify, він спрацює без додаткових налаштувань.
 
 - `GET /comments` — список коментарів (без email).
 - `POST /comments` — новий коментар `{ name, business?, email, text }`.
@@ -89,21 +89,32 @@ Node ≥ 20.
 
 Захист від спаму: honeypot-поле, серверна валідація email і довжини тексту (5–1000 символів).
 
-**Cloudflare Pages:** парний ендпоінт `functions/comments.js` — потребує прив'язаний KV namespace `COMMENTS_KV` (Settings → Functions → KV namespace bindings). Без нього ендпоінт чесно повертає 503, а не вдає, що зберіг дані.
+Якщо піднімаєте проєкт на новому Cloudflare Pages акаунті — не забудьте створити KV namespace і прив'язати його як `COMMENTS_KV` (Settings → Bindings → Add → KV namespace). Без нього ендпоінт чесно повертає 503, а не вдає, що зберіг дані.
 
 ---
 
 ## 4. Деплой
 
-### Netlify (основний)
+### Cloudflare Pages (основний, поточний хостинг — grantplan.com.ua)
 
-Конфіг уже є — `netlify.toml` (`build = npm run build`, `publish = dist`, `functions = netlify/functions`).
+Проєкт перенесли з Netlify на Cloudflare Pages (у Netlify закінчились operational credits). Git-інтеграція з `IronFill/grantplan` вже налаштована — кожен пуш у `main` деплоїться автоматично.
+
+1. Workers & Pages → проєкт `grantplan` → Settings → **Build configuration**: `npm run build`, output `dist`.
+2. **Variables and secrets** → додай `TG_BOT_TOKEN`, `TG_CHAT_ID`.
+3. **Bindings** → Add → **KV namespace** → змінна `COMMENTS_KV`, namespace `grantplan-comments` (потрібен для секції коментарів, див. розділ 3.1).
+4. **Custom domains** → додай домен (детальніше в розділі 5 нижче).
+
+Функції форм і коментарів доступні на `/submit` і `/comments` (файли в `functions/`).
+
+### Netlify (альтернатива)
+
+Конфіг лишився в репозиторії — `netlify.toml` (`build = npm run build`, `publish = dist`, `functions = netlify/functions`). Якщо колись знадобиться повернутись:
 
 1. Підключи репозиторій у Netlify (Astro у корені — Base directory не потрібен).
 2. Додай env-змінні `TG_BOT_TOKEN`, `TG_CHAT_ID`, за потреби `SITE_URL`.
-3. Deploy. Функція форм доступна на `/.netlify/functions/submit`.
+3. Deploy. Функція форм доступна на `/.netlify/functions/submit`, коментарів — на `/.netlify/functions/comments` (Netlify Blobs, без додаткових налаштувань).
 
-Детальний покроковий гайд — у `DEPLOY.md`.
+Детальний покроковий гайд (написаний ще під Netlify) — у `DEPLOY.md`.
 
 ### Vercel
 
@@ -120,10 +131,12 @@ Netlify Function треба перенести у Vercel-формат: ство�
 
 ## 5. Підключення домену
 
-1. Netlify → **Domain settings → Add custom domain** → введи домен.
-2. У реєстратора: `CNAME` на Netlify-адресу (або `A`/`ALIAS` за інструкцією Netlify).
-3. Netlify автоматично видасть Let's Encrypt SSL.
-4. Онови `site.url`, `astro.config.mjs` `site`, Plausible `data-domain`, `robots.txt`.
+Домен `grantplan.com.ua` уже підключений (реєстратор — ukraine.com.ua, панель на движку adm.tools). Кроки для повторення на новому домені/акаунті:
+
+1. Cloudflare Dashboard → **Add a site → Connect a domain** → введи домен.
+2. Якщо DNS-зона домену ще не на Cloudflare — крок **«Transfer DNS management»**: Cloudflare дає 2 nameserver'и, їх треба прописати в панелі реєстратора домену (розділ «Нейм-сервери (NS)» або аналогічний) замість поточних. Активація зазвичай займає від кількох хвилин до 24 год.
+3. Коли зона стане **Active** — Workers & Pages → проєкт `grantplan` → **Custom domains** → **Set up a custom domain** → той самий домен. Cloudflare сам створить потрібний DNS-запис і випустить SSL.
+4. Онови `site.url` (`src/data/site.ts`), `astro.config.mjs` `SITE_URL`, Plausible `data-domain` (`Layout.astro`), `robots.txt`.
 
 ---
 
