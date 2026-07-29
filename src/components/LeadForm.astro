@@ -143,6 +143,8 @@ import { site } from '../data/site';
 </section>
 
 <script>
+  import { trackEvent } from '../lib/analytics';
+
   const root = document.getElementById('lead');
   if (root) {
     const MONTHS = ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'];
@@ -320,7 +322,7 @@ import { site } from '../data/site';
         if (summaryEl && selected) summaryEl.textContent = `${fmtLong(selected)}, ${timeInput.value}`;
         formWrap.classList.add('hidden');
         success?.classList.remove('hidden');
-        if ((window as any).plausible) (window as any).plausible('submit_form');
+        trackEvent('submit_form');
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;

@@ -4,7 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import { site } from '../data/site';
-const updated = '21 липня 2026';
+const updated = '28 липня 2026';
 ---
 <Layout
   title="Політика конфіденційності | ГрантПлан"
@@ -27,22 +27,27 @@ const updated = '21 липня 2026';
         </div>
         <div>
           <h2 class="text-xl text-ink font-display font-semibold">2. Які дані ми збираємо</h2>
-          <p class="mt-3">Ми збираємо лише дані, які ви добровільно надаєте через форми заявки чи квіз: ім’я, номер телефону, обраний месенджер та короткий опис ідеї. Також автоматично збирається знеособлена статистика відвідувань (аналітика без cookies).</p>
+          <p class="mt-3">Дані, які ви добровільно надаєте через форми: ім’я, номер телефону, обраний месенджер і короткий опис ідеї (форма заявки й квіз); ім’я, прізвище, email і, за бажання, напрямок діяльності (форма коментарів — email при цьому ніколи не показується на сайті публічно, лише зберігається для зв’язку).</p>
         </div>
         <div>
-          <h2 class="text-xl text-ink font-display font-semibold">3. Мета обробки</h2>
-          <p class="mt-3">Дані використовуються виключно для зв’язку з вами, консультації та надання послуг з підготовки бізнес-плану. Ми не передаємо дані третім особам, окрім випадків, передбачених законом.</p>
+          <h2 class="text-xl text-ink font-display font-semibold">3. Cookies та аналітика</h2>
+          <p class="mt-3">Ми використовуємо Plausible Analytics для знеособленої статистики відвідувань — цей сервіс не використовує cookies і працює завжди, без згоди.</p>
+          <p class="mt-3">Google Analytics 4 і Meta Pixel використовують cookies для аналітики та реклами. Вони вантажаться лише після вашої явної згоди в банері внизу екрана; якщо ви оберете «Тільки необхідні» або закриєте банер, ці сервіси не активуються, а сайт продовжує працювати повністю. Змінити рішення можна, очистивши дані сайту в налаштуваннях браузера — банер з’явиться знову.</p>
         </div>
         <div>
-          <h2 class="text-xl text-ink font-display font-semibold">4. Зберігання та захист</h2>
+          <h2 class="text-xl text-ink font-display font-semibold">4. Мета обробки</h2>
+          <p class="mt-3">Дані з форм використовуються виключно для зв’язку з вами, консультації та надання послуг з підготовки бізнес-плану. Ми не передаємо дані третім особам, окрім випадків, передбачених законом, і окрім сервісів аналітики/реклами, зазначених у пункті 3 (і лише після згоди).</p>
+        </div>
+        <div>
+          <h2 class="text-xl text-ink font-display font-semibold">5. Зберігання та захист</h2>
           <p class="mt-3">Дані зберігаються не довше, ніж це необхідно для мети обробки, і захищені технічними та організаційними заходами від несанкціонованого доступу.</p>
         </div>
         <div>
-          <h2 class="text-xl text-ink font-display font-semibold">5. Ваші права</h2>
-          <p class="mt-3">Ви маєте право запросити доступ до своїх даних, їх виправлення чи видалення. Для цього напишіть нам на <a href={`mailto:${site.email}`} class="text-accent underline">{site.email}</a>.</p>
+          <h2 class="text-xl text-ink font-display font-semibold">6. Ваші права</h2>
+          <p class="mt-3">Ви маєте право запросити доступ до своїх даних, їх виправлення чи видалення — зокрема видалення опублікованого коментаря. Для цього напишіть нам на <a href={`mailto:${site.email}`} class="text-accent underline">{site.email}</a>.</p>
         </div>
         <div>
-          <h2 class="text-xl text-ink font-display font-semibold">6. Контакти</h2>
+          <h2 class="text-xl text-ink font-display font-semibold">7. Контакти</h2>
           <p class="mt-3">З питань обробки даних: <a href={`mailto:${site.email}`} class="text-accent underline">{site.email}</a>, тел. <a href={`tel:${site.phone}`} class="text-accent underline">{site.phoneDisplay}</a>.</p>
         </div>
       </div>

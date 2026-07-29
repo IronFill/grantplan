@@ -91,6 +91,8 @@ import { site, nav } from '../data/site';
 </header>
 
 <script>
+  import { trackEvent } from '../lib/analytics';
+
   const header = document.querySelector<HTMLElement>('[data-header]');
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
@@ -127,13 +129,7 @@ import { site, nav } from '../data/site';
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Plausible-події для аналітики
-  document.querySelectorAll<HTMLElement>('[data-analytics]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const ev = el.getAttribute('data-analytics');
-      if (ev && (window as any).plausible) (window as any).plausible(ev);
-    });
-  });
+  // Клацання [data-analytics] відстежуються централізовано в Layout.astro
 
   // Перемикач теми (світла/темна), збереження вибору в localStorage
   const themeToggles = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
@@ -155,7 +151,7 @@ import { site, nav } from '../data/site';
         localStorage.setItem('theme', next);
       } catch (e) {}
       updateThemeLabels();
-      if ((window as any).plausible) (window as any).plausible('toggle_theme', { props: { theme: next } });
+      trackEvent('toggle_theme', { theme: next });
     });
   });
 </script>

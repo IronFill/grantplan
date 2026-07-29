@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { site } from '../data/site';
+import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
   title?: string;
@@ -98,7 +99,7 @@ const allSchema = [baseSchema, ...schema];
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageAbs} />
 
-    <!-- Аналітика Plausible -->
+    <!-- Аналітика Plausible (без cookies, працює завжди) -->
     <script
       defer
       data-domain="grantplan.com.ua"
@@ -110,16 +111,14 @@ const allSchema = [baseSchema, ...schema];
           (window.plausible.q = window.plausible.q || []).push(arguments);
         };
     </script>
-    <!--
-      GA4 (опція — розкоментуйте і вставте MEASUREMENT_ID):
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-      <script is:inline>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-XXXXXXX');
-      </script>
-    -->
+
+    <!-- GA4 / Meta Pixel: вантажаться лише якщо задані PUBLIC_GA4_ID /
+         PUBLIC_META_PIXEL_ID і користувач уже погодився на cookies раніше
+         (див. src/lib/analytics.ts і CookieConsent.astro). -->
+    <script>
+      import { initAnalyticsFromStoredConsent } from '../lib/analytics';
+      initAnalyticsFromStoredConsent();
+    </script>
 
     <script type="application/ld+json" set:html={JSON.stringify(allSchema)} />
   </head>
@@ -130,6 +129,7 @@ const allSchema = [baseSchema, ...schema];
       <slot />
     </main>
     <slot name="footer" />
+    <CookieConsent />
 
     <!-- Глобальний fade-up при скролі (IntersectionObserver, один раз) -->
     <script>
@@ -163,6 +163,17 @@ const allSchema = [baseSchema, ...schema];
       }
       // Якщо reduced-motion або немає IO — клас .js-reveal не додається,
       // тож .reveal лишаються повністю видимими (див. global.css).
+    </script>
+
+    <!-- Делеговане відстеження [data-analytics] по всій сторінці — єдине
+         місце замість дублювання в кожному компоненті з такою кнопкою. -->
+    <script>
+      import { trackEvent } from '../lib/analytics';
+      document.addEventListener('click', (e) => {
+        const el = (e.target as HTMLElement)?.closest<HTMLElement>('[data-analytics]');
+        const ev = el?.getAttribute('data-analytics');
+        if (ev) trackEvent(ev);
+      });
     </script>
     <!-- рік для футера, якщо потрібен через JS -->
     <span hidden data-year={year}></span>

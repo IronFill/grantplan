@@ -70,11 +70,5 @@ const year = new Date().getFullYear();
   </div>
 </footer>
 
-<script>
-  document.querySelectorAll<HTMLElement>('[data-analytics]').forEach((el) => {
-    el.addEventListener('click', () => {
-      const ev = el.getAttribute('data-analytics');
-      if (ev && (window as any).plausible) (window as any).plausible(ev);
-    });
-  });
-</script>
+<!-- Клацання [data-analytics] відстежуються централізовано в Layout.astro -->
+

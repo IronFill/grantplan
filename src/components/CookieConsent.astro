@@ -1,0 +1,43 @@
+---
+// Банер згоди на cookies. Показується, лише поки немає збереженого рішення
+// в localStorage. Plausible активний завжди (без cookies, згода не потрібна);
+// GA4 і Meta Pixel вантажаться лише після «Прийняти» — див. src/lib/analytics.ts.
+---
+<div
+  id="cookie-consent"
+  class="hidden fixed inset-x-0 bottom-20 lg:bottom-0 z-50 border-t border-border bg-surface"
+  style="padding-bottom: env(safe-area-inset-bottom);"
+  role="dialog"
+  aria-live="polite"
+  aria-label="Згода на використання cookies"
+>
+  <div class="container-site py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
+    <p class="text-sm text-muted flex-1">
+      Використовуємо cookies для аналітики й реклами (Google, Meta), щоб бачити, які матеріали справді допомагають. До згоди ці сервіси не вантажаться. Детальніше — у <a href="/privacy" class="text-accent underline">політиці конфіденційності</a>.
+    </p>
+    <div class="flex gap-2 shrink-0">
+      <button type="button" id="cookie-decline" class="btn btn-ghost !min-h-[40px] !py-0 !px-4 text-sm">Тільки необхідні</button>
+      <button type="button" id="cookie-accept" class="btn btn-primary !min-h-[40px] !py-0 !px-4 text-sm">Прийняти</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { getConsent, setConsent, loadConsentedAnalytics } from '../lib/analytics';
+
+  const banner = document.getElementById('cookie-consent');
+  if (banner) {
+    if (getConsent() === null) {
+      banner.classList.remove('hidden');
+    }
+    document.getElementById('cookie-accept')?.addEventListener('click', () => {
+      setConsent('granted');
+      loadConsentedAnalytics();
+      banner.classList.add('hidden');
+    });
+    document.getElementById('cookie-decline')?.addEventListener('click', () => {
+      setConsent('denied');
+      banner.classList.add('hidden');
+    });
+  }
+</script>

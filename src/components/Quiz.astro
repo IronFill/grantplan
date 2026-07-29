@@ -147,6 +147,8 @@ const totalSteps = questions.length + 1;
 </section>
 
 <script>
+  import { trackEvent } from '../lib/analytics';
+
   const root = document.querySelector<HTMLElement>('[data-quiz]');
   if (root) {
     const intro = root.querySelector<HTMLElement>('[data-quiz-intro]')!;
@@ -275,7 +277,7 @@ const totalSteps = questions.length + 1;
       const mainQuiz = document.getElementById('lead-quiz') as HTMLInputElement | null;
       if (mainQuiz) mainQuiz.value = JSON.stringify({ ...answers, result: resultPayload });
 
-      if ((window as any).plausible) (window as any).plausible('quiz_complete');
+      trackEvent('quiz_complete');
     }
 
     // Форма захоплення в квізі
@@ -307,7 +309,7 @@ const totalSteps = questions.length + 1;
         if (!res.ok) throw new Error();
         qform.classList.add('hidden');
         resultBox.querySelector('[data-quiz-thanks]')?.classList.remove('hidden');
-        if ((window as any).plausible) (window as any).plausible('submit_form');
+        trackEvent('submit_form');
       } catch {
         submit.disabled = false;
         submit.textContent = 'Отримати розрахунок';

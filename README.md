@@ -146,7 +146,18 @@ Netlify Function треба перенести у Vercel-формат: ство�
 - **Schema.org** — `ProfessionalService` (усі сторінки), `FAQPage` + `Service` (головна).
 - **Sitemap** — генерується автоматично (`sitemap-index.xml`), `/privacy` виключено.
 - **robots.txt** — `public/robots.txt`.
-- **Plausible** — підключено у `Layout.astro` (події: `submit_form`, `quiz_complete`, `click_telegram`, `click_phone`, `view_pricing` тощо). GA4 — закоментована опція там же.
+- **Plausible** — підключено у `Layout.astro`, без cookies, працює завжди (згода не потрібна).
+
+### GA4 / Meta Pixel / cookie-згода
+
+Спільна логіка — `src/lib/analytics.ts`:
+
+- `trackEvent(name, props?)` — єдина точка для подій (`submit_form`, `quiz_complete`, `click_telegram`, `click_phone`, `view_pricing`, `toggle_theme` тощо). Летить у Plausible завжди, у GA4/Meta — лише якщо вони активні.
+- Клацання на будь-якому елементі з `data-analytics="назва_події"` відстежуються централізовано в `Layout.astro` (один делегований слухач на весь сайт, а не дублікат у кожному компоненті).
+
+**Підключення GA4/Meta:** задай env-змінні `PUBLIC_GA4_ID` (напр. `G-XXXXXXX`) і/або `PUBLIC_META_PIXEL_ID` у Cloudflare Pages → Settings → Variables and secrets, і передеплой. Якщо змінна порожня — відповідний скрипт узагалі не потрапляє в збірку (перевірено: порожні ID повністю вирізаються зі сборки, не просто не викликаються).
+
+**Cookie-банер** (`src/components/CookieConsent.astro`, підключений глобально в `Layout.astro`) — показується, поки немає збереженого рішення в `localStorage` (`gp_cookie_consent`). GA4/Meta вантажаться лише після «Прийняти»; «Тільки необхідні» — сайт працює далі, ці сервіси не активуються. Рішення користувача не впливає на Plausible.
 
 ---
 

@@ -99,6 +99,8 @@ const plans = [
 </section>
 
 <script>
+  import { trackEvent } from '../lib/analytics';
+
   // Подія перегляду тарифів (один раз)
   const sec = document.querySelector<HTMLElement>('[data-track-view="view_pricing"]');
   if (sec && 'IntersectionObserver' in window) {
@@ -106,7 +108,7 @@ const plans = [
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
-            if ((window as any).plausible) (window as any).plausible('view_pricing');
+            trackEvent('view_pricing');
             io.disconnect();
           }
         });
