@@ -157,6 +157,8 @@ Netlify Function треба перенести у Vercel-формат: ство�
 
 **Підключення GA4/Meta:** задай env-змінні `PUBLIC_GA4_ID` (напр. `G-XXXXXXX`) і/або `PUBLIC_META_PIXEL_ID` у Cloudflare Pages → Settings → Variables and secrets, і передеплой. Якщо змінна порожня — відповідний скрипт узагалі не потрапляє в збірку (перевірено: порожні ID повністю вирізаються зі сборки, не просто не викликаються).
 
+GA4 на проді вже підключено (`PUBLIC_GA4_ID` заданий у Cloudflare Pages). Meta Pixel — поки ні, додати аналогічно через `PUBLIC_META_PIXEL_ID`, коли буде готовий Business Manager.
+
 **Cookie-банер** (`src/components/CookieConsent.astro`, підключений глобально в `Layout.astro`) — показується, поки немає збереженого рішення в `localStorage` (`gp_cookie_consent`). GA4/Meta вантажаться лише після «Прийняти»; «Тільки необхідні» — сайт працює далі, ці сервіси не активуються. Рішення користувача не впливає на Plausible.
 
 ---
