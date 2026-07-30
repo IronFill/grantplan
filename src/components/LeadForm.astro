@@ -220,7 +220,15 @@ import { site } from '../data/site';
       renderCalendar();
       pickedDateEl.textContent = fmtLong(d);
       slotsGrid.innerHTML = '';
-      SLOTS.forEach((t) => {
+      const isToday = d.getTime() === today.getTime();
+      const now = new Date();
+      const availableSlots = isToday
+        ? SLOTS.filter((t) => {
+            const [h, m] = t.split(':').map(Number);
+            return h > now.getHours() || (h === now.getHours() && m > now.getMinutes());
+          })
+        : SLOTS;
+      availableSlots.forEach((t) => {
         const b = document.createElement('button');
         b.type = 'button';
         b.textContent = t;
@@ -228,6 +236,9 @@ import { site } from '../data/site';
         b.addEventListener('click', () => pickTime(t, b));
         slotsGrid.appendChild(b);
       });
+      if (!availableSlots.length) {
+        slotsGrid.innerHTML = '<p class="text-sm text-muted col-span-full">На сьогодні вільних слотів більше немає — оберіть інший день.</p>';
+      }
       timeEmpty.setAttribute('hidden', '');
       timeWrap.removeAttribute('hidden');
       form.setAttribute('hidden', '');

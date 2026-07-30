@@ -101,6 +101,7 @@ const allSchema = [baseSchema, ...schema];
 
     <!-- Аналітика Plausible (без cookies, працює завжди) -->
     <script
+      is:inline
       defer
       data-domain="grantplan.com.ua"
       src="https://plausible.io/js/script.tagged-events.js"></script>
@@ -120,7 +121,7 @@ const allSchema = [baseSchema, ...schema];
       initAnalyticsFromStoredConsent();
     </script>
 
-    <script type="application/ld+json" set:html={JSON.stringify(allSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(allSchema)} />
   </head>
   <body>
     <a href="#main" class="skip-link">Перейти до змісту</a>

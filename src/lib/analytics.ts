@@ -77,8 +77,8 @@ export function loadConsentedAnalytics() {
     t.src = 'https://connect.facebook.net/en_US/fbevents.js';
     document.head.appendChild(t);
 
-    window.fbq('init', META_PIXEL_ID);
-    window.fbq('track', 'PageView');
+    n!('init', META_PIXEL_ID);
+    n!('track', 'PageView');
   }
 }
 
