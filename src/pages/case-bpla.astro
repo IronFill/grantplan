@@ -60,8 +60,8 @@ const risks = [
 ];
 ---
 <Layout
-  title="Кейс: бізнес-план майстерні комплектуючих для БпЛА, який отримав грант 500 000 грн | ГрантПлан"
-  description="Реальний кейс гранту «Власна справа»: кошторис із ринковими цінами, фінмодель на 3 роки, 2 робочі місця, 1,11 млн грн податків. План пройшов перевірку — грант отримано."
+  title="Бізнес-план з грантом 500 000 ₴ для БпЛА — кейс | ГрантПлан"
+  description="Реальний кейс гранту «Власна справа»: кошторис за ринковими цінами, фінмодель на 3 роки, 2 робочі місця. План пройшов перевірку, грант отримано."
   path="/case-bpla"
 >
   <SiteHeader slot="header" />
@@ -203,7 +203,7 @@ const risks = [
       <div class="mt-6 grid md:grid-cols-4 gap-4">
         {stages.map((s) => (
           <div class="reveal rounded-[16px] bg-surface border border-border p-6">
-            <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent text-[#14181C] font-display font-extrabold">{s.n}</span>
+            <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent text-accent-ink font-display font-extrabold">{s.n}</span>
             <h3 class="mt-4 font-display font-semibold">{s.title}</h3>
             <p class="mt-2 text-sm text-muted">{s.text}</p>
           </div>

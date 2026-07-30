@@ -206,7 +206,7 @@ import { site } from '../data/site';
             : 'border border-border hover:border-accent hover:text-accent');
         if (disabled) btn.disabled = true;
         if (selected && d.getTime() === selected.getTime()) {
-          btn.className = 'aspect-square rounded-xl text-sm font-semibold bg-accent text-white';
+          btn.className = 'aspect-square rounded-xl text-sm font-semibold bg-accent text-accent-ink';
         }
         btn.addEventListener('click', () => pickDate(d));
         daysGrid.appendChild(btn);

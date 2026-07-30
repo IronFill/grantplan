@@ -21,6 +21,7 @@
   --color-muted: #9aa7b4;
   --color-accent: #e86a00;
   --color-accent-hover: #f2801e;
+  --color-accent-ink: #14181c;
   --color-success: #3fbf7f;
 
   /* Радіуси */
@@ -55,8 +56,12 @@
   --color-border: #ddd0b8;
   --color-ink: #211c15;
   --color-muted: #6e6558;
-  --color-accent: #c25a00;
+  /* На пів-тон темніше за #C25A00: той самий accent-hover лишається
+     ідентичним, але текст кнопки (accent-ink, білий у світлій темі)
+     проходить контраст 4,5:1 — з #C25A00 виходило лише 4,04:1. */
+  --color-accent: #c25400;
   --color-accent-hover: #d66600;
+  --color-accent-ink: #ffffff;
   --color-success: #1e8f55;
 }
 
@@ -190,7 +195,7 @@
   }
   .btn-primary {
     background-color: var(--color-accent);
-    color: #14181c;
+    color: var(--color-accent-ink);
   }
   .btn-ghost {
     background-color: transparent;
@@ -272,7 +277,7 @@
     z-index: 100;
     padding: 0.75rem 1rem;
     background: var(--color-accent);
-    color: #14181c;
+    color: var(--color-accent-ink);
     border-radius: 0 0 12px 0;
     font-weight: 600;
   }
