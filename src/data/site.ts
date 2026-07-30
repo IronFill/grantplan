@@ -26,4 +26,5 @@ export const nav = [
   { label: 'Послуги', href: '/#services' },
   { label: 'Приклад роботи', href: '/#case' },
   { label: 'Питання', href: '/#faq' },
+  { label: 'Блог', href: '/blog' },
 ] as const;

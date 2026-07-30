@@ -1,0 +1,90 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileCta from '../../components/MobileCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import ChecklistCta from '../../components/ChecklistCta.astro';
+import Icon from '../../components/Icon.astro';
+import { blogPosts } from '../../data/blog';
+import { site } from '../../data/site';
+
+export function getStaticPaths() {
+  return blogPosts.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+
+const { p } = Astro.props;
+
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: p.title,
+  description: p.metaDescription,
+  datePublished: p.date,
+  author: { '@type': 'Organization', name: 'ГрантПлан' },
+  publisher: { '@type': 'Organization', name: 'ГрантПлан' },
+  mainEntityOfPage: new URL(`/blog/${p.slug}`, site.url).href,
+};
+---
+<Layout title={p.metaTitle} description={p.metaDescription} path={`/blog/${p.slug}`} schema={[schema]}>
+  <SiteHeader slot="header" />
+
+  <!-- Hero -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site max-w-3xl">
+      <a href="/blog" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← Усі статті</a>
+      <span class={'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ' + (p.category === 'news' ? 'bg-accent/10 text-accent' : 'bg-success/10 text-success')}>
+        {p.categoryLabel}
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">{p.title}</h1>
+      <p class="mt-4 text-sm text-muted">{fmtDate(p.date)} · {p.readMin} хв читання</p>
+    </div>
+  </section>
+
+  <!-- Тіло статті -->
+  <section class="py-14 md:py-20">
+    <div class="container-site max-w-3xl">
+      <div class="reveal space-y-5 text-[1.05rem] leading-relaxed">
+        {p.body.map((block) => {
+          if (block.type === 'h2') return <h2 class="!mt-10 text-2xl font-display font-semibold">{block.text}</h2>;
+          if (block.type === 'p') return <p class="text-muted">{block.text}</p>;
+          if (block.type === 'ul') return (
+            <ul class="space-y-2.5">
+              {block.items.map((item) => (
+                <li class="flex items-start gap-3 text-muted">
+                  <Icon name="check" size={18} class="text-success shrink-0 mt-1" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          );
+          if (block.type === 'callout') return (
+            <div class="rounded-[16px] border border-accent/70 bg-raised p-5 text-muted">
+              <span class="text-ink font-medium">Чесно: </span>{block.text}
+            </div>
+          );
+          return null;
+        })}
+      </div>
+
+      {p.relatedHref && (
+        <a href={p.relatedHref} class="reveal mt-8 flex items-center justify-between gap-3 rounded-[16px] bg-surface border border-border p-5 hover:border-accent transition-colors">
+          <span>
+            <span class="block text-xs text-muted">Дивіться також</span>
+            <span class="font-medium">{p.relatedLabel}</span>
+          </span>
+          <Icon name="arrow-right" size={18} class="text-accent shrink-0" />
+        </a>
+      )}
+    </div>
+  </section>
+
+  <ChecklistCta />
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>
