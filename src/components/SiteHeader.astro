@@ -2,7 +2,7 @@
 import Icon from './Icon.astro';
 import { site, nav } from '../data/site';
 ---
-<header id="site-header" class="fixed top-0 inset-x-0 z-50 transition-colors" data-header>
+<header id="site-header" class="fixed top-0 inset-x-0 z-[60] transition-colors" data-header>
   <div class="container-site flex items-center justify-between h-16 md:h-[72px]">
     <!-- Лого -->
     <a href="/" class="font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
@@ -58,7 +58,7 @@ import { site, nav } from '../data/site';
   <!-- Повноекранне мобільне меню -->
   <div
     id="mobile-menu"
-    class="xl:hidden fixed inset-0 z-50 bg-bg/98 backdrop-blur-sm flex-col hidden"
+    class="xl:hidden fixed inset-0 z-[60] bg-bg flex-col hidden overflow-y-auto"
     data-menu-panel
   >
     <div class="container-site flex items-center justify-between h-16">

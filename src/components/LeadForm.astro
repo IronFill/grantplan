@@ -1,9 +1,15 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '../data/site';
+
+interface Props {
+  /** Звужує контейнер до max-w-3xl — для сторінок з вузькою текстовою колонкою (статті, довідники). */
+  narrow?: boolean;
+}
+const { narrow = false } = Astro.props;
 ---
 <section id="lead" class="py-14 md:py-20 border-t border-border/70 bg-surface/30 scroll-mt-20">
-  <div class="container-site">
+  <div class:list={['container-site', { 'max-w-3xl': narrow }]}>
     <div class="reveal max-w-2xl">
       <h2 class="text-3xl sm:text-4xl">Запишіться на безкоштовний аудит ідеї</h2>
       <p class="mt-4 text-muted text-lg">
