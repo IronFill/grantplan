@@ -4,23 +4,26 @@
 // на цьому сайті вже є три реальні розібрані кейси з повним
 // кошторисом і фінмоделлю, тож третій тригер довіри будується на них,
 // а не на цифрі, яку нема чим підтвердити.
+//
+// Свідомо НЕ повторюємо тут «іконка в квадраті + заголовок + текст» —
+// цей рецепт вже несе Method/Services/RiskAccordion і повторення робить
+// сторінку одноманітною. Тут замість третьої однакової сітки карток —
+// цитата з живим фото (не іконка «quote» в рамці) поруч із фактами
+// у вигляді простого списку з розділювачами, без боксів.
 import Icon from './Icon.astro';
 
 const triggers = [
   {
-    icon: 'users',
     value: '2 фахівці',
     label: 'Юрист і фінансистка на кожному проєкті',
     text: 'Юридичну частину веде практикуючий юрист Олександр, фінансову — фінансистка Світлана з досвідом бухгалтерського супроводу. Не «універсал, який знає все потроху» і не безіменний відділ, де ви не знаєте, хто саме пише ваш план.',
   },
   {
-    icon: 'wallet',
     value: 'Ціни опубліковані',
     label: '4 000 – 10 000 ₴ · без «дізнайтеся за дзвінком»',
     text: 'Вартість видно до першого контакту, а безкоштовний аудит — справді безкоштовний. Якщо стане зрозуміло, що заявка не пройде, ми скажемо це і не візьмемо грошей.',
   },
   {
-    icon: 'file-text',
     value: '3 кейси з розбором',
     label: 'Кошторис і фінмодель у відкритому доступі',
     text: 'Не скріншот таблиці як «доказ», а повний розбір: цифри, робочі місця, сума податків за 3 роки. Дивіться самі, а не вірте на слово.',
@@ -35,38 +38,47 @@ const triggers = [
       <h2 class="mt-2 text-3xl sm:text-4xl">ГрантПлан у цифрах і обличчях</h2>
     </div>
 
-    <div class="mt-10 grid md:grid-cols-3 gap-5">
-      {triggers.map((t) => (
-        <div class="reveal rounded-[16px] bg-surface border border-border p-6">
-          <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">
-            <Icon name={t.icon} size={22} />
-          </span>
-          <div class="mt-4 font-display font-extrabold text-xl text-accent">{t.value}</div>
-          <div class="mt-1 text-sm font-medium">{t.label}</div>
-          <p class="mt-3 text-sm text-muted leading-relaxed">{t.text}</p>
-          {t.href && (
-            <a href={t.href} class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
-              Дивитись кейс <Icon name="arrow-right" size={15} />
-            </a>
-          )}
+    <div class="mt-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-14">
+      <!-- Цитата з живим обличчям замість іконки «quote» в рамці -->
+      <div class="reveal rounded-[20px] bg-raised border border-border p-6 md:p-8">
+        <div class="flex items-center gap-4">
+          <img
+            src="/images/team/lawyer-v3.webp"
+            alt="Олександр, юрист ГрантПлан"
+            width="112" height="140" loading="lazy" decoding="async"
+            class="w-14 h-14 rounded-full object-cover border border-border shrink-0"
+          />
+          <div>
+            <div class="font-display font-semibold">Олександр</div>
+            <div class="text-sm text-muted">Юрист, ГрантПлан</div>
+          </div>
         </div>
-      ))}
-    </div>
-
-    <div class="reveal mt-8 rounded-[20px] bg-raised border border-border p-6 md:p-8 max-w-3xl">
-      <div class="flex items-center gap-3">
-        <Icon name="quote" size={22} class="text-accent shrink-0" />
-        <span class="text-sm font-medium text-muted">Звернення юриста Олександра, ГрантПлан</span>
+        <p class="mt-5 text-[0.95rem] sm:text-base leading-relaxed">
+          Грант «Власна справа» — це не лотерея. Це процедура з бальною системою, де максимум 250, прохідний поріг 130, а до 200 балів дає перевірка вашої ділової репутації в банку. Людина, яка цього не знає, подається наосліп і щиро вважає відмову несправедливістю.
+        </p>
+        <p class="mt-3 text-[0.95rem] sm:text-base leading-relaxed text-muted">
+          Насправді відмова майже завжди пояснюється однією з трьох речей: заявник не проходив за формальними критеріями і не знав про це; цифри в описовій частині, кошторисі та фінансовій моделі не збігалися між собою; або людина не змогла на співбесіді своїми словами пояснити, звідки взялася виручка в її ж плані. Жодна з них не стосується того, добра у вас ідея чи ні — усі три усуваються до подання, якщо знати, де дивитися.
+        </p>
+        <a href="/#lead" class="btn btn-primary mt-6" data-analytics="click_trust_cta">
+          Записатися на безкоштовний аудит
+        </a>
       </div>
-      <p class="mt-4 text-[0.95rem] sm:text-base leading-relaxed">
-        Грант «Власна справа» — це не лотерея. Це процедура з бальною системою, де максимум 250, прохідний поріг 130, а до 200 балів дає перевірка вашої ділової репутації в банку. Людина, яка цього не знає, подається наосліп і щиро вважає відмову несправедливістю.
-      </p>
-      <p class="mt-3 text-[0.95rem] sm:text-base leading-relaxed text-muted">
-        Насправді відмова майже завжди пояснюється однією з трьох речей: заявник не проходив за формальними критеріями і не знав про це; цифри в описовій частині, кошторисі та фінансовій моделі не збігалися між собою; або людина не змогла на співбесіді своїми словами пояснити, звідки взялася виручка в її ж плані. Жодна з них не стосується того, добра у вас ідея чи ні — усі три усуваються до подання, якщо знати, де дивитися.
-      </p>
-      <a href="/#lead" class="btn btn-primary mt-6" data-analytics="click_trust_cta">
-        Записатися на безкоштовний аудит
-      </a>
+
+      <!-- Факти списком із розділювачами — без боксів та іконок -->
+      <div class="reveal divide-y divide-border">
+        {triggers.map((t) => (
+          <div class="py-5 first:pt-0 last:pb-0">
+            <div class="font-display font-extrabold text-lg text-accent">{t.value}</div>
+            <div class="mt-1 text-sm font-medium">{t.label}</div>
+            <p class="mt-2 text-sm text-muted leading-relaxed">{t.text}</p>
+            {t.href && (
+              <a href={t.href} class="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
+                Дивитись кейс <Icon name="arrow-right" size={15} />
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 </section>
