@@ -62,7 +62,7 @@ const faqSchema = {
 
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
           <a href="#lead" class="btn btn-primary" data-analytics="click_cta_audience">Безкоштовний експрес-аудит ідеї</a>
-          <a href="/case-bpla" class="btn btn-ghost">Подивитись приклад плану</a>
+          <a href={a.exampleCaseHref ?? '/case-bpla'} class="btn btn-ghost">Подивитись приклад плану</a>
         </div>
 
         <ul class="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">

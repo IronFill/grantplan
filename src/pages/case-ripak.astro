@@ -1,0 +1,302 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import Icon from '../components/Icon.astro';
+
+const facts = [
+  { label: 'Проєкт', value: 'Озимий ріпак, 30 га', icon: 'badge-check' },
+  { label: 'Ніша', value: 'Рослинництво (агробізнес)', icon: 'rocket' },
+  { label: 'Локація', value: 'Харківська область', icon: 'map-pin' },
+  { label: 'Обігові кошти', value: '1 425 000 ₴', icon: 'wallet' },
+];
+
+const estimate = [
+  { item: 'Послуги техніки (аутсорсинг механізованих робіт)', sum: 447_000 },
+  { item: 'Добрива', sum: 423_450 },
+  { item: 'Засоби захисту рослин', sum: 227_700 },
+  { item: 'Оренда землі, 30 га', sum: 120_000 },
+  { item: 'Насіння (гібрид)', sum: 96_800 },
+  { item: 'Доробка: сушіння та очищення', sum: 42_000 },
+  { item: 'Логістика до покупця', sum: 24_000 },
+];
+const estimateTotal = estimate.reduce((a, b) => a + b.sum, 0);
+const uah = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
+
+const funding = [
+  { label: 'Власні кошти засновника', value: '500 000 ₴', note: 'мінімальний внесок, який очікує будь-який кредитор' },
+  { label: 'Товарний кредит постачальників', value: '600 000 ₴', note: 'відтермінування оплати насіння й добрив до жнив' },
+  { label: 'Грант або пільговий кредит', value: '500 000 ₴', note: 'державні програми, зокрема для прифронтових областей' },
+];
+
+const financials = [
+  { label: 'Прибуток сезону 1', value: '306 402 ₴' },
+  { label: 'Прибуток сезону 3', value: '588 264 ₴' },
+  { label: 'Накопичено за 3 сезони', value: '1,37 млн ₴' },
+];
+
+const taxRows = [
+  { label: 'Єдиний податок за рік', g4: '9 120 ₴', g3: '97 875 ₴' },
+  { label: 'Військовий збір', g4: '—', g3: '19 575 ₴' },
+  { label: 'ЄСВ «за себе»', g4: '22 828 ₴', g3: '22 828 ₴' },
+  { label: 'РАЗОМ', g4: '31 948 ₴', g3: '140 278 ₴' },
+];
+
+const stages = [
+  { n: '1', title: 'Тижні 1–6', text: 'Реєстрація ФГ/ФОП, договір оренди землі, агрохімічний аналіз ґрунту, домовленості з підрядниками й постачальниками.' },
+  { n: '2', title: 'Серпень 2026', text: 'Підготовка ґрунту, внесення основного добрива, сівба 20–25 серпня — головна дата сезону.' },
+  { n: '3', title: 'Вересень 2026 – червень 2027', text: 'Осінній і весняний захист посівів, підживлення за технологічною картою, щотижневий фітомоніторинг.' },
+  { n: '4', title: 'Липень 2027', text: 'Збирання з ріпаковим столом, доробка, реалізація врожаю за форвардним контрактом і на вільному ринку.' },
+];
+
+const checks = [
+  'Кожна ціна кошторису — станом на конкретний місяць (липень 2026), з приміткою про ринкову волатильність: навесні 2026 карбамід дорожчав на 65% за рік',
+  'Фінансування прораховане комплексно — власні кошти, товарний кредит постачальників і грант, а не «дайте грант і на цьому все»',
+  'Точка беззбитковості порахована окремо за врожайністю (2,45 т/га) і за ціною (18 978 ₴/т)',
+  'Матриця чутливості на 49 сценаріїв показує результат за будь-якого поєднання врожайності й ціни реалізації',
+  'Порівняння систем оподаткування (4 група проти 3 групи) з різницею в гривнях, а не загальними словами',
+  'Ризики — включно з безпековою ситуацією — прописані з конкретними заходами мінімізації, а не просто перелічені',
+];
+
+const risks = [
+  { title: 'Безпекова ситуація', text: 'Вибір ділянок поза зонами ризику, перевірка на замінування до початку робіт, альтернативні підрядники, резерв часу.' },
+  { title: 'Дефіцит і подорожчання добрив', text: 'Контрактування обсягів улітку, заміна дефіцитних позицій, товарний кредит із фіксацією ціни.' },
+  { title: 'Падіння ціни до збирання', text: 'Форвардний контракт на 40–50% врожаю фіксує ціну заздалегідь, друга половина йде під ринок.' },
+  { title: 'Вимерзання чи випрівання озимини', text: 'Дотримання строку сівби, осінній фунгіцид-ретардант для правильної розетки, резерв на пересів ярою культурою.' },
+];
+---
+<Layout
+  title="Приклад бізнес-плану для агробізнесу: ріпак на 30 га | ГрантПлан"
+  description="Приклад повного бізнес-плану для грантової заявки в рослинництві: кошторис, джерела фінансування, фінмодель на 3 сезони, аналіз ризиків."
+  path="/case-ripak"
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero кейса -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site">
+      <a href="/grant/agrobiznes" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">
+        ← До гранту для агробізнесу
+      </a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="file-text" size={14} class="text-accent" /> Приклад плану · агробізнес
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl max-w-3xl">
+        Бізнес-план вирощування озимого <span class="text-accent">ріпаку</span> на 30 гектарах
+      </h1>
+      <p class="mt-5 text-muted text-lg max-w-2xl">
+        Приклад повного плану для агробізнесу — без прив’язки до конкретного заявника. Показуємо, як виглядає технічно обґрунтований розрахунок для рослинництва: посезонний грошовий потік, кошторис за ринковими цінами й комбіноване фінансування, де грант — лише одне з трьох джерел.
+      </p>
+    </div>
+  </section>
+
+  <!-- Факти -->
+  <section class="py-12 md:py-16">
+    <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {facts.map((f) => (
+        <div class="reveal rounded-[16px] bg-surface border border-border p-5">
+          <Icon name={f.icon} size={22} class="text-accent" />
+          <div class="mt-3 text-xs text-muted uppercase tracking-wide">{f.label}</div>
+          <div class="mt-1 font-display font-semibold">{f.value}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Слайди презентації -->
+  <section class="pb-4">
+    <div class="container-site">
+      <div class="grid md:grid-cols-2 gap-4">
+        <img src="/case/ripak-1-cover.webp" alt="Слайд презентації: вирощування озимого ріпаку на 30 гектарах"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="reveal w-full rounded-2xl border border-border md:col-span-2" />
+        <img src="/case/ripak-2-koshtorys.webp" alt="Слайд презентації: кошторис прямих витрат сезону"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="reveal w-full rounded-2xl border border-border" />
+        <img src="/case/ripak-3-finmodel.webp" alt="Слайд презентації: фінансовий план на три сезони"
+          width="1280" height="800" loading="lazy" decoding="async"
+          class="reveal w-full rounded-2xl border border-border" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Проблема і мета -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site grid md:grid-cols-2 gap-6">
+      <div class="reveal rounded-[16px] bg-surface border border-border p-7">
+        <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent"><Icon name="alert-triangle" size={22} /></span>
+        <h2 class="mt-4 text-2xl">Проблема</h2>
+        <p class="mt-3 text-muted">Заявки на агробізнес найчастіше відхиляють через фінансовий план: дохід рахують «зі стелі», без урахування розриву в грошовому потоці між сівбою і збиранням, який для озимих культур сягає 10–11 місяців.</p>
+      </div>
+      <div class="reveal rounded-[16px] bg-surface border border-border p-7">
+        <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-success/10 text-success"><Icon name="target" size={22} /></span>
+        <h2 class="mt-4 text-2xl">Мета</h2>
+        <p class="mt-3 text-muted">Показати технічно обґрунтований план для рослинництва: кошторис за ринковими цінами, комбіноване фінансування, порівняння систем оподаткування і матрицю чутливості результату — усе, що перевіряє банк-партнер.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Кошторис -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Кошторис прямих витрат</h2>
+      <p class="reveal mt-2 text-muted">Кожна позиція — за ринковими цінами станом на липень 2026, з комерційними пропозиціями постачальників.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-[16px] border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Стаття</th>
+              <th class="py-3.5 px-5 font-medium text-right">Сума</th>
+            </tr>
+          </thead>
+          <tbody>
+            {estimate.map((row) => (
+              <tr class="border-t border-border">
+                <td class="py-3.5 px-5">{row.item}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{uah(row.sum)}</td>
+              </tr>
+            ))}
+            <tr class="border-t border-border bg-surface/60">
+              <td class="py-4 px-5 font-display font-semibold">Разом прямі витрати</td>
+              <td class="py-4 px-5 text-right font-display font-extrabold text-accent tabular-nums">{uah(estimateTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Джерела фінансування -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Джерела фінансування</h2>
+      <p class="reveal mt-2 text-muted">Пікова потреба в обігових коштах — 1 425 000 ₴. Грант закриває третину суми, а не всю потребу.</p>
+      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+        {funding.map((f) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <div class="font-display font-extrabold text-2xl text-accent">{f.value}</div>
+            <div class="mt-2 font-medium">{f.label}</div>
+            <p class="mt-1.5 text-sm text-muted">{f.note}</p>
+          </div>
+        ))}
+      </div>
+      <p class="reveal mt-4 text-sm text-muted flex items-center gap-2">
+        <Icon name="check-circle" size={16} class="text-success" /> Разом 1,6 млн ₴ — покриття пікової потреби 112%
+      </p>
+    </div>
+  </section>
+
+  <!-- Фінрезультати -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Фінансові результати</h2>
+      <p class="reveal mt-2 text-muted">Зростання забезпечується врожайністю, яка накопичується з досвідом, а не оптимістичними цінами.</p>
+      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+        {financials.map((f) => (
+          <div class="reveal rounded-[16px] bg-raised border border-border p-6 text-center sm:text-left">
+            <Icon name="trending-up" size={22} class="text-success mx-auto sm:mx-0" />
+            <div class="mt-3 font-display font-extrabold text-2xl sm:text-3xl text-accent">{f.value}</div>
+            <div class="mt-1 text-sm text-muted">{f.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Оподаткування -->
+  <section class="py-12 md:py-16">
+    <div class="container-site max-w-2xl">
+      <h2 class="reveal text-2xl sm:text-3xl">Податковий режим: 4 група проти 3 групи</h2>
+      <p class="reveal mt-2 text-muted">Для сільгоспвиробника базою є нормативна оцінка землі, а не дохід — різниця відчутна.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-[16px] border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Платіж</th>
+              <th class="py-3.5 px-5 font-medium text-right">4 група</th>
+              <th class="py-3.5 px-5 font-medium text-right">3 група</th>
+            </tr>
+          </thead>
+          <tbody>
+            {taxRows.map((r) => (
+              <tr class={'border-t border-border' + (r.label === 'РАЗОМ' ? ' bg-surface/60' : '')}>
+                <td class={'py-3.5 px-5' + (r.label === 'РАЗОМ' ? ' font-display font-semibold' : '')}>{r.label}</td>
+                <td class={'py-3.5 px-5 text-right tabular-nums' + (r.label === 'РАЗОМ' ? ' font-display font-extrabold text-accent' : ' font-medium')}>{r.g4}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{r.g3}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">Економія 108 330 ₴ на рік — третина прибутку першого сезону. Новоствореному господарству підтвердити 75% частку сільгоспдіяльності для 4 групи в перший рік може бути неможливо — це питання з’ясовується в податковій до реєстрації.</p>
+    </div>
+  </section>
+
+  <!-- Календар запуску -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Календар запуску — сезон 2026–2027</h2>
+      <div class="mt-6 grid md:grid-cols-4 gap-4">
+        {stages.map((s) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent text-accent-ink font-display font-extrabold">{s.n}</span>
+            <h3 class="mt-4 font-display font-semibold">{s.title}</h3>
+            <p class="mt-2 text-sm text-muted">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Що демонструє цей приклад -->
+  <section class="py-12 md:py-16">
+    <div class="container-site max-w-3xl">
+      <h2 class="reveal text-2xl sm:text-3xl">Що демонструє цей приклад</h2>
+      <ul class="mt-6 space-y-3">
+        {checks.map((c) => (
+          <li class="reveal flex items-start gap-3 rounded-[16px] bg-surface border border-border p-5">
+            <Icon name="check-circle" size={22} class="text-success shrink-0 mt-0.5" />
+            <span>{c}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Ризики та мінімізація -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Ризики та їх мінімізація</h2>
+      <p class="reveal mt-2 text-muted">У сильному плані ризики не приховані, а прораховані — з конкретними заходами, а не побажаннями.</p>
+      <div class="mt-6 grid sm:grid-cols-2 gap-4">
+        {risks.map((r) => (
+          <div class="reveal rounded-[16px] bg-surface border border-border p-6">
+            <div class="flex items-start gap-3">
+              <Icon name="shield-check" size={22} class="text-accent shrink-0 mt-0.5" />
+              <div>
+                <h3 class="font-display font-semibold">{r.title}</h3>
+                <p class="mt-1.5 text-sm text-muted">{r.text}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-14 md:py-20 border-t border-border/70">
+    <div class="container-site">
+      <div class="reveal rounded-[20px] bg-raised border border-accent/70 p-8 md:p-12 text-center relative overflow-hidden">
+        <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-[100px] opacity-15" style="background:radial-gradient(circle,#E86A00,transparent 70%)" aria-hidden="true"></div>
+        <h2 class="relative text-2xl sm:text-4xl">Хочу такий план під свою ідею</h2>
+        <p class="relative mt-4 text-muted text-lg max-w-xl mx-auto">Почніть із безкоштовного аудиту — чесно скажемо, чи проходить ваша ідея, ще до оплати.</p>
+        <a href="/#lead" class="relative btn btn-primary mt-7" data-analytics="click_cta_case">Отримати безкоштовний аудит</a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

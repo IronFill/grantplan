@@ -14,6 +14,8 @@ export interface Audience {
   limitValue: string;
   limitNote: string;
   points: { title: string; text: string }[];
+  /** Куди веде кнопка «Подивитись приклад плану» — за замовчуванням найближчий за галуззю приклад. */
+  exampleCaseHref?: string;
 }
 
 export const audiences: Audience[] = [
@@ -45,6 +47,7 @@ export const audiences: Audience[] = [
         text: 'Підкажемо, як структурувати проєкт, щоб претендувати на максимальну суму за умовами програми.',
       },
     ],
+    exampleCaseHref: '/case-ripak',
   },
   {
     slug: 'veteranam',
