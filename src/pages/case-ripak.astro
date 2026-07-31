@@ -52,11 +52,11 @@ const stages = [
 
 const checks = [
   'Кожна ціна кошторису — станом на конкретний місяць (липень 2026), з приміткою про ринкову волатильність: навесні 2026 карбамід дорожчав на 65% за рік',
-  'Фінансування прораховане комплексно — власні кошти, товарний кредит постачальників і грант, а не «дайте грант і на цьому все»',
+  'Фінансування прораховане комплексно — власні кошти, товарний кредит постачальників і грант доповнюють одне одного',
   'Точка беззбитковості порахована окремо за врожайністю (2,45 т/га) і за ціною (18 978 ₴/т)',
   'Матриця чутливості на 49 сценаріїв показує результат за будь-якого поєднання врожайності й ціни реалізації',
-  'Порівняння систем оподаткування (4 група проти 3 групи) з різницею в гривнях, а не загальними словами',
-  'Ризики — включно з безпековою ситуацією — прописані з конкретними заходами мінімізації, а не просто перелічені',
+  'Порівняння систем оподаткування (4 група проти 3 групи) з конкретною різницею в гривнях',
+  'Ризики — включно з безпековою ситуацією — прописані з конкретними заходами мінімізації для кожного',
 ];
 
 const risks = [
@@ -183,7 +183,7 @@ const risks = [
   <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
     <div class="container-site">
       <h2 class="reveal text-2xl sm:text-3xl">Джерела фінансування</h2>
-      <p class="reveal mt-2 text-muted">Пікова потреба в обігових коштах — 1 425 000 ₴. Грант закриває третину суми, а не всю потребу.</p>
+      <p class="reveal mt-2 text-muted">Пікова потреба в обігових коштах — 1 425 000 ₴. Грант закриває лише третину цієї суми.</p>
       <div class="mt-6 grid sm:grid-cols-3 gap-4">
         {funding.map((f) => (
           <div class="reveal rounded-[16px] bg-surface border border-border p-6">
@@ -203,7 +203,7 @@ const risks = [
   <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
     <div class="container-site">
       <h2 class="reveal text-2xl sm:text-3xl">Фінансові результати</h2>
-      <p class="reveal mt-2 text-muted">Зростання забезпечується врожайністю, яка накопичується з досвідом, а не оптимістичними цінами.</p>
+      <p class="reveal mt-2 text-muted">Зростання забезпечує врожайність, яка накопичується з досвідом, — ціни в моделі майже не змінюються.</p>
       <div class="mt-6 grid sm:grid-cols-3 gap-4">
         {financials.map((f) => (
           <div class="reveal rounded-[16px] bg-raised border border-border p-6 text-center sm:text-left">
@@ -220,7 +220,7 @@ const risks = [
   <section class="py-12 md:py-16">
     <div class="container-site max-w-2xl">
       <h2 class="reveal text-2xl sm:text-3xl">Податковий режим: 4 група проти 3 групи</h2>
-      <p class="reveal mt-2 text-muted">Для сільгоспвиробника базою є нормативна оцінка землі, а не дохід — різниця відчутна.</p>
+      <p class="reveal mt-2 text-muted">Для сільгоспвиробника базою є нормативна оцінка землі, не дохід. Різниця в сумі — відчутна.</p>
       <div class="reveal mt-6 overflow-x-auto rounded-[16px] border border-border">
         <table class="w-full text-left border-collapse min-w-[420px]">
           <thead>
@@ -280,7 +280,7 @@ const risks = [
   <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
     <div class="container-site">
       <h2 class="reveal text-2xl sm:text-3xl">Ризики та їх мінімізація</h2>
-      <p class="reveal mt-2 text-muted">У сильному плані ризики не приховані, а прораховані — з конкретними заходами, а не побажаннями.</p>
+      <p class="reveal mt-2 text-muted">У сильному плані ризики не приховані — вони прораховані, з конкретним заходом на кожен випадок.</p>
       <div class="mt-6 grid sm:grid-cols-2 gap-4">
         {risks.map((r) => (
           <div class="reveal rounded-[16px] bg-surface border border-border p-6">
