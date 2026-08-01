@@ -20,7 +20,7 @@ import { site, nav } from '../data/site';
     <div class="flex items-center gap-3">
       <a
         href={`tel:${site.phone}`}
-        class="hidden sm:inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink hover:text-accent hover:border-accent transition-colors"
+        class="icon-btn hidden sm:inline-flex hover:text-accent hover:border-accent"
         aria-label="Зателефонувати"
         data-analytics="click_phone"
       >
@@ -33,7 +33,7 @@ import { site, nav } from '../data/site';
       <!-- Перемикач теми -->
       <button
         type="button"
-        class="inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink hover:text-accent hover:border-accent transition-colors"
+        class="icon-btn hover:text-accent hover:border-accent"
         aria-label="Перемкнути тему"
         data-theme-toggle
       >
@@ -44,7 +44,7 @@ import { site, nav } from '../data/site';
       <!-- Бургер -->
       <button
         type="button"
-        class="xl:hidden inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink"
+        class="icon-btn xl:hidden"
         aria-label="Відкрити меню"
         aria-expanded="false"
         aria-controls="mobile-menu"
@@ -65,7 +65,7 @@ import { site, nav } from '../data/site';
       <span class="font-display font-extrabold text-xl">ГрантПлан<span class="text-accent">.</span></span>
       <button
         type="button"
-        class="inline-flex items-center justify-center w-11 h-11 rounded-xl border border-border text-ink"
+        class="icon-btn"
         aria-label="Закрити меню"
         data-menu-close
       >
@@ -146,7 +146,7 @@ import { site, nav } from '../data/site';
       const isLight = document.documentElement.getAttribute('data-theme') === 'light';
       const next = isLight ? 'dark' : 'light';
       document.documentElement.setAttribute('data-theme', next);
-      if (themeMeta) themeMeta.setAttribute('content', next === 'light' ? '#FAF6F0' : '#14181C');
+      if (themeMeta) themeMeta.setAttribute('content', next === 'light' ? '#F0E6D3' : '#14181C');
       try {
         localStorage.setItem('theme', next);
       } catch (e) {}

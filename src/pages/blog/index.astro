@@ -39,7 +39,7 @@ const fmtDate = (iso: string) =>
     <div class="container-site max-w-3xl">
       <div class="grid gap-4">
         {posts.map((p) => (
-          <a href={`/blog/${p.slug}`} class="reveal card-hover block rounded-[16px] bg-surface border border-border p-6 md:p-7">
+          <a href={`/blog/${p.slug}`} class="reveal card-hover block rounded-card bg-surface border border-border p-6 md:p-7">
             <div class="flex items-center gap-3 text-xs">
               <span class={'inline-flex items-center rounded-full px-2.5 py-1 font-medium ' + (p.category === 'news' ? 'bg-accent/10 text-accent' : 'bg-success/10 text-success')}>
                 {p.categoryLabel}

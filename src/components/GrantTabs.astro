@@ -103,7 +103,7 @@ const tabs = [
             data-tab-panel={t.id}
             class={i === 0 ? '' : 'hidden'}
           >
-            <div class="rounded-[20px] bg-surface border border-border p-6 md:p-8">
+            <div class="rounded-card-lg bg-surface border border-border p-6 md:p-8">
               <div class="flex items-start justify-between gap-4 flex-wrap">
                 <div>
                   <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">
@@ -117,7 +117,7 @@ const tabs = [
 
               <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {t.tiers.map((tier) => (
-                  <div class="rounded-[14px] border border-border bg-raised p-4">
+                  <div class="rounded-card-sm border border-border bg-raised p-4">
                     <div class="font-display font-extrabold text-lg text-accent">{tier.sum}</div>
                     <p class="mt-1.5 text-sm text-muted leading-relaxed">{tier.cond}</p>
                   </div>
@@ -140,7 +140,7 @@ const tabs = [
                   </ul>
                 </div>
                 {t.note && (
-                  <div class="rounded-[14px] border border-border bg-raised p-4">
+                  <div class="rounded-card-sm border border-border bg-raised p-4">
                     <p class="text-sm text-muted leading-relaxed">{t.note}</p>
                   </div>
                 )}

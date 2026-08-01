@@ -24,8 +24,11 @@
   --color-accent-ink: #14181c;
   --color-success: #3fbf7f;
 
-  /* Радіуси */
+  /* Радіуси — 16px базовий для карток, менший для вкладених підкарток,
+     більший для акцентних блоків (hero, лід-форма, відгук, тизер кейсу) */
+  --radius-card-sm: 14px;
   --radius-card: 16px;
+  --radius-card-lg: 20px;
   --radius-btn: 12px;
 
   /* Шрифти */
@@ -173,6 +176,19 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+
+  /* ============ ІКОНКА-КНОПКА (хедер: телефон, тема, бургер, закрити) ============ */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--color-border);
+    color: var(--color-ink);
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
 
   /* ============ КНОПКИ ============ */

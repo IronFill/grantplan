@@ -62,7 +62,7 @@ const schema = {
             </ul>
           );
           if (block.type === 'callout') return (
-            <div class="rounded-[16px] border border-accent/70 bg-raised p-5 text-muted">
+            <div class="rounded-card border border-accent/70 bg-raised p-5 text-muted">
               <span class="text-ink font-medium">Чесно: </span>{block.text}
             </div>
           );
@@ -71,7 +71,7 @@ const schema = {
       </div>
 
       {p.relatedHref && (
-        <a href={p.relatedHref} class="reveal mt-8 flex items-center justify-between gap-3 rounded-[16px] bg-surface border border-border p-5 hover:border-accent transition-colors">
+        <a href={p.relatedHref} class="reveal mt-8 flex items-center justify-between gap-3 rounded-card bg-surface border border-border p-5 hover:border-accent transition-colors">
           <span>
             <span class="block text-xs text-muted">Дивіться також</span>
             <span class="font-medium">{p.relatedLabel}</span>

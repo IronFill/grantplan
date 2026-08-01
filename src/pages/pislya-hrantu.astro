@@ -96,7 +96,7 @@ const schema = {
       <h2 class="mt-2 text-2xl sm:text-3xl">Що потрібно зробити і коли</h2>
       <ol class="mt-8 space-y-4">
         {timeline.map((t, i) => (
-          <li class="reveal flex gap-4 rounded-[16px] bg-surface border border-border p-6">
+          <li class="reveal flex gap-4 rounded-card bg-surface border border-border p-6">
             <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent shrink-0">
               <Icon name={t.icon} size={22} />
             </span>
@@ -121,7 +121,7 @@ const schema = {
       <p class="mt-3 text-muted">Три ситуації, про які варто знати заздалегідь, а не з’ясовувати постфактум.</p>
       <div class="mt-8 grid gap-4">
         {risks.map((r) => (
-          <div class="reveal rounded-[16px] border border-border bg-surface p-6">
+          <div class="reveal rounded-card border border-border bg-surface p-6">
             <div class="flex items-start gap-3">
               <Icon name={r.icon} size={20} class="text-accent shrink-0 mt-0.5" />
               <div>
@@ -138,7 +138,7 @@ const schema = {
   <!-- Наш супровід -->
   <section class="py-10 md:py-14">
     <div class="container-site max-w-3xl">
-      <div class="reveal rounded-[16px] border border-accent/70 bg-raised p-6 md:p-7">
+      <div class="reveal rounded-card border border-accent/70 bg-raised p-6 md:p-7">
         <h2 class="text-xl font-display font-semibold">Ми не зникаємо після подання заявки</h2>
         <p class="mt-3 text-muted leading-relaxed">
           У тарифі «Під ключ» супровід триває до рішення комісії, але базові поради щодо договору, рахунку та звітності даємо кожному клієнту незалежно від тарифу — просто тому, що бачили, як люди губили грант через пропущений строк на відкриття рахунку, а не через слабку ідею.
