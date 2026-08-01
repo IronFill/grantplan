@@ -37,9 +37,14 @@ const [caseA, caseB] = cases;
   ></div>
 
   <div class="container-site relative grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-10 items-center">
-    <!-- Ліва колонка -->
-    <div class="reveal">
-      <div class="flex flex-wrap items-center gap-2">
+    <!-- Ліва колонка. Кожен елемент — окремий .reveal з наростаючою
+         transition-delay (той самий прийом, що й у AntiRisk.astro для
+         карток): замість того, щоб уся колонка проявлялась одним блоком,
+         вона "вибудовується" зверху вниз — той самий ефект, що дає
+         набагато більше відчуття продуманості, ніж розкидані по сторінці
+         дрібні анімації. -->
+    <div>
+      <div class="reveal flex flex-wrap items-center gap-2" style="transition-delay:0ms">
         <span class="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-accent/10 px-3.5 py-1.5 text-sm text-accent font-medium">
           <Icon name="alert-triangle" size={15} />
           Правила змінюються з 1 вересня 2026 — чинні до 1 серпня
@@ -50,19 +55,19 @@ const [caseA, caseB] = cases;
         </span>
       </div>
 
-      <h1 class="mt-6 text-[1.75rem] leading-[1.1] sm:text-5xl lg:text-[3.4rem] font-extrabold">
+      <h1 class="reveal mt-6 text-[1.75rem] leading-[1.1] sm:text-5xl lg:text-[3.4rem] font-extrabold" style="transition-delay:70ms">
         Грант до <span class="text-accent-gradient">500 000 ₴</span> для Харківщини — без відмови через слабкий бізнес-план
       </h1>
 
-      <p class="mt-6 text-lg text-muted max-w-xl">
+      <p class="reveal mt-6 text-lg text-muted max-w-xl" style="transition-delay:140ms">
         Заявку оцінюють у балах: до 200 — за ділову репутацію в банку, до 50 — за співбесіду, прохідний поріг 130. Юрист відповідає за відповідність чинній постанові, фінансистка — за цифри, які витримують перевірку банківського оцінювача.
       </p>
 
-      <p class="mt-4 text-base font-medium max-w-xl">
+      <p class="reveal mt-4 text-base font-medium max-w-xl" style="transition-delay:190ms">
         Через 2–3 дні у вас на руках план, з яким не соромно йти в центр зайнятості на схвалення — а не купа файлів, у яких самі заплутаєтесь.
       </p>
 
-      <div class="mt-8 flex flex-col sm:flex-row gap-3">
+      <div class="reveal mt-8 flex flex-col sm:flex-row gap-3" style="transition-delay:260ms">
         <a href="/#quiz" class="btn btn-primary" data-analytics="click_cta_hero">
           Дізнатися свій ліміт за 2 хвилини
         </a>
@@ -71,11 +76,11 @@ const [caseA, caseB] = cases;
         </a>
       </div>
 
-      <a href="/umovy-prohramy" class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover" data-analytics="click_umovy_hero">
+      <a href="/umovy-prohramy" class="reveal mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover" style="transition-delay:320ms" data-analytics="click_umovy_hero">
         Всі умови програми з офіційних джерел <Icon name="arrow-right" size={16} />
       </a>
 
-      <ul class="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted">
+      <ul class="reveal mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" style="transition-delay:380ms">
         <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Чесна оцінка шансів до оплати</li>
         <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Прозорі ціни</li>
         <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> 2 раунди правок включено</li>
@@ -83,7 +88,7 @@ const [caseA, caseB] = cases;
     </div>
 
     <!-- Права колонка: приклади слайдів реальних кейсів (переворот) -->
-    <div class="reveal hidden lg:block">
+    <div class="reveal hidden lg:block" style="transition-delay:140ms">
       <button
         type="button"
         data-hero-flip
