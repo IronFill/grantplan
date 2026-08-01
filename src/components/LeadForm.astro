@@ -124,7 +124,7 @@ const { narrow = false } = Astro.props;
 
               <label class="flex items-start gap-3 text-sm text-muted">
                 <input type="checkbox" name="consent" required class="mt-1 w-4 h-4 accent-[#E86A00] shrink-0" />
-                <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою конфіденційності</a></span>
+                <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою конфіденційності</a> <span class="text-accent">*</span></span>
               </label>
 
               <button type="submit" class="btn btn-primary w-full" data-submit>
@@ -141,7 +141,7 @@ const { narrow = false } = Astro.props;
         <span class="inline-grid place-items-center w-16 h-16 rounded-full bg-success/15 text-success mx-auto">
           <Icon name="check-circle" size={32} />
         </span>
-        <h3 class="mt-5 text-2xl font-display font-semibold">Вашу заявку підтверджено ✓</h3>
+        <h3 class="mt-5 text-2xl font-display font-semibold">Заявку надіслано ✓</h3>
         <p class="mt-2 text-muted">Ви записані на <span data-lf-summary class="text-ink font-medium">—</span>. Зв’яжемося з вами у Telegram або телефоном для підтвердження.</p>
       </div>
     </div>
@@ -203,15 +203,18 @@ const { narrow = false } = Astro.props;
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = String(day);
+        btn.setAttribute('aria-label', fmtLong(d));
         const isPast = d < today;
         const isSunday = d.getDay() === 0;
         const disabled = isPast || isSunday;
+        const isSelected = !!selected && d.getTime() === selected.getTime();
+        btn.setAttribute('aria-pressed', String(isSelected));
         btn.className = 'aspect-square rounded-xl text-sm font-medium transition-colors ' +
           (disabled
             ? 'text-muted/30 pointer-events-none'
             : 'border border-border hover:border-accent hover:text-accent');
         if (disabled) btn.disabled = true;
-        if (selected && d.getTime() === selected.getTime()) {
+        if (isSelected) {
           btn.className = 'aspect-square rounded-xl text-sm font-semibold bg-accent text-accent-ink';
         }
         btn.addEventListener('click', () => pickDate(d));
@@ -238,6 +241,7 @@ const { narrow = false } = Astro.props;
         const b = document.createElement('button');
         b.type = 'button';
         b.textContent = t;
+        b.setAttribute('aria-pressed', 'false');
         b.className = 'rounded-xl border border-border px-2 py-2.5 text-sm hover:border-accent hover:text-accent transition-colors';
         b.addEventListener('click', () => pickTime(t, b));
         slotsGrid.appendChild(b);
@@ -253,8 +257,10 @@ const { narrow = false } = Astro.props;
     function pickTime(t: string, el: HTMLButtonElement) {
       timeInput.value = t;
       slotsGrid.querySelectorAll('button').forEach((b) => {
+        b.setAttribute('aria-pressed', 'false');
         b.className = 'rounded-xl border border-border px-2 py-2.5 text-sm hover:border-accent hover:text-accent transition-colors';
       });
+      el.setAttribute('aria-pressed', 'true');
       el.className = 'rounded-xl border border-accent bg-accent/10 text-accent px-2 py-2.5 text-sm font-semibold';
       form.removeAttribute('hidden');
     }
@@ -268,13 +274,15 @@ const { narrow = false } = Astro.props;
       renderCalendar();
     });
 
-    // Маска +380 — залишаємо тільки цифри, максимум 12 (380 + 9)
+    // Маска +380 — залишаємо тільки цифри, максимум 12 (380 + 9).
+    // Знімаємо префікс 380 (якщо є) і національний нуль (050 → 50) ПЕРЕД тим,
+    // як повертати його назад — інакше введення номера з нулем після вже
+    // заповненого поля (+380 + "0501234567") даватиме биту склейку "3800501234567".
     function formatPhone(v: string): string {
       let digits = v.replace(/\D/g, '');
-      if (!digits.startsWith('380')) {
-        digits = digits.replace(/^0+/, ''); // прибираємо національний нуль (050 → 50)
-        digits = '380' + digits;
-      }
+      if (digits.startsWith('380')) digits = digits.slice(3);
+      digits = digits.replace(/^0+/, '');
+      digits = '380' + digits;
       return '+' + digits.slice(0, 12);
     }
     phoneInput?.addEventListener('input', () => {

@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import { site } from '../data/site';
 
 const questions = [
   {
@@ -133,6 +134,7 @@ const totalSteps = questions.length + 1;
             <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою</a></span>
           </label>
           <button type="submit" class="btn btn-primary w-full mt-4" data-quiz-submit>Отримати розрахунок</button>
+          <p class="mt-3 text-sm text-accent-hover text-center hidden" data-quiz-error data-tg={site.telegram}></p>
         </form>
 
         <div class="hidden mt-4" data-quiz-thanks>
@@ -283,14 +285,18 @@ const totalSteps = questions.length + 1;
     // Форма захоплення в квізі
     const qform = resultBox.querySelector<HTMLFormElement>('[data-quiz-form]')!;
     const qphone = resultBox.querySelector<HTMLInputElement>('[data-quiz-phone]')!;
+    const qError = resultBox.querySelector<HTMLElement>('[data-quiz-error]')!;
     qphone.addEventListener('input', () => {
       let d = qphone.value.replace(/\D/g, '');
-      if (!d.startsWith('380')) d = '380' + d.replace(/^0+/, '');
+      if (d.startsWith('380')) d = d.slice(3);
+      d = d.replace(/^0+/, '');
+      d = '380' + d;
       qphone.value = '+' + d.slice(0, 12);
     });
     qform.addEventListener('submit', async (e) => {
       e.preventDefault();
       if ((qform.elements.namedItem('company') as HTMLInputElement)?.value) return;
+      qError.classList.add('hidden');
       if (!/^\+380\d{9}$/.test(qphone.value)) {
         qphone.focus();
         return;
@@ -313,7 +319,9 @@ const totalSteps = questions.length + 1;
       } catch {
         submit.disabled = false;
         submit.textContent = 'Отримати розрахунок';
-        alert('Не вдалося надіслати. Напишіть нам у Telegram.');
+        const tg = qError.dataset.tg || '';
+        qError.innerHTML = `Не вдалося надіслати автоматично. Напишіть нам у <a href="${tg}" target="_blank" rel="noopener" class="underline font-semibold">Telegram</a> або зателефонуйте.`;
+        qError.classList.remove('hidden');
       }
     });
   }
