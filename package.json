@@ -10,6 +10,10 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
+    "check:links": "node scripts/check-links.mjs",
+    "test": "node scripts/test-submit.mjs && node scripts/test-comments.mjs",
+    "verify": "npm run check && npm run test && npm run build && npm run check:links",
     "astro": "astro"
   },
   "dependencies": {

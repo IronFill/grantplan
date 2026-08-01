@@ -49,10 +49,12 @@ export const handler = async (event) => {
 
   const text = lines.join('\n');
 
+  // Раніше тут повертався ok:true — користувач бачив «Заявку надіслано ✓»,
+  // хоча заявка лишалась тільки в логах. Тепер це чесна помилка: фронтенд
+  // покаже запасний шлях (Telegram / дзвінок), і лід не загубиться мовчки.
   if (!token || !chatId) {
-    // Не налаштовано — не втрачаємо лід, лишаємо слід у логах.
-    console.warn('TG env not set. Lead:', text);
-    return { statusCode: 200, body: JSON.stringify({ ok: true, note: 'logged' }) };
+    console.error('TG env not set — заявка не доставлена. Lead:', text);
+    return { statusCode: 503, body: JSON.stringify({ ok: false, error: 'not_configured' }) };
   }
 
   try {

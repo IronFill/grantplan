@@ -14,7 +14,7 @@ import Icon from './Icon.astro';
       <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Обговорення</span>
       <h2 class="mt-2 text-3xl sm:text-4xl">Коментарі</h2>
       <p class="mt-3 text-muted text-lg">
-        Питання чи власний досвід — пишіть нижче. Email потрібен лише щоб з вами можна було зв’язатись і публічно не показується; ім’я, прізвище та напрямок діяльності видно всім.
+        Питання чи власний досвід — пишіть нижче. Email потрібен лише щоб з вами можна було зв’язатись і публічно не показується; ім’я, прізвище та напрямок діяльності видно всім. Коментарі проходять перевірку перед публікацією — зазвичай у той самий робочий день.
       </p>
     </div>
 
@@ -152,11 +152,6 @@ import Icon from './Icon.astro';
       comments.forEach((c) => listWrap?.appendChild(renderCard(c)));
     }
 
-    function prependComment(c: Comment) {
-      emptyEl?.classList.add('hidden');
-      listWrap?.insertBefore(renderCard(c), listWrap.firstElementChild);
-    }
-
     function showStatus(msg: string, isError = false) {
       if (!statusEl) return;
       statusEl.textContent = msg;
@@ -221,11 +216,17 @@ import Icon from './Icon.astro';
         const data = await res.json();
         if (!res.ok || !data.ok) throw new Error(data.error || 'send_failed');
 
-        if (data.comment) prependComment(data.comment);
+        // Коментар не додається в список одразу — він чекає на модерацію.
         form.reset();
-        showStatus('Дякуємо! Коментар опубліковано.');
-      } catch {
-        showStatus('Не вдалося надіслати. Спробуйте ще раз трохи пізніше.', true);
+        showStatus('Дякуємо! Коментар з’явиться на сайті після перевірки.');
+      } catch (err) {
+        const reason = err instanceof Error ? err.message : '';
+        showStatus(
+          reason === 'rate_limited'
+            ? 'Забагато коментарів з вашої адреси. Спробуйте, будь ласка, за годину.'
+            : 'Не вдалося надіслати. Спробуйте ще раз трохи пізніше.',
+          true
+        );
       } finally {
         if (submitBtn) submitBtn.disabled = false;
       }

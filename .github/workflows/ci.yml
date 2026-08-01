@@ -1,0 +1,36 @@
+name: CI
+
+# Cloudflare Pages деплоїть кожен пуш у main автоматично, тому перевірки
+# мають відпрацювати ДО мерджу — інакше зламана збірка або помилка в типах
+# їде на живий сайт без жодного бар'єру.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck (astro check)
+        run: npm run check
+
+      - name: Тести бекенд-функцій (заявки, модерація коментарів)
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Перевірка биття внутрішніх посилань
+        run: node scripts/check-links.mjs

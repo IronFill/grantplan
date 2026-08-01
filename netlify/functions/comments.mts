@@ -1,16 +1,20 @@
-// Netlify Function: коментарі відвідувачів (публікуються одразу, без модерації).
+// Netlify Function: коментарі відвідувачів.
 // Зберігання — Netlify Blobs, працює з коробки на Netlify, без окремих env-змінних.
 //
+// МОДЕРАЦІЯ: коментар не публікується одразу — лягає в чергу (`pending:<id>`)
+// і з'являється на сайті лише після схвалення адміністратором. Дзеркалить
+// поведінку functions/comments.js (Cloudflare Pages — основний хостинг), щоб
+// переїзд між платформами не вмикав мовчки миттєву публікацію будь-чого.
+//
 // Ендпоінти:
-//   GET    /.netlify/functions/comments         — список коментарів (без email)
-//   POST   /.netlify/functions/comments         — додати коментар { name, business?, email, text }
-//   DELETE /.netlify/functions/comments?id=...  — видалити спам-коментар,
-//     потрібен заголовок X-Admin-Token, що збігається з env COMMENTS_ADMIN_TOKEN
-//     (якщо змінна не задана — видалення вимкнене).
+//   GET    /.netlify/functions/comments                      — схвалені (без email)
+//   POST   /.netlify/functions/comments                      — надіслати на модерацію
+//   GET    /.netlify/functions/comments?pending=1            — черга (X-Admin-Token)
+//   POST   /.netlify/functions/comments?action=approve&id=…  — схвалити (X-Admin-Token)
+//   DELETE /.netlify/functions/comments?id=…                 — видалити (X-Admin-Token)
 //
 // Опційно: якщо задані TG_BOT_TOKEN / TG_CHAT_ID (ті самі, що для форми заявок),
-// про новий коментар прилітає повідомлення в Telegram — щоб бачити спам одразу,
-// а не заходити на сайт перевіряти.
+// про новий коментар прилітає повідомлення в Telegram разом з id для схвалення.
 
 import { getStore } from '@netlify/blobs';
 
@@ -20,6 +24,8 @@ const BUSINESS_MAX = 100;
 const EMAIL_MAX = 120;
 const TEXT_MIN = 5;
 const TEXT_MAX = 1000;
+
+const PENDING_PREFIX = 'pending:';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -37,6 +43,7 @@ type StoredComment = {
   email: string;
   text: string;
   createdAt: string;
+  approvedAt?: string;
 };
 
 function json(data: unknown, status = 200) {
@@ -51,17 +58,25 @@ function publicView(c: StoredComment) {
   return rest;
 }
 
-async function notifyTelegram(name: string, business: string, email: string, text: string) {
+function isAdmin(request: Request) {
+  const adminToken = process.env.COMMENTS_ADMIN_TOKEN;
+  if (!adminToken) return false;
+  return request.headers.get('x-admin-token') === adminToken;
+}
+
+async function notifyTelegram(comment: StoredComment) {
   const token = process.env.TG_BOT_TOKEN;
   const chatId = process.env.TG_CHAT_ID;
   if (!token || !chatId) return;
 
   const lines = [
-    '\u{1F4AC} <b>Новий коментар на сайті — ГрантПлан</b>',
-    `\u{1F464} <b>Ім'я:</b> ${escapeHtml(name)}`,
-    business ? `\u{1F3E2} <b>Напрямок:</b> ${escapeHtml(business)}` : '',
-    `✉️ <b>Email:</b> ${escapeHtml(email)}`,
-    `\u{1F4DD} <b>Текст:</b> ${escapeHtml(text)}`,
+    '\u{1F4AC} <b>Коментар на модерації — ГрантПлан</b>',
+    `\u{1F464} <b>Ім'я:</b> ${escapeHtml(comment.name)}`,
+    comment.business ? `\u{1F3E2} <b>Напрямок:</b> ${escapeHtml(comment.business)}` : '',
+    `✉️ <b>Email:</b> ${escapeHtml(comment.email)}`,
+    `\u{1F4DD} <b>Текст:</b> ${escapeHtml(comment.text)}`,
+    '',
+    `<b>ID для схвалення:</b> <code>${escapeHtml(comment.id)}</code>`,
   ].filter(Boolean);
 
   try {
@@ -79,12 +94,58 @@ export default async (request: Request) => {
   const store = getStore('comments');
   const url = new URL(request.url);
 
+  const getApproved = async () =>
+    ((await store.get('list', { type: 'json' })) as StoredComment[]) || [];
+
   if (request.method === 'GET') {
-    const list = ((await store.get('list', { type: 'json' })) as StoredComment[]) || [];
+    // Черга модерації — тільки для адміністратора.
+    if (url.searchParams.get('pending') === '1') {
+      if (!isAdmin(request)) {
+        return json({ ok: false, error: 'forbidden' }, 403);
+      }
+      const { blobs } = await store.list({ prefix: PENDING_PREFIX });
+      const pending: StoredComment[] = [];
+      for (const b of blobs) {
+        const c = (await store.get(b.key, { type: 'json' })) as StoredComment | null;
+        if (c) pending.push(c);
+      }
+      pending.sort((a, b) => String(b.createdAt).localeCompare(String(a.createdAt)));
+      return json({ ok: true, pending });
+    }
+
+    const list = await getApproved();
     return json({ ok: true, comments: list.map(publicView) });
   }
 
   if (request.method === 'POST') {
+    // --- Схвалення коментаря адміністратором ---
+    if (url.searchParams.get('action') === 'approve') {
+      if (!isAdmin(request)) {
+        return json({ ok: false, error: 'forbidden' }, 403);
+      }
+      const id = url.searchParams.get('id');
+      if (!id) {
+        return json({ ok: false, error: 'missing_id' }, 400);
+      }
+
+      const pendingKey = PENDING_PREFIX + id;
+      const comment = (await store.get(pendingKey, { type: 'json' })) as StoredComment | null;
+      if (!comment) {
+        return json({ ok: false, error: 'not_found' }, 404);
+      }
+
+      const list = await getApproved();
+      if (!list.some((c) => c.id === comment.id)) {
+        list.unshift({ ...comment, approvedAt: new Date().toISOString() });
+        if (list.length > MAX_COMMENTS) list.length = MAX_COMMENTS;
+        await store.setJSON('list', list);
+      }
+      await store.delete(pendingKey);
+
+      return json({ ok: true, approved: comment.id });
+    }
+
+    // --- Новий коментар від відвідувача ---
     let data: Record<string, unknown>;
     try {
       data = await request.json();
@@ -94,7 +155,7 @@ export default async (request: Request) => {
 
     // Honeypot — тихо ігноруємо ботів, справжньому користувачу поле не показуємо
     if (data.hp_gp_comment) {
-      return json({ ok: true });
+      return json({ ok: true, status: 'pending' });
     }
 
     const name = cleanText(String(data.name ?? '')).slice(0, NAME_MAX);
@@ -122,22 +183,21 @@ export default async (request: Request) => {
       createdAt: new Date().toISOString(),
     };
 
-    const list = ((await store.get('list', { type: 'json' })) as StoredComment[]) || [];
-    list.unshift(comment);
-    if (list.length > MAX_COMMENTS) list.length = MAX_COMMENTS;
-    await store.setJSON('list', list);
+    // Окремий ключ замість read-modify-write над спільним `list`:
+    // одночасні надсилання не затирають одне одного.
+    await store.setJSON(PENDING_PREFIX + comment.id, comment);
 
-    await notifyTelegram(name, business, email, text);
+    await notifyTelegram(comment);
 
-    return json({ ok: true, comment: publicView(comment) });
+    // Коментар свідомо НЕ повертається для миттєвого показу — він ще не схвалений.
+    return json({ ok: true, status: 'pending' });
   }
 
   if (request.method === 'DELETE') {
-    const adminToken = process.env.COMMENTS_ADMIN_TOKEN;
-    if (!adminToken) {
+    if (!process.env.COMMENTS_ADMIN_TOKEN) {
       return json({ ok: false, error: 'delete_disabled' }, 403);
     }
-    if (request.headers.get('x-admin-token') !== adminToken) {
+    if (!isAdmin(request)) {
       return json({ ok: false, error: 'forbidden' }, 403);
     }
 
@@ -146,9 +206,13 @@ export default async (request: Request) => {
       return json({ ok: false, error: 'missing_id' }, 400);
     }
 
-    const list = ((await store.get('list', { type: 'json' })) as StoredComment[]) || [];
+    // Видаляємо і зі схвалених, і з черги модерації — id той самий.
+    const list = await getApproved();
     const next = list.filter((c) => c.id !== id);
-    await store.setJSON('list', next);
+    if (next.length !== list.length) {
+      await store.setJSON('list', next);
+    }
+    await store.delete(PENDING_PREFIX + id);
 
     return json({ ok: true, removed: list.length - next.length });
   }
