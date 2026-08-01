@@ -4,7 +4,8 @@
   functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "20"
+  # Astro 6+ вимагає Node ≥22.12 (лише парні релізи — v23 не підтримується).
+  NODE_VERSION = "22"
 
 # Той самий шлях /submit, що й у Cloudflare Pages Functions (functions/submit.js),
 # щоб фронтенд не залежав від конкретного хостингу.
