@@ -217,9 +217,12 @@
     color: var(--color-accent-ink);
   }
   .btn-ghost {
+    /* Обводка акцентна одразу, не лише на :hover — на дотикових екранах
+       "hover" ніколи не настає, тож кнопка з border-border (майже зливається
+       з темним фоном) виглядала як невидимий прямокутник на мобільному. */
     background-color: transparent;
     color: var(--color-ink);
-    border-color: var(--color-border);
+    border-color: var(--color-accent);
   }
   @media (hover: hover) {
     .btn:hover {
@@ -230,8 +233,9 @@
       box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--color-accent) 60%, transparent);
     }
     .btn-ghost:hover {
-      border-color: var(--color-accent);
+      border-color: var(--color-accent-hover);
       color: var(--color-accent);
+      background-color: color-mix(in srgb, var(--color-accent) 8%, transparent);
     }
   }
   .btn:active {
