@@ -9,7 +9,7 @@ const fmt = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ');
 // не публікує. Тримайте напоготові підставу, якщо запитають.
 const stats = [
   { prefix: 'до ', to: 500000, suffix: ' ₴', value: `до ${fmt(500000)} ₴`, label: 'грант для Харківщини' },
-  { prefix: '~', to: 70, suffix: '%', value: '~70%', label: 'відмов через слабкий бізнес-план' },
+  { prefix: '~', to: 70, suffix: '%', value: '~70%', label: 'відмов через слабкий бізнес-план — за нашою практикою' },
   { value: '2–3 дні', label: 'строк підготовки' },
   { to: 34000, suffix: '+', value: `${fmt(34000)}+`, label: 'підприємців по Україні вже отримали грант за програмою' },
 ];
@@ -25,6 +25,11 @@ const stats = [
         <div class="mt-2.5 text-sm text-muted max-w-[16rem] mx-auto lg:mx-0 leading-snug">{s.label}</div>
       </div>
     ))}
+  </div>
+  <div class="container-site mt-8">
+    <p class="text-xs text-muted/80 leading-relaxed max-w-3xl">
+      Суми та кількість отримувачів — за даними Державної служби зайнятості й порталу «Дія». Частка відмов через слабкий бізнес-план — власна оцінка ГрантПлану на основі консультаційної практики; офіційна статистика за причинами відмов не оприлюднюється.
+    </p>
   </div>
 </section>
 
