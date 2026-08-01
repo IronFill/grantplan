@@ -87,9 +87,27 @@ export function initAnalyticsFromStoredConsent() {
   if (getConsent() === 'granted') loadConsentedAnalytics();
 }
 
+// Мапа власних назв подій на "визнані" події GA4/Meta. Кастомна назва
+// (generate_lead, Lead) з довільним рядком не бере участі в оптимізації
+// реклами й агрегованих звітах платформи так, як розпізнана подія —
+// тож для реальних лід-конверсій дублюємо подію під офіційною назвою,
+// не чіпаючи власну назву, від якої вже залежить внутрішня аналітика.
+const GA4_RECOMMENDED: Record<string, string> = {
+  submit_form: 'generate_lead',
+};
+const META_STANDARD: Record<string, string> = {
+  submit_form: 'Lead',
+};
+
 /** Єдина точка для подій — летить у Plausible завжди, у GA4/Meta лише якщо вони активні. */
 export function trackEvent(name: string, props?: Record<string, unknown>) {
   window.plausible?.(name, props ? { props } : undefined);
+
   window.gtag?.('event', name, props ?? {});
+  const ga4Recommended = GA4_RECOMMENDED[name];
+  if (ga4Recommended) window.gtag?.('event', ga4Recommended, props ?? {});
+
   window.fbq?.('trackCustom', name, props ?? {});
+  const metaStandard = META_STANDARD[name];
+  if (metaStandard) window.fbq?.('track', metaStandard, props ?? {});
 }
