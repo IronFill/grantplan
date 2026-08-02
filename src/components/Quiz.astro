@@ -126,8 +126,12 @@ const totalSteps = questions.length + 1;
           <div class="grid sm:grid-cols-2 gap-3">
             <input name="name" type="text" required placeholder="Ім’я"
               class="rounded-xl bg-surface border border-border px-4 py-3 focus:border-accent outline-none" />
-            <input name="phone" type="tel" required inputmode="tel" value="+380" placeholder="+380 __ ___ __ __"
-              class="rounded-xl bg-surface border border-border px-4 py-3 focus:border-accent outline-none" data-quiz-phone />
+            <div>
+              <input name="phone" type="tel" required inputmode="tel" value="+380" placeholder="+380 __ ___ __ __"
+                class="w-full rounded-xl bg-surface border border-border px-4 py-3 focus:border-accent outline-none"
+                aria-describedby="quiz-phone-error" data-quiz-phone />
+              <p id="quiz-phone-error" class="mt-1 text-xs hidden text-accent-hover" role="alert" data-quiz-phone-error>Введіть коректний номер у форматі +380XXXXXXXXX</p>
+            </div>
           </div>
           <label class="flex items-start gap-2.5 text-xs text-muted mt-3">
             <input type="checkbox" name="consent" required class="mt-0.5 w-4 h-4 accent-[#E86A00] shrink-0" />
@@ -285,6 +289,7 @@ const totalSteps = questions.length + 1;
     // Форма захоплення в квізі
     const qform = resultBox.querySelector<HTMLFormElement>('[data-quiz-form]')!;
     const qphone = resultBox.querySelector<HTMLInputElement>('[data-quiz-phone]')!;
+    const qphoneError = resultBox.querySelector<HTMLElement>('[data-quiz-phone-error]')!;
     const qError = resultBox.querySelector<HTMLElement>('[data-quiz-error]')!;
     qphone.addEventListener('input', () => {
       let d = qphone.value.replace(/\D/g, '');
@@ -298,9 +303,13 @@ const totalSteps = questions.length + 1;
       if ((qform.elements.namedItem('company') as HTMLInputElement)?.value) return;
       qError.classList.add('hidden');
       if (!/^\+380\d{9}$/.test(qphone.value)) {
+        qphoneError.classList.remove('hidden');
+        qphone.setAttribute('aria-invalid', 'true');
         qphone.focus();
         return;
       }
+      qphoneError.classList.add('hidden');
+      qphone.removeAttribute('aria-invalid');
       const submit = qform.querySelector<HTMLButtonElement>('[data-quiz-submit]')!;
       submit.disabled = true;
       submit.textContent = 'Надсилаємо…';

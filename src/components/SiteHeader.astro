@@ -3,7 +3,7 @@ import Icon from './Icon.astro';
 import { site, nav } from '../data/site';
 ---
 <header id="site-header" class="fixed top-0 inset-x-0 z-[60] transition-colors" data-header>
-  <div class="container-site flex items-center justify-between h-16 md:h-[72px]">
+  <div class="container-site flex items-center justify-between h-16 md:h-[72px]" data-header-bar>
     <!-- Лого -->
     <a href="/" class="font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
       ГрантПлан<span class="text-accent">.</span>
@@ -58,7 +58,7 @@ import { site, nav } from '../data/site';
   <!-- Повноекранне мобільне меню -->
   <div
     id="mobile-menu"
-    class="xl:hidden fixed inset-0 z-[60] bg-bg flex-col hidden overflow-y-auto"
+    class="xl:hidden fixed inset-0 z-[60] bg-bg flex-col hidden overflow-y-auto overscroll-contain"
     data-menu-panel
   >
     <div class="container-site flex items-center justify-between h-16">
@@ -94,17 +94,33 @@ import { site, nav } from '../data/site';
   import { trackEvent } from '../lib/analytics';
 
   const header = document.querySelector<HTMLElement>('[data-header]');
+  const headerBar = document.querySelector<HTMLElement>('[data-header-bar]');
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
   const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
   const links = document.querySelectorAll<HTMLAnchorElement>('[data-menu-link]');
+  let menuLastFocused: HTMLElement | null = null;
+
+  // Панель — повноекранна й непрозора, тож усе, що лишається "позаду",
+  // насправді сховане з очей. Без inert клавіатурний користувач міг Tab'ом
+  // дійти до посилань у Hero під панеллю, не бачачи, де опинився фокус.
+  function setBackgroundInert(shouldBeInert: boolean) {
+    headerBar?.toggleAttribute('inert', shouldBeInert);
+    Array.from(document.body.children).forEach((el) => {
+      if (el === header || el.tagName === 'SCRIPT') return;
+      el.toggleAttribute('inert', shouldBeInert);
+    });
+  }
 
   function openMenu() {
     if (!panel || !toggle) return;
+    menuLastFocused = document.activeElement as HTMLElement;
     panel.classList.remove('hidden');
     panel.classList.add('flex');
     toggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
+    setBackgroundInert(true);
+    closeBtn?.focus();
   }
   function closeMenu() {
     if (!panel || !toggle) return;
@@ -112,6 +128,8 @@ import { site, nav } from '../data/site';
     panel.classList.remove('flex');
     toggle.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
+    setBackgroundInert(false);
+    (menuLastFocused ?? toggle).focus();
   }
   toggle?.addEventListener('click', openMenu);
   closeBtn?.addEventListener('click', closeMenu);

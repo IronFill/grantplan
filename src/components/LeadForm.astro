@@ -97,8 +97,9 @@ const { narrow = false } = Astro.props;
                   id="lf-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
                   class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
                   placeholder="+380 __ ___ __ __" value="+380"
+                  aria-describedby="lf-phone-error"
                 />
-                <p class="mt-1 text-xs hidden text-accent-hover" data-phone-error>Введіть коректний номер у форматі +380XXXXXXXXX</p>
+                <p id="lf-phone-error" class="mt-1 text-xs hidden text-accent-hover" role="alert" data-phone-error>Введіть коректний номер у форматі +380XXXXXXXXX</p>
               </div>
 
               <fieldset>
@@ -319,10 +320,12 @@ const { narrow = false } = Astro.props;
       const phone = phoneInput?.value ?? '';
       if (!validPhone(phone)) {
         phoneError?.classList.remove('hidden');
+        phoneInput?.setAttribute('aria-invalid', 'true');
         phoneInput?.focus();
         return;
       }
       phoneError?.classList.add('hidden');
+      phoneInput?.removeAttribute('aria-invalid');
 
       const consent = (form.elements.namedItem('consent') as HTMLInputElement)?.checked;
       if (!consent) {
