@@ -1,0 +1,85 @@
+---
+// Липка бічна колонка для довгих текстових сторінок (/spivbesida,
+// /pislya-hrantu, /prychyny-vidmov). Раніше ці сторінки були колонкою
+// max-w-3xl по центру: секція займала 768px усередині 1280px контейнера,
+// тож обабіч лишалися порожні поля, і сторінка «звужувалась» порівняно з
+// шапкою, футером і головною. Тепер секція тримає ту саму ширину, що й
+// решта сайту, а місце праворуч зайняте навігацією по сторінці.
+//
+// Ховається нижче lg: на вузьких екранах бічної колонки немає взагалі,
+// тож мобільна верстка лишається такою, якою була.
+import Icon from './Icon.astro';
+
+interface Props {
+  /** Пункти змісту: href — якір секції на цій же сторінці. */
+  items: { href: string; label: string }[];
+  /** Заголовок CTA-картки під змістом (необов'язково). */
+  ctaTitle?: string;
+  ctaText?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+
+const {
+  items,
+  ctaTitle = 'Розберемо ваш випадок',
+  ctaText = 'Безкоштовний аудит: чесно скажемо, чи проходить ваша ідея — ще до оплати.',
+  ctaHref = '/#lead',
+  ctaLabel = 'Записатися на аудит',
+} = Astro.props;
+---
+<aside class="hidden lg:block lg:sticky lg:top-24" data-article-aside>
+  <h2 class="font-display font-semibold text-xs uppercase tracking-wide text-muted">На цій сторінці</h2>
+  <nav class="mt-4 max-h-[60vh] overflow-y-auto overscroll-contain border-l border-border" aria-label="Зміст сторінки">
+    {items.map((i) => (
+      <a
+        href={i.href}
+        class="block -ml-px border-l-2 border-transparent py-1.5 pl-4 text-sm leading-snug text-muted transition-colors hover:text-ink"
+        data-toc-link
+      >{i.label}</a>
+    ))}
+  </nav>
+
+  <div class="mt-8 rounded-card border border-border bg-surface p-5">
+    <h3 class="font-display font-semibold">{ctaTitle}</h3>
+    <p class="mt-2 text-sm text-muted leading-relaxed">{ctaText}</p>
+    <a href={ctaHref} class="btn btn-primary w-full mt-4 !min-h-[42px] !py-0 text-sm">
+      {ctaLabel} <Icon name="arrow-right" size={16} />
+    </a>
+  </div>
+</aside>
+
+<script>
+  // Підсвічування поточного розділу. Спостерігаємо за самими секціями, а не
+  // за скролом: менше роботи на кожен кадр і не треба вгадувати офсети.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-toc-link]'));
+  if (links.length) {
+    const targets = links
+      .map((l) => document.querySelector<HTMLElement>(l.getAttribute('href') || ''))
+      .filter((el): el is HTMLElement => !!el);
+
+    function setActive(id: string) {
+      links.forEach((l) => {
+        const on = l.getAttribute('href') === `#${id}`;
+        l.classList.toggle('border-accent', on);
+        l.classList.toggle('text-accent', on);
+      });
+    }
+
+    if (targets.length) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          // Беремо найвищий видимий заголовок — інакше при швидкому скролі
+          // активним лишався б той, що вийшов з екрана останнім.
+          const visible = entries
+            .filter((e) => e.isIntersecting)
+            .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+          if (visible[0]?.target.id) setActive(visible[0].target.id);
+        },
+        { rootMargin: '-88px 0px -55% 0px', threshold: 0 }
+      );
+      targets.forEach((t) => io.observe(t));
+      setActive(targets[0].id);
+    }
+  }
+</script>

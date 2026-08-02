@@ -42,9 +42,48 @@ const blockers = [
 ];
 
 const totalSteps = questions.length + 1;
+
+// Ліва колонка описує рівно те, що питає сам тест, — список зібрано під
+// questions/blockers вище, щоб він не розійшовся з реальними кроками.
+const checks = [
+  'Ваш статус: ФОП, фізособа, ветеран або молодь 18–25',
+  'Прострочені кредити понад 30 днів і банкрутство',
+  'Скільки робочих місць готові створити',
+  'Область реєстрації — прифронтова чи ні',
+  'Готовність працювати офіційно та платити податки 3 роки',
+  `${blockers.length} блокуючих умов, які банк перевіряє першими`,
+];
 ---
+<!-- Секція в тому самому .container-site, що й решта головної. Ліворуч —
+     опис тесту, праворуч — сама картка: раніше блок був звужений до 768px
+     і «провалювався» по ширині між сусідніми секціями. -->
 <section id="quiz" class="py-14 md:py-20 scroll-mt-20">
-  <div class="container-site max-w-3xl">
+  <div class="container-site grid lg:grid-cols-[0.9fr_1.25fr] gap-10 lg:gap-14 items-start">
+    <div class="reveal lg:sticky lg:top-24">
+      <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Скоринг шансів</span>
+      <h2 class="mt-2 text-3xl sm:text-4xl">Чи підходить вам грант?</h2>
+      <p class="mt-3 text-muted text-lg">
+        {totalSteps} коротких питань — і ви побачите орієнтовний ліміт, блокуючі умови та наступні кроки. Без реєстрації.
+      </p>
+
+      <div class="mt-8">
+        <h3 class="font-display font-semibold text-sm uppercase tracking-wide text-muted">Що перевіряємо</h3>
+        <ul class="mt-4 space-y-2.5">
+          {checks.map((c) => (
+            <li class="flex items-start gap-3 text-[0.95rem] leading-snug">
+              <Icon name="check" size={16} class="text-success shrink-0 mt-1" />
+              <span>{c}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <p class="mt-7 flex items-start gap-2.5 text-sm text-muted">
+        <Icon name="shield" size={16} class="text-accent shrink-0 mt-0.5" />
+        <span>Відповіді нікуди не йдуть, поки ви самі не залишите контакти в кінці.</span>
+      </p>
+    </div>
+
     <div class="reveal rounded-card-lg bg-raised border border-border p-6 md:p-10 relative overflow-hidden" data-quiz>
       <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full blur-[110px] opacity-15" style="background:radial-gradient(circle,#E86A00,transparent 70%)" aria-hidden="true"></div>
 
@@ -53,8 +92,8 @@ const totalSteps = questions.length + 1;
         <span class="inline-grid place-items-center w-14 h-14 rounded-2xl bg-accent/15 text-accent mx-auto">
           <Icon name="sparkles" size={28} />
         </span>
-        <h2 class="mt-5 text-2xl sm:text-3xl">Пройти тест: чи підходить вам грант?</h2>
-        <p class="mt-3 text-muted max-w-lg mx-auto">{totalSteps} коротких питань — і ви побачите орієнтовний ліміт, блокуючі умови та наступні кроки. Без реєстрації.</p>
+        <p class="mt-5 font-display font-semibold text-xl sm:text-2xl">{totalSteps} питань — і ви побачите свій ліміт</p>
+        <p class="mt-3 text-muted max-w-md mx-auto">Займе близько хвилини. Результат з’явиться одразу на екрані.</p>
         <button type="button" class="btn btn-primary mt-7" data-quiz-start>Почати тест</button>
       </div>
 
