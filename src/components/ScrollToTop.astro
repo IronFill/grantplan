@@ -1,0 +1,67 @@
+---
+import Icon from './Icon.astro';
+---
+<!-- Кнопка "нагору" — напівпрозора (glass-card, той самий стиль, що й
+     перевернута картка в Hero), з'являється лише після прокрутки. База
+     (bottom-20/lg:bottom-6) піднімає її над sticky-панеллю MobileCta; поверх
+     цього додається --consent-h (див. скрипт нижче) — виміряна висота банера
+     CookieConsent, поки він показаний першому відвідувачу, який ще не
+     прийняв рішення щодо cookies. Без цього кнопка й банер накладаються
+     один на одного один в один (обидва ціляться в "над MobileCta"). -->
+<button
+  type="button"
+  aria-label="Прокрутити на початок сторінки"
+  class="glass-card fixed z-40 right-4 lg:right-6 grid place-items-center w-12 h-12 rounded-full text-ink opacity-0 pointer-events-none translate-y-2 transition-[opacity,transform] duration-300 hover:text-accent hover:border-accent active:scale-[0.96]"
+  style="bottom: calc(5rem + var(--consent-h, 0px));"
+  data-scroll-top
+>
+  <Icon name="arrow-up" size={20} />
+</button>
+
+<style>
+  @media (min-width: 1024px) {
+    [data-scroll-top] {
+      bottom: calc(1.5rem + var(--consent-h, 0px)) !important;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('[data-scroll-top]');
+  const main = document.getElementById('main');
+  const consent = document.getElementById('cookie-consent');
+
+  if (btn) {
+    function onScroll() {
+      const show = window.scrollY > 500;
+      btn!.classList.toggle('opacity-0', !show);
+      btn!.classList.toggle('pointer-events-none', !show);
+      btn!.classList.toggle('translate-y-2', !show);
+    }
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    btn.addEventListener('click', () => {
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      // Переносимо фокус на початок контенту — інакше клавіатурний/скрін-рідер
+      // користувач лишається "внизу" сторінки, навіть коли візуально вона
+      // прокрутилась угору.
+      main?.focus();
+    });
+
+    // Поки банер cookies видимий, піднімаємо кнопку на його реальну (виміряну,
+    // не вгадану) висоту, щоб він її не перекривав і не блокував клік. Висота
+    // банера залежить від довжини тексту й брейкпоінту, тож рахуємо наживо, а
+    // не хардкодимо число.
+    if (consent) {
+      function syncConsentOffset() {
+        const visible = !consent!.classList.contains('hidden');
+        btn!.style.setProperty('--consent-h', visible ? `${consent!.offsetHeight}px` : '0px');
+      }
+      syncConsentOffset();
+      new MutationObserver(syncConsentOffset).observe(consent, { attributes: true, attributeFilter: ['class'] });
+      window.addEventListener('resize', syncConsentOffset);
+    }
+  }
+</script>

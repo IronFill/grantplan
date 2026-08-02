@@ -1,0 +1,251 @@
+---
+// Швидкий пошук по сайту — статичний індекс, зібраний на етапі збірки
+// з тих самих даних, що вже живлять сторінки (без окремого бекенду чи
+// дублювання контенту вручну). Відкривається кнопкою в шапці або Ctrl/Cmd+K.
+import Icon from './Icon.astro';
+import { audiences } from '../data/audiences';
+import { cases } from '../data/cases';
+import { blogPosts } from '../data/blog';
+import { faq } from '../data/faq';
+
+interface SearchItem {
+  title: string;
+  subtitle?: string;
+  href: string;
+  group: string;
+}
+
+const sections: SearchItem[] = [
+  { title: 'Умови програми', href: '/umovy-prohramy', group: 'Сторінки' },
+  { title: 'Причини відмов', href: '/prychyny-vidmov', group: 'Сторінки' },
+  { title: 'Питання на співбесіді', href: '/spivbesida', group: 'Сторінки' },
+  { title: 'Що буде після гранту', href: '/pislya-hrantu', group: 'Сторінки' },
+  { title: 'Блог', href: '/blog', group: 'Сторінки' },
+  { title: 'Тарифи', href: '/#pricing', group: 'Розділи головної' },
+  { title: 'Як це працює', href: '/#how', group: 'Розділи головної' },
+  { title: 'Послуги', href: '/#services', group: 'Розділи головної' },
+  { title: 'Приклади робіт', href: '/#case', group: 'Розділи головної' },
+  { title: 'Тест: чи підходить вам грант', href: '/#quiz', group: 'Розділи головної' },
+  { title: 'Записатися на безкоштовний аудит', href: '/#lead', group: 'Розділи головної' },
+];
+
+const audienceItems: SearchItem[] = audiences.map((a) => ({
+  title: a.nav,
+  subtitle: a.lead,
+  href: `/grant/${a.slug}`,
+  group: 'Напрямки грантів',
+}));
+
+const caseItems: SearchItem[] = cases.map((c) => ({
+  title: c.title,
+  subtitle: c.pitch,
+  href: `/${c.slug}`,
+  group: 'Приклади робіт',
+}));
+
+const blogItems: SearchItem[] = blogPosts.map((p) => ({
+  title: p.title,
+  subtitle: p.excerpt,
+  href: `/blog/${p.slug}`,
+  group: 'Блог',
+}));
+
+const faqItems: SearchItem[] = faq.map((f, i) => ({
+  title: f.q,
+  subtitle: f.a,
+  href: `/#faq-btn-${i}`,
+  group: 'Питання',
+}));
+
+const searchIndex: SearchItem[] = [...sections, ...audienceItems, ...caseItems, ...blogItems, ...faqItems];
+---
+
+<!-- Кнопка-тригер живе в SiteHeader.astro (поруч із рештою icon-btn) —
+     тут лише оверлей, індекс і логіка; querySelector('[data-search-toggle]')
+     нижче знаходить її незалежно від того, який компонент її вивів. -->
+<div
+  class="fixed inset-0 z-[70] hidden items-start justify-center pt-[12vh] px-4"
+  data-search-overlay
+>
+  <!-- Напівпрозора підкладка -->
+  <div class="absolute inset-0 bg-bg/70 backdrop-blur-sm" data-search-backdrop></div>
+
+  <div
+    role="dialog"
+    aria-modal="true"
+    aria-label="Пошук по сайту"
+    class="glass-card relative w-full max-w-xl rounded-card-lg shadow-xl overflow-hidden"
+    data-search-panel
+  >
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-border/70">
+      <Icon name="search" size={18} class="text-muted shrink-0" />
+      <input
+        type="text"
+        inputmode="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Шукати сторінку, напрям, статтю…"
+        class="flex-1 bg-transparent outline-none text-base placeholder:text-muted/70"
+        aria-label="Пошуковий запит"
+        data-search-input
+      />
+      <button type="button" class="text-xs text-muted border border-border rounded-md px-1.5 py-0.5 shrink-0 hover:text-ink hover:border-accent" aria-label="Закрити пошук" data-search-close>
+        Esc
+      </button>
+    </div>
+    <div class="max-h-[50vh] overflow-y-auto overscroll-contain p-2" data-search-results role="listbox" aria-label="Результати пошуку"></div>
+    <p class="px-5 py-8 text-center text-sm text-muted hidden" data-search-empty>Нічого не знайдено. Спробуйте інше слово.</p>
+  </div>
+</div>
+
+<script define:vars={{ searchIndex }} is:inline>
+  const toggle = document.querySelector('[data-search-toggle]');
+  const overlay = document.querySelector('[data-search-overlay]');
+  const backdrop = document.querySelector('[data-search-backdrop]');
+  const input = document.querySelector('[data-search-input]');
+  const closeBtn = document.querySelector('[data-search-close]');
+  const resultsEl = document.querySelector('[data-search-results]');
+  const emptyEl = document.querySelector('[data-search-empty]');
+  const headerBar = document.querySelector('[data-header-bar]');
+  const header = document.querySelector('[data-header]');
+
+  let activeIndex = -1;
+  let currentResults = [];
+  let lastFocused = null;
+
+  function setBackgroundInert(shouldBeInert) {
+    headerBar?.toggleAttribute('inert', shouldBeInert);
+    Array.from(document.body.children).forEach((el) => {
+      if (el === header || el.tagName === 'SCRIPT') return;
+      // Панель самого пошуку — теж прямий нащадок body (через <SiteSearch/>
+      // у Layout.astro), її саму інертити не можна.
+      if (el.contains(overlay) || el === overlay) return;
+      el.toggleAttribute('inert', shouldBeInert);
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function highlight(text, query) {
+    if (!query) return escapeHtml(text);
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return escapeHtml(text);
+    return (
+      escapeHtml(text.slice(0, idx)) +
+      '<mark class="bg-accent/25 text-inherit rounded-sm">' +
+      escapeHtml(text.slice(idx, idx + query.length)) +
+      '</mark>' +
+      escapeHtml(text.slice(idx + query.length))
+    );
+  }
+
+  function search(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      // Порожній запит — короткий список найпопулярніших розділів.
+      return searchIndex.filter((item) => item.group === 'Розділи головної' || item.group === 'Сторінки').slice(0, 8);
+    }
+    return searchIndex
+      .map((item) => {
+        const titleHit = item.title.toLowerCase().indexOf(q);
+        const subHit = item.subtitle ? item.subtitle.toLowerCase().indexOf(q) : -1;
+        if (titleHit === -1 && subHit === -1) return null;
+        const score = titleHit === 0 ? 0 : titleHit > -1 ? 1 : 2;
+        return { item, score };
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 8)
+      .map((r) => r.item);
+  }
+
+  function render(query) {
+    currentResults = search(query);
+    activeIndex = currentResults.length ? 0 : -1;
+    resultsEl.innerHTML = '';
+    emptyEl.classList.toggle('hidden', currentResults.length > 0 || !query.trim());
+
+    let lastGroup = '';
+    currentResults.forEach((item, i) => {
+      if (item.group !== lastGroup) {
+        const label = document.createElement('div');
+        label.className = 'px-3 pt-2 pb-1 text-xs font-semibold text-muted uppercase tracking-wide';
+        label.textContent = item.group;
+        resultsEl.appendChild(label);
+        lastGroup = item.group;
+      }
+      const a = document.createElement('a');
+      a.href = item.href;
+      a.id = `search-result-${i}`;
+      a.setAttribute('role', 'option');
+      a.className =
+        'block rounded-xl px-3 py-2.5 transition-colors ' + (i === activeIndex ? 'bg-accent/10 text-accent' : 'hover:bg-surface');
+      a.innerHTML =
+        `<div class="text-sm font-medium">${highlight(item.title, query)}</div>` +
+        (item.subtitle ? `<div class="text-xs text-muted mt-0.5 line-clamp-1">${escapeHtml(item.subtitle)}</div>` : '');
+      a.addEventListener('mouseenter', () => setActive(i));
+      resultsEl.appendChild(a);
+    });
+    input.setAttribute('aria-activedescendant', activeIndex > -1 ? `search-result-${activeIndex}` : '');
+  }
+
+  function setActive(i) {
+    activeIndex = i;
+    Array.from(resultsEl.querySelectorAll('a')).forEach((a, idx) => {
+      a.classList.toggle('bg-accent/10', idx === activeIndex);
+      a.classList.toggle('text-accent', idx === activeIndex);
+      a.classList.toggle('hover:bg-surface', idx !== activeIndex);
+    });
+    input.setAttribute('aria-activedescendant', activeIndex > -1 ? `search-result-${activeIndex}` : '');
+  }
+
+  function openSearch() {
+    lastFocused = document.activeElement;
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    setBackgroundInert(true);
+    render('');
+    input.value = '';
+    input.focus();
+  }
+
+  function closeSearch() {
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
+    document.body.style.overflow = '';
+    setBackgroundInert(false);
+    (lastFocused ?? toggle)?.focus();
+  }
+
+  toggle?.addEventListener('click', openSearch);
+  closeBtn?.addEventListener('click', closeSearch);
+  backdrop?.addEventListener('click', closeSearch);
+
+  document.addEventListener('keydown', (e) => {
+    const isOpen = !overlay.classList.contains('hidden');
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      isOpen ? closeSearch() : openSearch();
+      return;
+    }
+    if (!isOpen) return;
+    if (e.key === 'Escape') {
+      closeSearch();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentResults.length) setActive((activeIndex + 1) % currentResults.length);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentResults.length) setActive((activeIndex - 1 + currentResults.length) % currentResults.length);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const target = currentResults[activeIndex];
+      if (target) window.location.href = target.href;
+    }
+  });
+
+  input?.addEventListener('input', () => render(input.value));
+</script>

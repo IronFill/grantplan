@@ -30,6 +30,16 @@ import { site, nav } from '../data/site';
         Безкоштовний аудит
       </a>
 
+      <!-- Пошук по сайту: сама кнопка тут, оверлей і логіка — в SiteSearch.astro -->
+      <button
+        type="button"
+        class="icon-btn hover:text-accent hover:border-accent"
+        aria-label="Пошук по сайту (Ctrl+K)"
+        data-search-toggle
+      >
+        <Icon name="search" size={20} />
+      </button>
+
       <!-- Перемикач теми -->
       <button
         type="button"

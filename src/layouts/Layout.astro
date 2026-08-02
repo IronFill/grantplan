@@ -2,6 +2,8 @@
 import '../styles/global.css';
 import { site } from '../data/site';
 import CookieConsent from '../components/CookieConsent.astro';
+import ScrollToTop from '../components/ScrollToTop.astro';
+import SiteSearch from '../components/SiteSearch.astro';
 
 interface Props {
   title?: string;
@@ -126,11 +128,17 @@ const allSchema = [baseSchema, ...schema];
   <body>
     <a href="#main" class="skip-link">Перейти до змісту</a>
     <slot name="header" />
-    <main id="main">
+    <!-- tabindex="-1": не в порядку табуляції, але доступний для
+         програмного .focus() — потрібно і skip-link'у (раніше вів на
+         елемент, який неможливо було фактично сфокусувати), і кнопці
+         "нагору" (ScrollToTop.astro). -->
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <slot name="footer" />
     <CookieConsent />
+    <ScrollToTop />
+    <SiteSearch />
 
     <!-- Глобальний fade-up при скролі (IntersectionObserver, один раз) -->
     <script>
