@@ -6,6 +6,7 @@ import MobileCta from '../../components/MobileCta.astro';
 import LeadForm from '../../components/LeadForm.astro';
 import ChecklistCta from '../../components/ChecklistCta.astro';
 import Icon from '../../components/Icon.astro';
+import ArticleAside from '../../components/ArticleAside.astro';
 import { blogPosts } from '../../data/blog';
 import { site } from '../../data/site';
 
@@ -34,7 +35,7 @@ const schema = {
 
   <!-- Hero -->
   <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
-    <div class="container-site max-w-3xl">
+    <div class="container-site container-text">
       <a href="/blog" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← Усі статті</a>
       <span class={'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ' + (p.category === 'news' ? 'bg-accent/10 text-accent' : 'bg-success/10 text-success')}>
         {p.categoryLabel}
@@ -46,10 +47,11 @@ const schema = {
 
   <!-- Тіло статті -->
   <section class="py-14 md:py-20">
-    <div class="container-site max-w-3xl">
-      <div class="reveal space-y-5 text-[1.05rem] leading-relaxed">
-        {p.body.map((block) => {
-          if (block.type === 'h2') return <h2 class="!mt-10 text-2xl font-display font-semibold">{block.text}</h2>;
+    <div class="container-site grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
+      <div>
+      <div class="reveal space-y-5 text-[1.05rem] leading-relaxed max-w-3xl">
+        {p.body.map((block, i) => {
+          if (block.type === 'h2') return <h2 id={`rozdil-${i}`} class="!mt-10 scroll-mt-24 text-2xl font-display font-semibold">{block.text}</h2>;
           if (block.type === 'p') return <p class="text-muted">{block.text}</p>;
           if (block.type === 'ul') return (
             <ul class="space-y-2.5">
@@ -79,11 +81,20 @@ const schema = {
           <Icon name="arrow-right" size={18} class="text-accent shrink-0" />
         </a>
       )}
+      </div>
+
+      <ArticleAside
+        items={p.body
+          .map((b, i) => (b.type === 'h2' ? { href: `#rozdil-${i}`, label: b.text } : null))
+          .filter((x): x is { href: string; label: string } => x !== null)}
+        ctaTitle="Питання по вашій ситуації?"
+        ctaText="Стаття загальна, ваш випадок — ні. На безкоштовному аудиті розберемо конкретно вашу ідею."
+      />
     </div>
   </section>
 
-  <ChecklistCta narrow />
-  <LeadForm narrow />
+  <ChecklistCta />
+  <LeadForm />
 
   <SiteFooter slot="footer" />
   <MobileCta />

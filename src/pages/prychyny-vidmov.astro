@@ -4,6 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
+import ArticleAside from '../components/ArticleAside.astro';
 import ChecklistCta from '../components/ChecklistCta.astro';
 import Icon from '../components/Icon.astro';
 import { rejections } from '../data/rejections';
@@ -26,7 +27,7 @@ const schema = {
 
   <!-- Hero -->
   <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
-    <div class="container-site max-w-3xl">
+    <div class="container-site container-text">
       <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
       <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
         <Icon name="alert-triangle" size={14} class="text-accent" /> Довідник · причини відмов
@@ -40,11 +41,13 @@ const schema = {
     </div>
   </section>
 
-  <!-- Список причин -->
+  <!-- Тіло: список причин + липкий зміст праворуч. Сторінка тримає ту саму
+       ширину контейнера, що й шапка/футер і головна. -->
   <section class="py-14 md:py-20">
-    <div class="container-site max-w-3xl space-y-4">
+    <div class="container-site grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
+      <div class="space-y-4">
       {rejections.map((r) => (
-        <article class="reveal rounded-card bg-surface border border-border p-6 md:p-7">
+        <article id={`prychyna-${r.n}`} class="reveal scroll-mt-24 rounded-card bg-surface border border-border p-6 md:p-7">
           <div class="flex items-start gap-4">
             <span class="inline-grid place-items-center w-10 h-10 rounded-xl bg-accent/10 text-accent font-display font-extrabold shrink-0">{r.n}</span>
             <div>
@@ -71,11 +74,18 @@ const schema = {
           <span class="text-ink font-semibold">Головне:</span> напрями 1, 2 і 6 — фінплан, кошторис і співбесіда — відповідають за більшість відмов і водночас найкраще піддаються якісній підготовці. Саме на них ми робимо акцент у кожному плані.
         </p>
       </div>
+      </div>
+
+      <ArticleAside
+        items={rejections.map((r) => ({ href: `#prychyna-${r.n}`, label: `${r.n}. ${r.title}` }))}
+        ctaTitle="Уже отримали відмову?"
+        ctaText="Розберемо саме вашу причину і скажемо, чи є сенс подаватись повторно. Безкоштовно."
+      />
     </div>
   </section>
 
-  <ChecklistCta narrow />
-  <LeadForm narrow />
+  <ChecklistCta />
+  <LeadForm />
 
   <SiteFooter slot="footer" />
   <MobileCta />

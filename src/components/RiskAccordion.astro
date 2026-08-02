@@ -39,14 +39,33 @@ const items = [
 ];
 ---
 <section class="py-14 md:py-20 border-t border-border/70">
-  <div class="container-site max-w-3xl">
-    <div class="reveal">
+  <div class="container-site grid lg:grid-cols-[0.8fr_1.6fr] gap-10 lg:gap-16 items-start">
+    <div class="reveal lg:sticky lg:top-24">
       <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Перш ніж подаватись</span>
       <h2 class="mt-2 text-3xl sm:text-4xl">Юридичні нюанси коротко</h2>
       <p class="mt-3 text-muted text-lg">Розгорніть те, що вас цікавить. Деталі — на окремих сторінках, тут — суть за 30 секунд.</p>
+
+      <div class="mt-8 rounded-card border border-border bg-surface p-6">
+        <h3 class="font-display font-semibold text-lg">Повні розбори</h3>
+        <ul class="mt-4 space-y-3 text-sm">
+          {[
+            { href: '/umovy-prohramy', label: 'Умови програми та бальна система' },
+            { href: '/spivbesida', label: 'Співбесіда в центрі зайнятості' },
+            { href: '/pislya-hrantu', label: 'Зобов’язання після гранту' },
+            { href: '/prychyny-vidmov', label: '10 причин відмов' },
+          ].map((l) => (
+            <li>
+              <a href={l.href} class="flex items-center justify-between gap-3 text-muted hover:text-accent transition-colors group">
+                <span>{l.label}</span>
+                <Icon name="arrow-right" size={15} class="shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
 
-    <div class="mt-10 space-y-3">
+    <div class="space-y-3">
       {items.map((item, i) => (
         <div class="reveal rounded-card bg-surface border border-border overflow-hidden">
           <h3>

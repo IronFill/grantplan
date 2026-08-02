@@ -1,16 +1,38 @@
 ---
 import Icon from './Icon.astro';
 import { faq } from '../data/faq';
+import { site } from '../data/site';
 ---
+<!-- Заголовок винесено в липку ліву колонку, відповіді — у правій: інакше
+     на широкому екрані рядок акордеону розтягувався б на всі 1200px заради
+     одного короткого питання. Ширина секції при цьому та сама, що й у решти
+     блоків головної (.container-site). -->
 <section id="faq" class="py-14 md:py-20 scroll-mt-20">
-  <div class="container-site max-w-3xl">
-    <div class="reveal">
+  <div class="container-site grid lg:grid-cols-[0.8fr_1.6fr] gap-10 lg:gap-16 items-start">
+    <div class="reveal lg:sticky lg:top-24">
       <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Питання</span>
       <h2 class="mt-2 text-3xl sm:text-4xl">Часті питання</h2>
       <p class="mt-3 text-muted text-lg">Коротко й чесно про головне.</p>
+
+      <div class="mt-8 rounded-card border border-border bg-surface p-6">
+        <h3 class="font-display font-semibold text-lg">Не знайшли свого питання?</h3>
+        <p class="mt-2 text-sm text-muted leading-relaxed">
+          Загальна відповідь рідко підходить конкретній ситуації. На безкоштовному аудиті розберемо саме ваш випадок — і чесно скажемо, якщо шансів немає.
+        </p>
+        <a href="/#lead" class="btn btn-primary w-full mt-5">Поставити своє питання</a>
+        <a
+          href={site.telegram}
+          target="_blank"
+          rel="noopener"
+          class="mt-3 flex items-center justify-center gap-2 text-sm text-muted hover:text-accent transition-colors"
+          data-analytics="click_telegram"
+        >
+          <Icon name="send" size={16} /> Або напишіть у Telegram
+        </a>
+      </div>
     </div>
 
-    <div class="mt-10 space-y-3">
+    <div class="space-y-3">
       {faq.map((item, i) => (
         <div class="reveal rounded-card bg-surface border border-border overflow-hidden">
           <h3>
