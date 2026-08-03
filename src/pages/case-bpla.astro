@@ -4,7 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
-import PhotoFlipGrid from '../components/PhotoFlipGrid.astro';
+import PhotoCascadeGrid from '../components/PhotoCascadeGrid.astro';
 
 const bplaPhotos = [
   { src: '/case/bpla-1-photo.webp', alt: 'Робочий стіл майстерні: рама з моторами та паяльна станція', caption: 'Збірка рами та монтаж моторів' },
@@ -108,7 +108,7 @@ const risks = [
   <!-- Реальні фото майстерні -->
   <section class="pb-4">
     <div class="container-site">
-      <PhotoFlipGrid
+      <PhotoCascadeGrid
         photos={bplaPhotos}
         gridClass="grid-cols-2 sm:grid-cols-4"
         aspectClass="aspect-[4/3]"

@@ -1,0 +1,38 @@
+---
+// Сітка реальних фото кейсу: кожна картка з'являється (fade + невеликий
+// підйом) по черзі при скролі, а не одночасно — звідси "каскад". Це той
+// самий глобальний .reveal з Layout.astro (IntersectionObserver, один раз
+// на елемент), лише зі своїм transition-delay на картку, тож стагер працює
+// без додаткового JS.
+//
+// Без анімованого звороту картки: попередня версія з 3D-переворотом
+// виглядала занадто "гуглівською" — тепер ефект суто в появі, фото
+// лишається головним героєм.
+interface Photo {
+  src: string;
+  alt: string;
+  caption: string;
+}
+interface Props {
+  photos: Photo[];
+  gridClass?: string;
+  aspectClass?: string;
+  wrapperClass?: string;
+}
+const {
+  photos,
+  gridClass = 'grid-cols-2 sm:grid-cols-4',
+  aspectClass = 'aspect-[4/3]',
+  wrapperClass = '',
+} = Astro.props;
+---
+<div class={`grid ${gridClass} gap-3 ${wrapperClass}`}>
+  {photos.map((p, i) => (
+    <figure class="reveal" style={`transition-delay: ${i * 90}ms`}>
+      <img src={p.src} alt={p.alt}
+        width="1200" height="900" loading="lazy" decoding="async"
+        class={`w-full ${aspectClass} object-cover rounded-2xl border border-border`} />
+      <figcaption class="mt-2 text-xs text-muted text-center">{p.caption}</figcaption>
+    </figure>
+  ))}
+</div>

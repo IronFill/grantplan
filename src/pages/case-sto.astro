@@ -4,7 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
-import PhotoFlipGrid from '../components/PhotoFlipGrid.astro';
+import PhotoCascadeGrid from '../components/PhotoCascadeGrid.astro';
 
 const stoPhotos = [
   { src: '/case/sto-1-photo.webp', alt: 'В\'їзд на територію гаража станції техобслуговування, м. Харків', caption: 'В\'їзд на територію' },
@@ -146,7 +146,7 @@ const risks = [
   <!-- Реальні фото приміщення -->
   <section class="pb-4">
     <div class="container-site">
-      <PhotoFlipGrid
+      <PhotoCascadeGrid
         photos={stoPhotos}
         gridClass="sm:grid-cols-3"
         aspectClass="aspect-[3/4]"
