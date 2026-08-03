@@ -4,7 +4,9 @@
 реальних кейсів (HTML → PNG, 1280×800 @2x).
 
 - `case-1-cover.png`, `case-2-koshtorys.png`, `case-3-finmodel.png` —
-  кейс «Майстерня БпЛА» (сторінка `/case-bpla`).
+  кейс «Майстерня БпЛА» (сторінка `/case-bpla`). `bpla-1..4-photo.webp` —
+  РЕАЛЬНІ фото майстерні заявника (не фотосток), галерея на сторінці кейсу;
+  замінили колишнє `case-4-photo.webp` (ілюстративний фотосток).
 - `salon-1-cover.png`, `salon-2-koshtorys.png`, `salon-3-finmodel.png` —
   кейс «Салон краси повного циклу» (сторінка `/case-salon-krasy`).
 - `ripak-1-cover.png`, `ripak-2-koshtorys.png`, `ripak-3-finmodel.png` —
