@@ -4,6 +4,14 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
+import PhotoCascadeGrid from '../components/PhotoCascadeGrid.astro';
+
+const bplaPhotos = [
+  { src: '/case/bpla-1-photo.webp', alt: 'Робочий стіл майстерні: рама з моторами та паяльна станція', caption: 'Збірка рами та монтаж моторів' },
+  { src: '/case/bpla-2-photo.webp', alt: 'Пайка сигнальних проводів безколекторного двигуна БпЛА', caption: 'Пайка проводів двигуна' },
+  { src: '/case/bpla-3-photo.webp', alt: 'Фінальна збірка багатороторного безпілотника перед випробуванням', caption: 'Фінальна збірка перед тестом' },
+  { src: '/case/bpla-4-photo.webp', alt: 'Перевірка акумулятора на зарядній станції поруч зі стелажем комплектуючих', caption: 'Перевірка акумулятора' },
+];
 
 const facts = [
   { label: 'Проєкт', value: 'Майстерня БпЛА', icon: 'badge-check' },
@@ -97,15 +105,16 @@ const risks = [
     </div>
   </section>
 
-  <!-- Фото -->
+  <!-- Реальні фото майстерні -->
   <section class="pb-4">
     <div class="container-site">
-      <figure class="reveal max-w-2xl mx-auto">
-        <img src="/case/case-4-photo.webp" alt="Ілюстративне фото: цивільні безпілотники"
-          width="610" height="385" loading="lazy" decoding="async"
-          class="w-full rounded-2xl border border-border" />
-        <figcaption class="mt-2 text-xs text-muted text-center">Ілюстративне фото</figcaption>
-      </figure>
+      <PhotoCascadeGrid
+        photos={bplaPhotos}
+        gridClass="grid-cols-2 sm:grid-cols-4"
+        aspectClass="aspect-[4/3]"
+        wrapperClass="max-w-3xl mx-auto"
+      />
+      <p class="reveal mt-3 text-xs text-muted text-center">Реальні фото майстерні заявника, а не ілюстрація з фотостоку.</p>
     </div>
   </section>
 
