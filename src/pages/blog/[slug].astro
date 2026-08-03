@@ -68,6 +68,26 @@ const schema = {
               <span class="text-ink font-medium">Чесно: </span>{block.text}
             </div>
           );
+          if (block.type === 'table') return (
+            <div class="overflow-x-auto rounded-card border border-border">
+              <table class="w-full text-left border-collapse min-w-[480px] text-[0.95rem]">
+                <thead>
+                  <tr class="bg-surface text-sm text-muted">
+                    {block.headers.map((h) => <th class="py-3 px-4 font-medium">{h}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {block.rows.map((row) => (
+                    <tr class="border-t border-border">
+                      {row.map((cell, ci) => (
+                        <td class={'py-3 px-4' + (ci === 0 ? ' text-ink font-medium' : ' text-muted')}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
           return null;
         })}
       </div>
