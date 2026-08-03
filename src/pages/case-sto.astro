@@ -4,6 +4,13 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
+import PhotoFlipGrid from '../components/PhotoFlipGrid.astro';
+
+const stoPhotos = [
+  { src: '/case/sto-1-photo.webp', alt: 'В\'їзд на територію гаража станції техобслуговування, м. Харків', caption: 'В\'їзд на територію' },
+  { src: '/case/sto-3-photo.webp', alt: 'Приміщення гаража 120 м² до ремонту, стан на момент аудиту', caption: 'Приміщення до ремонту' },
+  { src: '/case/sto-2-photo.webp', alt: 'Один із робочих постів гаража під час кузовних робіт', caption: 'Один із постів у роботі' },
+];
 
 const facts = [
   { label: 'Проєкт', value: 'СТО у власному гаражі, 120 м²', icon: 'badge-check' },
@@ -139,26 +146,11 @@ const risks = [
   <!-- Реальні фото приміщення -->
   <section class="pb-4">
     <div class="container-site">
-      <div class="grid sm:grid-cols-3 gap-4">
-        <figure class="reveal">
-          <img src="/case/sto-1-photo.webp" alt="В'їзд на територію гаража станції техобслуговування, м. Харків"
-            width="900" height="1200" loading="lazy" decoding="async"
-            class="w-full aspect-[3/4] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">В'їзд на територію</figcaption>
-        </figure>
-        <figure class="reveal">
-          <img src="/case/sto-3-photo.webp" alt="Приміщення гаража 120 м² до ремонту, стан на момент аудиту"
-            width="900" height="1200" loading="lazy" decoding="async"
-            class="w-full aspect-[3/4] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">Приміщення до ремонту</figcaption>
-        </figure>
-        <figure class="reveal">
-          <img src="/case/sto-2-photo.webp" alt="Один із робочих постів гаража під час кузовних робіт"
-            width="900" height="1200" loading="lazy" decoding="async"
-            class="w-full aspect-[3/4] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">Один із постів у роботі</figcaption>
-        </figure>
-      </div>
+      <PhotoFlipGrid
+        photos={stoPhotos}
+        gridClass="sm:grid-cols-3"
+        aspectClass="aspect-[3/4]"
+      />
       <p class="reveal mt-3 text-xs text-muted text-center">Реальні фото приміщення заявника, а не ілюстрація з фотостоку.</p>
     </div>
   </section>

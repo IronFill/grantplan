@@ -4,6 +4,14 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
+import PhotoFlipGrid from '../components/PhotoFlipGrid.astro';
+
+const bplaPhotos = [
+  { src: '/case/bpla-1-photo.webp', alt: 'Робочий стіл майстерні: рама з моторами та паяльна станція', caption: 'Збірка рами та монтаж моторів' },
+  { src: '/case/bpla-2-photo.webp', alt: 'Пайка сигнальних проводів безколекторного двигуна БпЛА', caption: 'Пайка проводів двигуна' },
+  { src: '/case/bpla-3-photo.webp', alt: 'Фінальна збірка багатороторного безпілотника перед випробуванням', caption: 'Фінальна збірка перед тестом' },
+  { src: '/case/bpla-4-photo.webp', alt: 'Перевірка акумулятора на зарядній станції поруч зі стелажем комплектуючих', caption: 'Перевірка акумулятора' },
+];
 
 const facts = [
   { label: 'Проєкт', value: 'Майстерня БпЛА', icon: 'badge-check' },
@@ -100,32 +108,12 @@ const risks = [
   <!-- Реальні фото майстерні -->
   <section class="pb-4">
     <div class="container-site">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto">
-        <figure class="reveal">
-          <img src="/case/bpla-1-photo.webp" alt="Робочий стіл майстерні: рама з моторами та паяльна станція"
-            width="1200" height="900" loading="lazy" decoding="async"
-            class="w-full aspect-[4/3] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">Збірка рами та монтаж моторів</figcaption>
-        </figure>
-        <figure class="reveal">
-          <img src="/case/bpla-2-photo.webp" alt="Пайка сигнальних проводів безколекторного двигуна БпЛА"
-            width="1200" height="900" loading="lazy" decoding="async"
-            class="w-full aspect-[4/3] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">Пайка проводів двигуна</figcaption>
-        </figure>
-        <figure class="reveal">
-          <img src="/case/bpla-3-photo.webp" alt="Фінальна збірка багатороторного безпілотника перед випробуванням"
-            width="1200" height="900" loading="lazy" decoding="async"
-            class="w-full aspect-[4/3] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">Фінальна збірка перед тестом</figcaption>
-        </figure>
-        <figure class="reveal">
-          <img src="/case/bpla-4-photo.webp" alt="Перевірка акумулятора на зарядній станції поруч зі стелажем комплектуючих"
-            width="1200" height="900" loading="lazy" decoding="async"
-            class="w-full aspect-[4/3] object-cover rounded-2xl border border-border" />
-          <figcaption class="mt-2 text-xs text-muted text-center">Перевірка акумулятора</figcaption>
-        </figure>
-      </div>
+      <PhotoFlipGrid
+        photos={bplaPhotos}
+        gridClass="grid-cols-2 sm:grid-cols-4"
+        aspectClass="aspect-[4/3]"
+        wrapperClass="max-w-3xl mx-auto"
+      />
       <p class="reveal mt-3 text-xs text-muted text-center">Реальні фото майстерні заявника, а не ілюстрація з фотостоку.</p>
     </div>
   </section>
