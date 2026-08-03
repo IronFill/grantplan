@@ -4,6 +4,13 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import Icon from '../components/Icon.astro';
+import PhotoCascadeGrid from '../components/PhotoCascadeGrid.astro';
+
+const ripakPhotos = [
+  { src: '/case/ripak-illus-1.webp', alt: 'Ілюстративне фото: поле озимого ріпаку до цвітіння', caption: 'Ілюстративне фото' },
+  { src: '/case/ripak-illus-2.webp', alt: 'Ілюстративне фото: обприскування поля ріпаку у цвітінні', caption: 'Ілюстративне фото' },
+  { src: '/case/ripak-illus-3.webp', alt: 'Ілюстративне фото: поле ріпаку у цвітінні', caption: 'Ілюстративне фото' },
+];
 
 const facts = [
   { label: 'Проєкт', value: 'Озимий ріпак, 30 га', icon: 'badge-check' },
@@ -107,12 +114,13 @@ const risks = [
   <!-- Фото -->
   <section class="pb-4">
     <div class="container-site">
-      <figure class="reveal max-w-2xl mx-auto">
-        <img src="/case/ripak-4-photo.webp" alt="Ілюстративне фото: поле озимого ріпаку"
-          width="400" height="300" loading="lazy" decoding="async"
-          class="w-full rounded-2xl border border-border" />
-        <figcaption class="mt-2 text-xs text-muted text-center">Ілюстративне фото</figcaption>
-      </figure>
+      <PhotoCascadeGrid
+        photos={ripakPhotos}
+        gridClass="sm:grid-cols-3"
+        aspectClass="aspect-[4/3]"
+        wrapperClass="max-w-3xl mx-auto"
+      />
+      <p class="reveal mt-3 text-xs text-muted text-center">Ілюстративні фото — не поле заявника.</p>
     </div>
   </section>
 
