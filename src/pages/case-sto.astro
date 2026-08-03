@@ -1,0 +1,387 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import Icon from '../components/Icon.astro';
+
+const facts = [
+  { label: 'Проєкт', value: 'СТО у власному гаражі, 120 м²', icon: 'badge-check' },
+  { label: 'Локація', value: 'м. Харків', icon: 'map-pin' },
+  { label: 'Робочі місця', value: '2 автослюсарі', icon: 'users' },
+  { label: 'Сума гранту', value: '500 000 ₴', icon: 'wallet' },
+];
+
+const uah = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
+
+const findings = [
+  {
+    icon: 'alert-triangle',
+    title: 'Кошторис перевищував ліміт',
+    text: 'Закупівля за наданими договорами — 506 460 ₴ проти ліміту 500 000 ₴. Перевищення 6 460 ₴ — формальна підстава для відмови, якщо не виправити до подання.',
+  },
+  {
+    icon: 'ban',
+    title: 'У закупівлі бракувало компресора',
+    text: 'Придбано чотири позиції пневмоінструменту, які фізично не працюють без стисненого повітря, а самого компресора в переліку не було.',
+  },
+  {
+    icon: 'calculator',
+    title: 'Розбіжність у підсумках за лотами',
+    text: 'У файлі постачальника два підсумки за лотами не збігалися з сумою позицій — на 500 ₴ і на 100 ₴. Загальна сума договорів була вірною, помилка лише в проміжних підписах.',
+  },
+];
+
+const estimate = [
+  { item: 'Підіймальне обладнання: підйомник Peak 215c, кран гаражний, стійка трансмісійна', sum: 264_560 },
+  { item: 'Інструмент слюсарний: візок STHOR (302 предмети), знімачі, ключі, головки', sum: 117_400 },
+  { item: 'Ручний моторизований та пневмоінструмент', sum: 61_910 },
+  { item: 'Електрообладнання: пуско-зарядний пристрій, джамп стартер', sum: 31_300 },
+  { item: 'Зварювальне обладнання: інвертор, термофен', sum: 13_400 },
+  { item: 'Аксесуари та засоби індивідуального захисту', sum: 5_640 },
+  { item: 'Спеціалізована хімія: герметики, спреї', sum: 4_850 },
+  { item: 'Трубопроводи та супутні вироби', sum: 3_050 },
+  { item: 'Вироби з дроту: електроди, зварювальний дріт', sum: 2_550 },
+  { item: 'Абразивні матеріали', sum: 1_800 },
+];
+const estimateTotal = estimate.reduce((a, b) => a + b.sum, 0);
+
+const funding = [
+  { label: 'За рахунок гранту', value: 483_660, note: 'усі позиції кошторису, крім однієї' },
+  { label: 'За рахунок власного внеску', value: 22_800, note: 'джамп стартер винесено за межі гранту' },
+  { label: 'Залишок ліміту гранту', value: 16_340, note: 'спрямовано на компресор — розділ нижче' },
+];
+
+const missing = [
+  { item: 'Компресор поршневий 100 л, 2,2 кВт, 380 В', sum: 20_000, note: 'без нього не працює вже придбаний пневмоінструмент' },
+  { item: 'Генератор бензиновий 6 кВт з АВР', sum: 45_000, note: 'відключення електроенергії в Харкові' },
+  { item: 'Сканер діагностичний мультимарочний', sum: 22_000, note: 'діагностика — до 15% замовлень' },
+  { item: 'Верстак слюсарний з тумбою', sum: 12_000, note: 'придбані лещата потребують верстака' },
+  { item: 'Домкрат підкатний 3 т та підставки', sum: 9_000, note: 'другий пост працює без підйомника' },
+  { item: 'Установка збору відпрацьованої оливи, 80 л', sum: 7_000, note: 'екологічна вимога при заміні оливи' },
+];
+const missingCriticalTotal = missing.reduce((a, b) => a + b.sum, 0);
+
+const priceRows = [
+  { service: 'Заміна оливи в двигуні та фільтра', price: 450, network: 500 },
+  { service: 'Заміна гальмівних дисків з колодками (вісь)', price: 1_000, network: 1_100 },
+  { service: 'Заміна кульової опори (запресована)', price: 1_150, network: 1_250 },
+  { service: 'Заміна комплекту ГРМ, дизель', price: 2_600, network: 2_800 },
+  { service: 'Заміна комплекту зчеплення (зі зняттям підрамника)', price: 6_500, network: 7_000 },
+  { service: 'Комп’ютерна діагностика повна', price: 650, network: 700 },
+];
+
+const financials = [
+  { label: 'Прибуток року 1', value: '222,9 тис ₴' },
+  { label: 'Прибуток року 3', value: '610,5 тис ₴' },
+  { label: 'Окупність інвестицій', value: '18 місяців' },
+];
+
+const taxRows = [
+  { label: 'Єдиний податок', g2: '1 729 ₴/міс', g3: '5% доходу' },
+  { label: 'Військовий збір', g2: '865 ₴/міс', g3: '1% доходу' },
+  { label: 'ЄСВ «за себе»', g2: '1 902 ₴/міс', g3: '1 902 ₴/міс' },
+  { label: 'РАЗОМ на рік', g2: '53 957 ₴', g3: '192 306 ₴' },
+];
+
+const stages = [
+  { n: '1', title: 'До подання заявки', text: 'Перевірка бетонної плити будівельною лабораторією, цінова пропозиція на компресор, коригування кошторису до 500 000 ₴.' },
+  { n: '2', title: 'Тижні 1–5', text: 'Реєстрація ФОП і КВЕД 45.20, електрика 380 В, підготовка підлоги, вентиляція та освітлення.' },
+  { n: '3', title: 'Тижні 5–8', text: 'Монтаж підйомника й пусконалагодження, розміщення інструменту, найм двох механіків, оформлення трудових договорів.' },
+  { n: '4', title: 'Місяці 2–8', text: 'Відкриття та старт реклами, операційна беззбитковість на 5-му місяці, накопичений результат у плюсі на 8-му.' },
+];
+
+const risks = [
+  { title: 'Відключення електроенергії', text: 'Генератор 6 кВт з АВР у переліку дооснащення; складні роботи плануються на першу половину дня; передбачено ручний аварійний спуск підйомника.' },
+  { title: 'Безпекова ситуація в місті', text: 'Укриття поруч, план евакуації, резервний фонд на 2 місяці витрат, страхування обладнання за наявності пропозицій.' },
+  { title: 'Стан підлоги не дозволяє анкерувати підйомник', text: 'Перевірка бетонної плити лабораторією ДО закупівлі підйомника; резерв 25–40 тис ₴ на армовану ділянку, якщо плита не відповідає вимогам.' },
+  { title: 'Плинність і дефіцит механіків', text: 'Оплата «ставка плюс відсоток від виробітку», офіційне оформлення, сучасний інструмент як аргумент при найманні.' },
+];
+---
+<Layout
+  title="Бізнес-план СТО на 500 000 ₴: приклад аудиту до подання заявки | ГрантПлан"
+  description="Приклад нашої перевірки готового бізнес-плану станції техобслуговування у власному гаражі: кошторис перевищував ліміт гранту, бракувало компресора, знайдено арифметичну помилку — усе виправлено до подання заявки."
+  path="/case-sto"
+>
+  <SiteHeader slot="header" />
+
+  <!-- Hero кейса -->
+  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+    <div class="container-site">
+      <a href="/#case" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">
+        ← Приклади робіт
+      </a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="shield-check" size={14} class="text-accent" /> Приклад аудиту · до подання заявки
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl max-w-3xl">
+        Бізнес-план станції техобслуговування на <span class="text-accent">500 000 ₴</span> — власний гараж замість оренди
+      </h1>
+      <p class="mt-5 text-muted text-lg max-w-2xl">
+        Це не історія «заявку подано, грант отримано» — це приклад того, що саме ми знаходимо на аудиті, перш ніж клієнт подасть заявку. Готовий, непоганий на перший погляд план мав три проблеми, кожна з яких могла коштувати відмови. Показуємо їх без прикрас.
+      </p>
+    </div>
+  </section>
+
+  <!-- Факти -->
+  <section class="py-12 md:py-16">
+    <div class="container-site grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {facts.map((f) => (
+        <div class="reveal rounded-card bg-surface border border-border p-5">
+          <Icon name={f.icon} size={22} class="text-accent" />
+          <div class="mt-3 text-xs text-muted uppercase tracking-wide">{f.label}</div>
+          <div class="mt-1 font-display font-semibold">{f.value}</div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Реальні фото приміщення -->
+  <section class="pb-4">
+    <div class="container-site">
+      <div class="grid sm:grid-cols-3 gap-4">
+        <figure class="reveal">
+          <img src="/case/sto-1-photo.webp" alt="В'їзд на територію гаража станції техобслуговування, м. Харків"
+            width="900" height="1200" loading="lazy" decoding="async"
+            class="w-full aspect-[3/4] object-cover rounded-2xl border border-border" />
+          <figcaption class="mt-2 text-xs text-muted text-center">В'їзд на територію</figcaption>
+        </figure>
+        <figure class="reveal">
+          <img src="/case/sto-3-photo.webp" alt="Приміщення гаража 120 м² до ремонту, стан на момент аудиту"
+            width="900" height="1200" loading="lazy" decoding="async"
+            class="w-full aspect-[3/4] object-cover rounded-2xl border border-border" />
+          <figcaption class="mt-2 text-xs text-muted text-center">Приміщення до ремонту</figcaption>
+        </figure>
+        <figure class="reveal">
+          <img src="/case/sto-2-photo.webp" alt="Один із робочих постів гаража під час кузовних робіт"
+            width="900" height="1200" loading="lazy" decoding="async"
+            class="w-full aspect-[3/4] object-cover rounded-2xl border border-border" />
+          <figcaption class="mt-2 text-xs text-muted text-center">Один із постів у роботі</figcaption>
+        </figure>
+      </div>
+      <p class="reveal mt-3 text-xs text-muted text-center">Реальні фото приміщення заявника, а не ілюстрація з фотостоку.</p>
+    </div>
+  </section>
+
+  <!-- Що знайшов аудит -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Що показала перевірка наданих документів</h2>
+      <p class="reveal mt-2 text-muted max-w-2xl">Три моменти, які потрібно було врегулювати до подання заявки — жоден із них не «дрібниця».</p>
+      <div class="mt-6 grid md:grid-cols-3 gap-4">
+        {findings.map((f) => (
+          <div class="reveal rounded-card bg-surface border border-border p-6">
+            <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent"><Icon name={f.icon} size={22} /></span>
+            <h3 class="mt-4 font-display font-semibold">{f.title}</h3>
+            <p class="mt-2 text-sm text-muted">{f.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Кошторис -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Кошторис закупівлі обладнання</h2>
+      <p class="reveal mt-2 text-muted">За п'ятьма договорами постачання та двома ціновими пропозиціями — сума перевищує ліміт гранту.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-card border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Група обладнання</th>
+              <th class="py-3.5 px-5 font-medium text-right">Сума</th>
+            </tr>
+          </thead>
+          <tbody>
+            {estimate.map((row) => (
+              <tr class="border-t border-border">
+                <td class="py-3.5 px-5">{row.item}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{uah(row.sum)}</td>
+              </tr>
+            ))}
+            <tr class="border-t border-border bg-surface/60">
+              <td class="py-4 px-5 font-display font-semibold">Разом за наданими документами</td>
+              <td class="py-4 px-5 text-right font-display font-extrabold text-accent tabular-nums">{uah(estimateTotal)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="reveal mt-4 text-sm text-muted flex items-start gap-2">
+        <Icon name="alert-triangle" size={16} class="text-accent shrink-0 mt-0.5" /> Ліміт гранту для Харківської області за умови створення двох робочих місць — 500 000 ₴. Перевищення 6 460 ₴ потрібно було врегулювати до подання.
+      </p>
+    </div>
+  </section>
+
+  <!-- Врегулювання ліміту -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Як вклались у ліміт без втрати обладнання</h2>
+      <p class="reveal mt-2 text-muted">Винести за межі гранту можна було лише одну позицію — ту, без якої сервіс усе одно запрацює з першого дня.</p>
+      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+        {funding.map((f) => (
+          <div class="reveal rounded-card bg-surface border border-border p-6">
+            <div class="font-display font-extrabold text-2xl text-accent">{uah(f.value)}</div>
+            <div class="mt-2 font-medium">{f.label}</div>
+            <p class="mt-1.5 text-sm text-muted">{f.note}</p>
+          </div>
+        ))}
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">
+        Джамп стартер винесено, бо функцію запуску двигуна вже забезпечує пуско-зарядний пристрій, що лишається в кошторисі. Підйомник, візок з інструментом чи зварювальний інвертор винести було не можна — без них зупиняється основна діяльність.
+      </p>
+    </div>
+  </section>
+
+  <!-- Чого бракувало -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Обладнання, якого бракувало в закупівлі</h2>
+      <p class="reveal mt-2 text-muted max-w-2xl">
+        У переліку вже був пневмоінструмент — пневматичний молоток-зубило, пневмопістолет, комплект для прокачування гальм — але самого компресора, без якого це все не працює, не було.
+      </p>
+      <div class="mt-6 grid sm:grid-cols-2 gap-4">
+        {missing.map((m) => (
+          <div class="reveal rounded-card bg-surface border border-border p-5 flex items-start justify-between gap-4">
+            <div>
+              <div class="font-medium">{m.item}</div>
+              <p class="mt-1 text-sm text-muted">{m.note}</p>
+            </div>
+            <div class="font-display font-semibold text-accent whitespace-nowrap tabular-nums">{uah(m.sum)}</div>
+          </div>
+        ))}
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">
+        Показано шість критичних позицій із {uah(missingCriticalTotal)} — повний перелік дооснащення (разом із стелажами й освітленням для перших місяців роботи) складає 146 000 ₴ і покривається власним внеском заявника та звільненим залишком ліміту гранту.
+      </p>
+    </div>
+  </section>
+
+  <!-- Ціни -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Прайс-лист звірено з ринком</h2>
+      <p class="reveal mt-2 text-muted">Ціни звірено з відкритим прайс-листом діючого харківського СТО — ставки на 10–15% нижчі за мережеві сервіси саме за рахунок відсутності оренди, а не економії на якості.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-card border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Послуга</th>
+              <th class="py-3.5 px-5 font-medium text-right">Ціна тут</th>
+              <th class="py-3.5 px-5 font-medium text-right">Мережеве СТО</th>
+            </tr>
+          </thead>
+          <tbody>
+            {priceRows.map((r) => (
+              <tr class="border-t border-border">
+                <td class="py-3.5 px-5">{r.service}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{uah(r.price)}</td>
+                <td class="py-3.5 px-5 text-right text-muted tabular-nums">{uah(r.network)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">Показано 6 позицій із 45 у повному прайс-листі плану.</p>
+    </div>
+  </section>
+
+  <!-- Фінрезультати -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Фінансовий прогноз</h2>
+      <p class="reveal mt-2 text-muted">На плановій потужності 60% завантаження постів: дохід 136,9 тис ₴/міс, витрати 89,0 тис ₴/міс.</p>
+      <div class="mt-6 grid sm:grid-cols-3 gap-4">
+        {financials.map((f) => (
+          <div class="reveal rounded-card bg-raised border border-border p-6 text-center sm:text-left">
+            <Icon name="trending-up" size={22} class="text-success mx-auto sm:mx-0" />
+            <div class="mt-3 font-display font-extrabold text-2xl sm:text-3xl text-accent">{f.value}</div>
+            <div class="mt-1 text-sm text-muted">{f.label}</div>
+          </div>
+        ))}
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">Оренда боксу такої площі в Харкові коштувала б 25–35 тис ₴/міс і підняла б точку беззбитковості з 46% до 62% завантаження постів — власне приміщення є визначальною перевагою проєкту.</p>
+    </div>
+  </section>
+
+  <!-- Оподаткування -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site container-text">
+      <h2 class="reveal text-2xl sm:text-3xl">Податковий режим: 2 група проти 3 групи</h2>
+      <p class="reveal mt-2 text-muted">Для СТО на другій групі податок фіксований і не залежить від обороту — істотна економія за помітного обмеження.</p>
+      <div class="reveal mt-6 overflow-x-auto rounded-card border border-border">
+        <table class="w-full text-left border-collapse min-w-[420px]">
+          <thead>
+            <tr class="bg-surface text-sm text-muted">
+              <th class="py-3.5 px-5 font-medium">Платіж</th>
+              <th class="py-3.5 px-5 font-medium text-right">2 група</th>
+              <th class="py-3.5 px-5 font-medium text-right">3 група</th>
+            </tr>
+          </thead>
+          <tbody>
+            {taxRows.map((r) => (
+              <tr class={'border-t border-border' + (r.label === 'РАЗОМ на рік' ? ' bg-surface/60' : '')}>
+                <td class={'py-3.5 px-5' + (r.label === 'РАЗОМ на рік' ? ' font-display font-semibold' : '')}>{r.label}</td>
+                <td class={'py-3.5 px-5 text-right tabular-nums' + (r.label === 'РАЗОМ на рік' ? ' font-display font-extrabold text-accent' : ' font-medium')}>{r.g2}</td>
+                <td class="py-3.5 px-5 text-right font-medium tabular-nums">{r.g3}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="reveal mt-4 text-sm text-muted">Економія близько 138 тис ₴ на рік. Обмеження другої групи: послуги дозволено надавати лише населенню та платникам єдиного податку — робота з корпоративними автопарками на загальній системі оподаткування на цій групі неможлива.</p>
+    </div>
+  </section>
+
+  <!-- Календар запуску -->
+  <section class="py-12 md:py-16">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Календарний план запуску</h2>
+      <div class="mt-6 grid md:grid-cols-4 gap-4">
+        {stages.map((s) => (
+          <div class="reveal rounded-card bg-surface border border-border p-6">
+            <span class="inline-grid place-items-center w-9 h-9 rounded-lg bg-accent text-accent-ink font-display font-extrabold">{s.n}</span>
+            <h3 class="mt-4 font-display font-semibold">{s.title}</h3>
+            <p class="mt-2 text-sm text-muted">{s.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Ризики -->
+  <section class="py-12 md:py-16 border-t border-border/70 bg-surface/30">
+    <div class="container-site">
+      <h2 class="reveal text-2xl sm:text-3xl">Ризики та їх мінімізація</h2>
+      <p class="reveal mt-2 text-muted">Перші два з цих ризиків визначають життєздатність проєкту найбільше — тому прописані з конкретними, а не загальними заходами.</p>
+      <div class="mt-6 grid sm:grid-cols-2 gap-4">
+        {risks.map((r) => (
+          <div class="reveal rounded-card bg-surface border border-border p-6">
+            <div class="flex items-start gap-3">
+              <Icon name="shield-check" size={22} class="text-accent shrink-0 mt-0.5" />
+              <div>
+                <h3 class="font-display font-semibold">{r.title}</h3>
+                <p class="mt-1.5 text-sm text-muted">{r.text}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-14 md:py-20 border-t border-border/70">
+    <div class="container-site">
+      <div class="reveal rounded-card-lg bg-raised border border-accent/70 p-8 md:p-12 text-center relative overflow-hidden">
+        <div class="absolute -top-16 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full blur-[100px] opacity-15" style="background:radial-gradient(circle,#E86A00,transparent 70%)" aria-hidden="true"></div>
+        <h2 class="relative text-2xl sm:text-4xl">Хочу такий аудит для свого плану</h2>
+        <p class="relative mt-4 text-muted text-lg max-w-xl mx-auto">Почніть із безкоштовного аудиту — чесно скажемо, чи проходить ваша ідея, ще до оплати.</p>
+        <a href="/#lead" class="relative btn btn-primary mt-7" data-analytics="click_cta_case">Отримати безкоштовний аудит</a>
+      </div>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>
