@@ -44,7 +44,7 @@ const schema = {
   <!-- Тіло: список причин + липкий зміст праворуч. Сторінка тримає ту саму
        ширину контейнера, що й шапка/футер і головна. -->
   <section class="py-14 md:py-20">
-    <div class="container-site grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
+    <div class="container-site lg:grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
       <div class="space-y-4">
       {rejections.map((r) => (
         <article id={`prychyna-${r.n}`} class="reveal scroll-mt-24 rounded-card bg-surface border border-border p-6 md:p-7">

@@ -34,7 +34,7 @@ const schema = {
   <SiteHeader slot="header" />
 
   <!-- Hero -->
-  <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
+  <section class="relative pt-28 md:pt-36 pb-8 md:pb-12 border-b border-border/70">
     <div class="container-site container-text">
       <a href="/blog" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← Усі статті</a>
       <span class={'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ' + (p.category === 'news' ? 'bg-accent/10 text-accent' : 'bg-success/10 text-success')}>
@@ -46,8 +46,8 @@ const schema = {
   </section>
 
   <!-- Тіло статті -->
-  <section class="py-14 md:py-20">
-    <div class="container-site grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
+  <section class="pt-10 pb-14 md:py-16">
+    <div class="container-site lg:grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
       <div>
       <div class="reveal space-y-5 text-[1.05rem] leading-relaxed max-w-3xl">
         {p.body.map((block, i) => {
@@ -66,6 +66,26 @@ const schema = {
           if (block.type === 'callout') return (
             <div class="rounded-card border border-accent/70 bg-raised p-5 text-muted">
               <span class="text-ink font-medium">Чесно: </span>{block.text}
+            </div>
+          );
+          if (block.type === 'table') return (
+            <div class="overflow-x-auto rounded-card border border-border">
+              <table class="w-full text-left border-collapse min-w-[480px] text-[0.95rem]">
+                <thead>
+                  <tr class="bg-surface text-sm text-muted">
+                    {block.headers.map((h) => <th class="py-3 px-4 font-medium">{h}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {block.rows.map((row) => (
+                    <tr class="border-t border-border">
+                      {row.map((cell, ci) => (
+                        <td class={'py-3 px-4' + (ci === 0 ? ' text-ink font-medium' : ' text-muted')}>{cell}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           );
           return null;
