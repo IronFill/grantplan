@@ -85,9 +85,11 @@ const faqSchema = {
           <div class="text-sm text-muted">Орієнтовний ліміт</div>
           <div class="mt-2 font-display font-extrabold text-5xl text-accent">{a.limitValue}</div>
           <div class="mt-3 text-sm text-muted">{a.limitNote}</div>
+          <!-- Формулювання навмисно не повторює actionLine у лівій колонці:
+               у фазі new-open обидва тексти видно поруч на одному екрані. -->
           <div class="mt-4 pt-4 border-t border-border text-xs text-muted leading-relaxed">
-            Ліміти переглядають разом із редакцією порядку. Точну суму під ваш
-            випадок рахуємо на аудиті за правилами, чинними на дату подання.
+            Орієнтир, а не обіцянка: ліміти переглядають разом із редакцією
+            порядку, тож звіряємо їх перед кожною заявкою.
           </div>
           <div class="mt-6 pt-6 border-t border-border grid grid-cols-2 gap-4 text-left">
             <div>
