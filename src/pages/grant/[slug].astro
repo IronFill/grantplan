@@ -13,6 +13,9 @@ import Faq from '../../components/Faq.astro';
 import LeadForm from '../../components/LeadForm.astro';
 import { audiences } from '../../data/audiences';
 import { faq } from '../../data/faq';
+import { getProgramStatus } from '../../data/program';
+
+const status = getProgramStatus();
 
 export function getStaticPaths() {
   return audiences.map((a) => ({ params: { slug: a.slug }, props: { a } }));
@@ -42,7 +45,7 @@ const faqSchema = {
     ></div>
     <div
       class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[420px] rounded-full blur-[120px] opacity-20"
-      style="background: radial-gradient(circle, #E86A00, transparent 70%);"
+      style="background: radial-gradient(circle, var(--color-accent), transparent 70%);"
       aria-hidden="true"
     ></div>
 
@@ -69,6 +72,11 @@ const faqSchema = {
           <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Чесна оцінка шансів до оплати</li>
           <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Форма Дії за 2–3 дні</li>
         </ul>
+
+        <p class="mt-6 flex items-start gap-2.5 text-sm text-muted max-w-xl">
+          <Icon name="calendar-clock" size={17} class="text-accent shrink-0 mt-0.5" />
+          <span>{status.actionLine}</span>
+        </p>
       </div>
 
       <!-- Картка ліміту -->
@@ -77,6 +85,12 @@ const faqSchema = {
           <div class="text-sm text-muted">Орієнтовний ліміт</div>
           <div class="mt-2 font-display font-extrabold text-5xl text-accent">{a.limitValue}</div>
           <div class="mt-3 text-sm text-muted">{a.limitNote}</div>
+          <!-- Формулювання навмисно не повторює actionLine у лівій колонці:
+               у фазі new-open обидва тексти видно поруч на одному екрані. -->
+          <div class="mt-4 pt-4 border-t border-border text-xs text-muted leading-relaxed">
+            Орієнтир, а не обіцянка: ліміти переглядають разом із редакцією
+            порядку, тож звіряємо їх перед кожною заявкою.
+          </div>
           <div class="mt-6 pt-6 border-t border-border grid grid-cols-2 gap-4 text-left">
             <div>
               <div class="font-display font-extrabold text-xl">2–3 дні</div>
@@ -95,7 +109,10 @@ const faqSchema = {
   <!-- Чому саме для цієї аудиторії -->
   <section class="py-16 md:py-24 border-t border-border/70 bg-surface/30">
     <div class="container-site">
-      <div class="grid md:grid-cols-3 gap-5">
+      <!-- Заголовок секції: без нього сторінка стрибала з h1 одразу на h3
+           у картках, а сама секція лишалась без назви. -->
+      <h2 class="reveal max-w-2xl text-2xl sm:text-3xl">{a.sectionTitle}</h2>
+      <div class="mt-8 grid md:grid-cols-3 gap-5">
         {a.points.map((p) => (
           <article class="reveal rounded-card bg-surface border border-border p-6">
             <span class="inline-grid place-items-center w-11 h-11 rounded-xl bg-accent/10 text-accent">

@@ -1,6 +1,15 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '../data/site';
+import { getProgramPhase } from '../data/program';
+
+// Поки нова модель не стартувала, число з квізу порахував би старий
+// порядок — тож підписуємо його чесно замість того, щоб мовчки видавати
+// суму за редакцією, яка вже не діє.
+const quizNote =
+  getProgramPhase() === 'new-open'
+    ? 'Це орієнтир за логікою програми: остаточна сума залежить від робочих місць, регіону, галузі та надбавок, які застосовує чинна редакція порядку. Точний розрахунок робимо на безкоштовному аудиті.'
+    : 'Розрахунок за редакцією, що приймала заявки до 1 серпня 2026 року. З 1 вересня діють гнучкі діапазони з системою надбавок, тож ваша фактична сума може відрізнятися — перерахуємо її на безкоштовному аудиті за правилами, чинними на дату подання.';
 
 const questions = [
   {
@@ -85,7 +94,7 @@ const checks = [
     </div>
 
     <div class="reveal rounded-card-lg bg-raised border border-border p-6 md:p-10 relative overflow-hidden" data-quiz>
-      <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full blur-[110px] opacity-15" style="background:radial-gradient(circle,#E86A00,transparent 70%)" aria-hidden="true"></div>
+      <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full blur-[110px] opacity-15" style="background:radial-gradient(circle,var(--color-accent),transparent 70%)" aria-hidden="true"></div>
 
       <!-- Інтро -->
       <div class="relative text-center" data-quiz-intro>
@@ -137,12 +146,12 @@ const checks = [
           <div class="mt-5 grid gap-2.5">
             {blockers.map((b) => (
               <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface px-5 py-4 cursor-pointer hover:border-accent transition-colors">
-                <input type="checkbox" class="mt-1 w-4 h-4 accent-[#E86A00] shrink-0" data-blocker value={b.id} data-label={b.label} />
+                <input type="checkbox" class="mt-1 w-4 h-4 accent-accent shrink-0" data-blocker value={b.id} data-label={b.label} />
                 <span class="text-[0.95rem] leading-snug">{b.label}</span>
               </label>
             ))}
             <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-raised px-5 py-4 cursor-pointer hover:border-accent transition-colors">
-              <input type="checkbox" class="mt-1 w-4 h-4 accent-[#E86A00] shrink-0" data-blocker-none />
+              <input type="checkbox" class="mt-1 w-4 h-4 accent-accent shrink-0" data-blocker-none />
               <span class="text-[0.95rem] leading-snug font-medium">Нічого з переліченого</span>
             </label>
           </div>
@@ -155,6 +164,14 @@ const checks = [
         <span class="inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto" data-result-icon></span>
         <h3 class="mt-5 text-2xl sm:text-3xl" data-result-title></h3>
         <p class="mt-3 text-muted max-w-lg mx-auto" data-result-text></p>
+        <!-- Ліміт рахується за редакцією, що діяла до 1 серпня 2026. Поки
+             не опубліковано параметри нової моделі, показуємо число як
+             орієнтир і одразу поруч кажемо, за якою редакцією воно
+             пораховане, — інакше вийшло б, що сайт називає точну суму за
+             правилами, яких уже немає. -->
+        <p class="mt-4 mx-auto max-w-lg rounded-card border border-border bg-surface px-4 py-3 text-left text-xs text-muted leading-relaxed hidden" data-result-note>
+          {quizNote}
+        </p>
 
         <!-- Захоплення контакту -->
         <form class="mt-7 max-w-md mx-auto text-left" data-quiz-form>
@@ -173,7 +190,7 @@ const checks = [
             </div>
           </div>
           <label class="flex items-start gap-2.5 text-xs text-muted mt-3">
-            <input type="checkbox" name="consent" required class="mt-0.5 w-4 h-4 accent-[#E86A00] shrink-0" />
+            <input type="checkbox" name="consent" required class="mt-0.5 w-4 h-4 accent-accent shrink-0" />
             <span>Погоджуюсь на обробку персональних даних згідно з <a href="/privacy" class="text-accent underline">політикою</a></span>
           </label>
           <button type="submit" class="btn btn-primary w-full mt-4" data-quiz-submit>Отримати розрахунок</button>
@@ -277,6 +294,7 @@ const checks = [
       const iconWrap = resultBox.querySelector<HTMLElement>('[data-result-icon]')!;
       const title = resultBox.querySelector<HTMLElement>('[data-result-title]')!;
       const text = resultBox.querySelector<HTMLElement>('[data-result-text]')!;
+      const note = resultBox.querySelector<HTMLElement>('[data-result-note]')!;
 
       // 1) Жорсткий відсів: блокуючі умови програми
       const hardBlockers = Array.from(root!.querySelectorAll<HTMLInputElement>('[data-blocker]'))
@@ -305,8 +323,12 @@ const checks = [
         if (answers['commit'] === 'Ні') reasons.push('бути готовим офіційно працювати і платити податки 3 роки — це умова програми');
         text.textContent = 'Щоб пройти: ' + reasons.join('; ') + '. Розкажемо детально на безкоштовному аудиті.';
         resultPayload = 'РЕЗУЛЬТАТ: поки не проходить';
+        note.hidden = true;
       } else {
         const limit = computeLimit();
+        // Примітка про редакцію потрібна лише там, де ми назвали суму.
+        note.hidden = false;
+        note.classList.remove('hidden');
         iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-success/15 text-success';
         iconWrap.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';

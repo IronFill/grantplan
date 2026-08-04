@@ -9,10 +9,13 @@ import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
 import Icon from '../components/Icon.astro';
+import { getProgramStatus } from '../data/program';
+
+const status = getProgramStatus();
 
 // Дата останньої звірки з офіційними джерелами. Оновлювати руками
 // разом зі змістом — вона показана користувачеві у шапці сторінки.
-const updated = '26 липня 2026';
+const updated = '3 серпня 2026';
 
 // --- Суми за чинними правилами (редакція, що діє з 1 січня 2026) ---
 const sums = [
@@ -253,10 +256,9 @@ const schema = {
             <Icon name="alert-triangle" size={22} />
           </span>
           <div class="max-w-2xl">
-            <h2 class="text-xl font-display font-semibold">Найважливіше на липень 2026: програма змінює модель</h2>
-            <p class="mt-3 text-muted leading-relaxed">
-              За повідомленнями Мінекономіки та Уряду, чинні правила діють до <span class="text-ink font-medium">1 серпня 2026</span>, а з <span class="text-ink font-medium">1 вересня 2026</span> запрацює оновлена модель: замість фіксованих сум — гнучкі діапазони, нова система бонусів, спрощені умови щодо робочих місць і окремий напрям на масштабування вже діючого бізнесу.
-            </p>
+            <h2 class="text-xl font-display font-semibold">{status.noticeTitle}</h2>
+            <p class="mt-3 text-muted leading-relaxed">{status.noticeText}</p>
+            <p class="mt-3 text-muted leading-relaxed">{status.actionLine}</p>
             <div class="mt-5 grid sm:grid-cols-2 gap-4">
               <div class="rounded-card-sm border border-border bg-surface p-4">
                 <div class="text-sm text-muted">Старт бізнесу</div>
@@ -286,10 +288,8 @@ const schema = {
     <div class="container-site">
       <div class="reveal max-w-3xl">
         <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Ліміти фінансування</span>
-        <h2 class="mt-2 text-2xl sm:text-3xl">Скільки дають за чинними правилами</h2>
-        <p class="mt-3 text-muted">
-          Суми, що діють у редакції з 1 січня 2026 року. Сума прив’язана не до ідеї, а до кількості офіційних робочих місць, які ви зобов’язуєтесь створити.
-        </p>
+        <h2 class="mt-2 text-2xl sm:text-3xl">{status.sumsHeading}</h2>
+        <p class="mt-3 text-muted">{status.sumsIntro}</p>
       </div>
 
       <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

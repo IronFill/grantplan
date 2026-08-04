@@ -14,7 +14,7 @@ const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
 ---
 <Layout
-  title="Блог: новини програми «Власна справа» та поради з бізнес-плану | ГрантПлан"
+  title="Новини гранту «Власна справа» і поради | ГрантПлан"
   description="Новини про зміни в програмі «Власна справа» з 1 вересня 2026 та практичні поради з підготовки бізнес-плану — КВЕД, кошторис, фінансова модель."
   path="/blog"
 >
@@ -47,6 +47,11 @@ const fmtDate = (iso: string) =>
                 {p.categoryLabel}
               </span>
               <span class="text-muted">{fmtDate(p.date)} · {p.readMin} хв читання</span>
+              {p.outdated && (
+                <span class="inline-flex items-center rounded-full border border-border px-2.5 py-1 font-medium text-muted">
+                  Застаріло
+                </span>
+              )}
             </div>
             <h2 class="mt-3 text-xl font-display font-semibold">{p.title}</h2>
             <p class="mt-2 text-muted leading-relaxed">{p.excerpt}</p>
