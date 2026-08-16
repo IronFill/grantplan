@@ -8,12 +8,19 @@ import ArticleAside from '../components/ArticleAside.astro';
 import ChecklistCta from '../components/ChecklistCta.astro';
 import Icon from '../components/Icon.astro';
 import { rejections } from '../data/rejections';
+import { site } from '../data/site';
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: '10 причин, за якими відмовляють у гранті «Власна справа»',
+  image: new URL('/og-default.png', site.url).href,
   author: { '@type': 'Organization', name: 'ГрантПлан' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'ГрантПлан',
+    logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', site.url).href, width: 180, height: 180 },
+  },
   about: 'Причини відмов у програмі «Власна справа» (єРобота) та як їх уникнути',
 };
 ---
@@ -60,7 +67,7 @@ const schema = {
                 <span><span class="text-ink font-medium">Як уникаємо: </span>{r.avoid}</span>
               </p>
               {r.guideHref && (
-                <a href={r.guideHref} class="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
+                <a href={r.guideHref} class="mt-3 py-1 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
                   {r.guideLabel} <Icon name="arrow-right" size={14} />
                 </a>
               )}

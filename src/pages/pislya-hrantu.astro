@@ -11,6 +11,7 @@ import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
 import ArticleAside from '../components/ArticleAside.astro';
 import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
 
 const timeline = [
   {
@@ -62,7 +63,13 @@ const schema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'Що буде після отримання гранту «Власна справа»',
+  image: new URL('/og-default.png', site.url).href,
   author: { '@type': 'Organization', name: 'ГрантПлан' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'ГрантПлан',
+    logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', site.url).href, width: 180, height: 180 },
+  },
   about: 'Обов’язки, звітність і ризики після отримання мікрогранту «Власна справа»',
 };
 ---
