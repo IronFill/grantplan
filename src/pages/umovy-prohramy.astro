@@ -10,6 +10,7 @@ import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
 import Icon from '../components/Icon.astro';
 import { getProgramStatus } from '../data/program';
+import { site } from '../data/site';
 
 const status = getProgramStatus();
 
@@ -204,7 +205,13 @@ const schema = {
   '@type': 'Article',
   headline: 'Умови програми «Власна справа» у 2026 році — офіційні джерела',
   datePublished: '2026-07-26',
+  image: new URL('/og-default.png', site.url).href,
   author: { '@type': 'Organization', name: 'ГрантПлан' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'ГрантПлан',
+    logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', site.url).href, width: 180, height: 180 },
+  },
   about: 'Мікрогрант «Власна справа» від Державної служби зайнятості',
 };
 ---
@@ -274,7 +281,7 @@ const schema = {
             <p class="mt-4 text-sm text-muted">
               Розмір фінансування залежатиме від кількості створених робочих місць, регіону, галузі та категорії заявника. Точні параметри визначає редакція порядку, чинна на дату подання, — саме її ми звіряємо перед кожною заявкою.
             </p>
-            <a href="/blog/onovlennya-vlasna-sprava-veresen-2026" class="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
+            <a href="/blog/onovlennya-vlasna-sprava-veresen-2026" class="mt-4 py-1 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:gap-2 transition-all">
               Детальніше про перехід на нову модель <Icon name="arrow-right" size={15} />
             </a>
           </div>
