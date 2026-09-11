@@ -5,7 +5,8 @@ import { site, nav } from '../data/site';
 <header id="site-header" class="fixed top-0 inset-x-0 z-[60] transition-colors" data-header>
   <div class="container-site flex items-center justify-between h-16 md:h-[72px]" data-header-bar>
     <!-- Лого -->
-    <a href="/" class="font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
+    <a href="/" class="flex items-center gap-2.5 font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
+      <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
       ГрантПлан<span class="text-accent">.</span>
     </a>
 
@@ -72,7 +73,10 @@ import { site, nav } from '../data/site';
     data-menu-panel
   >
     <div class="container-site flex items-center justify-between h-16">
-      <span class="font-display font-extrabold text-xl">ГрантПлан<span class="text-accent">.</span></span>
+      <span class="flex items-center gap-2.5 font-display font-extrabold text-xl">
+        <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
+        ГрантПлан<span class="text-accent">.</span>
+      </span>
       <button
         type="button"
         class="icon-btn"
