@@ -12,6 +12,7 @@ import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
 import ArticleAside from '../components/ArticleAside.astro';
 import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
 
 const categories = [
   {
@@ -59,7 +60,13 @@ const schema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'Співбесіда в центрі зайнятості за грантом «Власна справа»: типові питання',
+  image: new URL('/og-default.png', site.url).href,
   author: { '@type': 'Organization', name: 'ГрантПлан' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'ГрантПлан',
+    logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', site.url).href, width: 180, height: 180 },
+  },
   about: 'Підготовка до співбесіди з комісією Державного центру зайнятості за програмою «Власна справа»',
 };
 ---
@@ -150,7 +157,7 @@ const schema = {
         <p class="mt-3 text-muted leading-relaxed">
           У тарифі «Під ключ» репетиція співбесіди — окремий етап після готового плану. Ми ставимо питання за всіма чотирма темами вище, ви відповідаєте вголос своїми словами, а ми фіксуємо формулювання, які викликають додаткові запитання, і допомагаємо їх прибрати — до того, як це побачить комісія.
         </p>
-        <a href="/#pricing" class="mt-5 inline-flex items-center gap-2 text-accent font-display font-semibold hover:gap-3 transition-all">
+        <a href="/#pricing" class="mt-5 py-1 inline-flex items-center gap-2 text-accent font-display font-semibold hover:gap-3 transition-all">
           Дивитись тариф «Під ключ» <Icon name="arrow-right" size={18} />
         </a>
       </div>

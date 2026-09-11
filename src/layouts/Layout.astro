@@ -25,7 +25,10 @@ const {
   noindex = false,
 } = Astro.props;
 
-const canonical = new URL(path, site.url).href;
+// Сайтмап (@astrojs/sitemap) генерує URL з кінцевим "/" — вирівнюємо canonical/OG
+// під той самий формат, щоб усі сигнали для Google вказували на один і той самий URL.
+const normalizedPath = path.endsWith('/') ? path : `${path}/`;
+const canonical = new URL(normalizedPath, site.url).href;
 const ogImageAbs = new URL(ogImage, site.url).href;
 const year = new Date().getFullYear();
 
