@@ -8,7 +8,7 @@ import { getProgramPhase } from '../data/program';
 // суму за редакцією, яка вже не діє.
 const quizNote =
   getProgramPhase() === 'new-open'
-    ? 'Це орієнтир за логікою програми: остаточна сума залежить від робочих місць, регіону, галузі та надбавок, які застосовує чинна редакція порядку. Точний розрахунок робимо на безкоштовному аудиті.'
+    ? 'Це орієнтир за логікою постанови КМУ № 616, чинної з 1 вересня 2026. Тут не враховано надбавку +50% за пріоритетний сектор економіки (визначається за КВЕД) та інші підстави для +20%: статус платника ПДВ, чинний патент, статус ВПО. Точний розрахунок робимо на безкоштовному аудиті.'
     : 'Розрахунок за редакцією, що приймала заявки до 1 серпня 2026 року. З 1 вересня діють гнучкі діапазони з системою надбавок, тож ваша фактична сума може відрізнятися — перерахуємо її на безкоштовному аудиті за правилами, чинними на дату подання.';
 
 const questions = [
@@ -16,6 +16,13 @@ const questions = [
     q: 'Ваш статус?',
     key: 'status',
     options: ['ФОП', 'Фізособа', 'Ветеран або член родини', 'Молодь 18–25'],
+  },
+  {
+    // З 1 вересня 2026 сума залежить насамперед від напряму, а не від
+    // категорії заявника, — тож питаємо про це одразу після статусу.
+    q: 'Ви відкриваєте нову справу чи масштабуєте діючу?',
+    key: 'track',
+    options: ['Відкриваю нову', 'Масштабую діючу'],
   },
   {
     q: 'Чи є прострочені кредити понад 30 днів або банкрутство?',
@@ -56,6 +63,7 @@ const totalSteps = questions.length + 1;
 // questions/blockers вище, щоб він не розійшовся з реальними кроками.
 const checks = [
   'Ваш статус: ФОП, фізособа, ветеран або молодь 18–25',
+  'Напрям: нова справа чи масштабування діючої',
   'Прострочені кредити понад 30 днів і банкрутство',
   'Скільки робочих місць готові створити',
   'Область реєстрації — прифронтова чи ні',
@@ -272,18 +280,46 @@ const checks = [
     });
     root.querySelector<HTMLButtonElement>('[data-quiz-finish]')?.addEventListener('click', finish);
 
+    function num(n: number): string {
+      return n.toLocaleString('uk-UA').replace(/,/g, ' ');
+    }
     function fmt(n: number): string {
-      return n.toLocaleString('uk-UA').replace(/,/g, ' ') + ' ₴';
+      return num(n) + ' ₴';
     }
 
-    function computeLimit(): number {
-      const { status, jobs, region } = answers;
-      const kh = region === 'Харківська чи інша прифронтова';
-      if (status === 'Ветеран або член родини') return 1_000_000;
-      if (status === 'Молодь 18–25' && jobs === '0') return 200_000;
-      if (jobs === '2+') return kh ? 500_000 : 350_000;
-      if (jobs === '1') return kh ? 300_000 : 200_000;
-      return 100_000; // 0 робочих місць
+    // Модель постанови КМУ № 616 (чинна з 1 вересня 2026): сума залежить
+    // від напряму, а надбавки за категорію/регіон/робочі місця
+    // підсумовуються й нараховуються на базову суму запиту.
+    function computeEstimate() {
+      const { status, track, jobs, region } = answers;
+      const scaling = track === 'Масштабую діючу';
+
+      const base = scaling ? { min: 500_000, max: 1_500_000 } : { min: 100_000, max: 300_000 };
+      const cap = scaling ? 2_500_000 : 500_000;
+
+      const bonuses: string[] = [];
+      let pct = 0;
+      if (status === 'Молодь 18–25') {
+        pct += 5;
+        bonuses.push('+5% молодь 18–25');
+      }
+      if (status === 'Ветеран або член родини') {
+        pct += 20;
+        bonuses.push('+20% ветеранське підприємництво');
+      }
+      if (jobs === '2+') {
+        pct += 20;
+        bonuses.push('+20% за 2 нові робочі місця');
+      }
+      if (region === 'Харківська чи інша прифронтова') {
+        pct += 30;
+        bonuses.push('+30% прифронтовий регіон');
+      }
+
+      // Надбавка рахується від базової суми, але не вище стелі напряму.
+      const withBonus = Math.min(Math.round((base.max * (100 + pct)) / 100), cap);
+
+      return { scaling, base, cap, pct, bonuses, withBonus };
     }
 
     let resultPayload = '';
@@ -325,19 +361,32 @@ const checks = [
         resultPayload = 'РЕЗУЛЬТАТ: поки не проходить';
         note.hidden = true;
       } else {
-        const limit = computeLimit();
+        const est = computeEstimate();
         // Примітка про редакцію потрібна лише там, де ми назвали суму.
         note.hidden = false;
         note.classList.remove('hidden');
         iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-success/15 text-success';
         iconWrap.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
-        title.innerHTML = `Ваш орієнтовний ліміт — <span class="text-accent">до ${fmt(limit)}</span>`;
-        text.textContent =
-          answers['status'] === 'Ветеран або член родини'
-            ? 'Ветеранський напрям має окремі умови та документи — точний ліміт для вашого випадку уточнимо на безкоштовному аудиті. Блокуючих умов ви не позначили.'
-            : 'Це попередня оцінка за умовами програми. Блокуючих умов ви не позначили. Точну суму й реальні шанси визначимо на безкоштовному аудиті.';
-        resultPayload = `РЕЗУЛЬТАТ: до ${fmt(limit)}`;
+
+        const trackName = est.scaling ? 'масштабування діючої справи' : 'старт власної справи';
+        title.innerHTML = `Ваш напрям — ${trackName}: <span class="text-accent">${num(est.base.min)} – ${fmt(est.base.max)}</span>`;
+
+        const parts: string[] = [];
+        if (est.bonuses.length) {
+          parts.push(
+            `Ваші надбавки: ${est.bonuses.join(', ')} — разом +${est.pct}%, орієнтовно до ${fmt(est.withBonus)} (стеля напряму — ${fmt(est.cap)}).`,
+          );
+        } else {
+          parts.push(`Надбавок за вашими відповідями не набирається, стеля напряму — ${fmt(est.cap)}.`);
+        }
+        if (est.scaling && answers['jobs'] === '0') {
+          parts.push('Увага: масштабування зобов’язує створити щонайменше одне нове робоче місце.');
+        }
+        parts.push('Блокуючих умов ви не позначили. Точну суму й реальні шанси визначимо на безкоштовному аудиті.');
+        text.textContent = parts.join(' ');
+
+        resultPayload = `РЕЗУЛЬТАТ: ${trackName}, ${num(est.base.min)} – ${fmt(est.base.max)}, надбавки +${est.pct}% → до ${fmt(est.withBonus)}`;
       }
 
       // Заповнюємо приховане поле основної форми (якщо є)
