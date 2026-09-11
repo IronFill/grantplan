@@ -25,6 +25,7 @@ const schema = {
   headline: p.title,
   description: p.metaDescription,
   datePublished: p.date,
+  dateModified: p.updatedDate ?? p.date,
   author: { '@type': 'Organization', name: 'ГрантПлан' },
   publisher: { '@type': 'Organization', name: 'ГрантПлан' },
   mainEntityOfPage: new URL(`/blog/${p.slug}`, site.url).href,
@@ -41,7 +42,10 @@ const schema = {
         {p.categoryLabel}
       </span>
       <h1 class="mt-4 text-3xl sm:text-5xl">{p.title}</h1>
-      <p class="mt-4 text-sm text-muted">{fmtDate(p.date)} · {p.readMin} хв читання</p>
+      <p class="mt-4 text-sm text-muted">
+        {fmtDate(p.date)} · {p.readMin} хв читання
+        {p.updatedDate && p.updatedDate !== p.date && <> · оновлено {fmtDate(p.updatedDate)}</>}
+      </p>
 
       {p.outdated && (
         <div class="mt-6 rounded-card border border-accent/70 bg-raised p-5">
