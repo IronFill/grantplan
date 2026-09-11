@@ -31,6 +31,7 @@ const plans = [
     cta: 'Замовити план',
     href: '/#lead',
     analytics: 'click_plan_plan',
+    termsHref: '/umovy-spivpratsi-biznes-plan',
   },
   {
     name: '«Під ключ»',
@@ -48,6 +49,7 @@ const plans = [
     cta: 'Обрати супровід',
     href: '/#lead',
     analytics: 'click_plan_turnkey',
+    termsHref: '/umovy-spivpratsi-pid-kluch',
   },
 ];
 ---
@@ -90,6 +92,11 @@ const plans = [
             class={`btn mt-7 w-full ${p.featured ? 'btn-primary' : 'btn-ghost'}`}
             data-analytics={p.analytics}
           >{p.cta}</a>
+          {p.termsHref && (
+            <a href={p.termsHref} class="mt-3 text-center text-sm text-muted hover:text-accent underline underline-offset-2">
+              Умови співпраці
+            </a>
+          )}
         </article>
       ))}
     </div>
