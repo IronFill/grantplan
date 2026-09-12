@@ -31,20 +31,23 @@ import { site, nav } from '../data/site';
         Безкоштовний аудит
       </a>
 
-      <!-- Пошук по сайту: сама кнопка тут, оверлей і логіка — в SiteSearch.astro -->
+      <!-- "Нагору": живе в шапці, а не плаваючою кнопкою над контентом —
+           так воно фізично нічого не перекриває на мобільному. З'являється
+           лише після прокрутки (див. скрипт нижче). -->
       <button
         type="button"
-        class="icon-btn hover:text-accent hover:border-accent"
-        aria-label="Пошук по сайту (Ctrl+K)"
-        data-search-toggle
+        class="icon-btn hover:text-accent hover:border-accent hidden"
+        aria-label="Прокрутити на початок сторінки"
+        data-scroll-top
       >
-        <Icon name="search" size={20} />
+        <Icon name="arrow-up" size={20} />
       </button>
 
-      <!-- Перемикач теми -->
+      <!-- Перемикач теми: на мобільному він у висувному меню (нижче),
+           щоб не захаращувати вузьку шапку. -->
       <button
         type="button"
-        class="icon-btn hover:text-accent hover:border-accent"
+        class="icon-btn hover:text-accent hover:border-accent hidden xl:inline-flex"
         aria-label="Перемкнути тему"
         data-theme-toggle
       >
@@ -66,43 +69,52 @@ import { site, nav } from '../data/site';
     </div>
   </div>
 
-  <!-- Повноекранне мобільне меню -->
-  <div
-    id="mobile-menu"
-    class="xl:hidden fixed inset-0 z-[60] bg-bg flex-col hidden overflow-y-auto overscroll-contain"
-    data-menu-panel
-  >
-    <div class="container-site flex items-center justify-between h-16">
-      <span class="flex items-center gap-2.5 font-display font-extrabold text-xl">
-        <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
-        ГрантПлан<span class="text-accent">.</span>
-      </span>
-      <button
-        type="button"
-        class="icon-btn"
-        aria-label="Закрити меню"
-        data-menu-close
-      >
-        <Icon name="x" size={22} />
-      </button>
-    </div>
-    <nav class="container-site flex flex-col gap-1 mt-6" aria-label="Мобільна навігація">
-      {nav.map((item) => (
-        <a
-          href={item.href}
-          class="py-4 text-2xl font-display font-semibold border-b border-border/60"
-          data-menu-link
-        >{item.label}</a>
-      ))}
-    </nav>
-    <div class="container-site mt-8 flex flex-col gap-3">
-      <a href="/#lead" class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
-      <a href={`tel:${site.phone}`} class="btn btn-ghost w-full" data-analytics="click_phone" data-menu-link>
-        <Icon name="phone" size={18} /> Подзвонити
-      </a>
-    </div>
-  </div>
 </header>
+
+<!-- Повноекранне мобільне меню — навмисно ПОЗА <header>. Під час скролу
+     шапка отримує .header-blur з backdrop-filter, а він створює containing
+     block для position:fixed нащадків: усередині шапки панель схлопувалась
+     до її висоти (64px) і меню не відкривалось після будь-якої прокрутки. -->
+<div
+  id="mobile-menu"
+  class="xl:hidden fixed inset-0 z-[60] bg-bg flex-col hidden overflow-y-auto overscroll-contain"
+  data-menu-panel
+>
+  <div class="container-site flex items-center justify-between h-16">
+    <span class="flex items-center gap-2.5 font-display font-extrabold text-xl">
+      <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
+      ГрантПлан<span class="text-accent">.</span>
+    </span>
+    <button
+      type="button"
+      class="icon-btn"
+      aria-label="Закрити меню"
+      data-menu-close
+    >
+      <Icon name="x" size={22} />
+    </button>
+  </div>
+  <nav class="container-site flex flex-col gap-1 mt-6" aria-label="Мобільна навігація">
+    {nav.map((item) => (
+      <a
+        href={item.href}
+        class="py-4 text-2xl font-display font-semibold border-b border-border/60"
+        data-menu-link
+      >{item.label}</a>
+    ))}
+  </nav>
+  <div class="container-site mt-8 flex flex-col gap-3">
+    <a href="/#lead" class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
+    <a href={`tel:${site.phone}`} class="btn btn-ghost w-full" data-analytics="click_phone" data-menu-link>
+      <Icon name="phone" size={18} /> Подзвонити
+    </a>
+    <button type="button" class="btn btn-ghost w-full" data-theme-toggle>
+      <Icon name="sun" size={18} class="icon-sun" />
+      <Icon name="moon" size={18} class="icon-moon" />
+      <span data-theme-label>Змінити тему</span>
+    </button>
+  </div>
+</div>
 
 <script>
   import { trackEvent } from '../lib/analytics';
@@ -121,7 +133,9 @@ import { site, nav } from '../data/site';
   function setBackgroundInert(shouldBeInert: boolean) {
     headerBar?.toggleAttribute('inert', shouldBeInert);
     Array.from(document.body.children).forEach((el) => {
-      if (el === header || el.tagName === 'SCRIPT') return;
+      // Сама панель тепер сусід <header>, а не його нащадок, — інакше
+      // вимкнули б інертністю те саме меню, яке щойно відкрили.
+      if (el === header || el === panel || el.tagName === 'SCRIPT') return;
       el.toggleAttribute('inert', shouldBeInert);
     });
   }
@@ -152,14 +166,26 @@ import { site, nav } from '../data/site';
     if (e.key === 'Escape') closeMenu();
   });
 
-  // blur-фон при скролі
+  // blur-фон при скролі + показ кнопки "нагору" (вона в шапці, тож
+  // з'являється прямо в панелі, нічого не перекриваючи).
+  const topBtn = document.querySelector<HTMLButtonElement>('[data-scroll-top]');
   function onScroll() {
-    if (!header) return;
-    if (window.scrollY > 8) header.classList.add('header-blur');
-    else header.classList.remove('header-blur');
+    if (header) {
+      if (window.scrollY > 8) header.classList.add('header-blur');
+      else header.classList.remove('header-blur');
+    }
+    topBtn?.classList.toggle('hidden', window.scrollY <= 500);
   }
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
+
+  topBtn?.addEventListener('click', () => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+    // Фокус на початок контенту — інакше клавіатурний/скрін-рідер користувач
+    // лишається "внизу" сторінки, навіть коли візуально вона прокрутилась.
+    document.getElementById('main')?.focus();
+  });
 
   // Клацання [data-analytics] відстежуються централізовано в Layout.astro
 
@@ -168,8 +194,13 @@ import { site, nav } from '../data/site';
   const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   function updateThemeLabels() {
     const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const label = isLight ? 'Увімкнути темну тему' : 'Увімкнути світлу тему';
     themeToggles.forEach((btn) => {
-      btn.setAttribute('aria-label', isLight ? 'Увімкнути темну тему' : 'Увімкнути світлу тему');
+      btn.setAttribute('aria-label', label);
+      // У мобільному меню кнопка підписана текстом — тримаємо його в парі
+      // з aria-label, щоб вони не розходились.
+      const text = btn.querySelector('[data-theme-label]');
+      if (text) text.textContent = label;
     });
   }
   updateThemeLabels();
