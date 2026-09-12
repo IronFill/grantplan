@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import { tiers, rework } from '../data/pricing';
 
 const plans = [
   {
@@ -18,7 +19,7 @@ const plans = [
   },
   {
     name: 'Бізнес-план',
-    price: '5 000–7 000 ₴',
+    price: tiers.plan.label,
     priceNote: 'популярний вибір',
     featured: true,
     features: [
@@ -26,7 +27,7 @@ const plans = [
       'Кошторис з обґрунтуванням цін',
       'Фінмодель і податки',
       '2 раунди правок',
-      'Строк 2–3 робочі дні',
+      `Строк ${tiers.plan.term}`,
     ],
     cta: 'Замовити план',
     href: '/#lead',
@@ -35,7 +36,7 @@ const plans = [
   },
   {
     name: '«Під ключ»',
-    price: '10 000–12 000 ₴',
+    price: tiers.turnkey.label,
     priceNote: null,
     featured: false,
     features: [
@@ -44,7 +45,7 @@ const plans = [
       'Супровід подання через Дію',
       'Репетиція співбесіди',
       'Підтримка до рішення',
-      'Строк 4–7 робочих днів',
+      `Строк ${tiers.turnkey.term}`,
     ],
     cta: 'Обрати супровід',
     href: '/#lead',
@@ -93,7 +94,7 @@ const plans = [
             data-analytics={p.analytics}
           >{p.cta}</a>
           {p.termsHref && (
-            <a href={p.termsHref} class="mt-3 text-center text-sm text-muted hover:text-accent underline underline-offset-2">
+            <a href={p.termsHref} class="mt-1 py-3 text-center text-sm text-muted hover:text-accent underline underline-offset-2">
               Умови співпраці
             </a>
           )}
@@ -102,9 +103,9 @@ const plans = [
     </div>
 
     <p class="reveal mt-6 text-sm text-muted text-center">
-      Доопрацювання плану після відмови — від 2 500 ₴ · Оплата частинами: 50% аванс, 50% після готовності
+      Доопрацювання плану після відмови — {rework.label} · Оплата частинами: 50% аванс, 50% після готовності
     </p>
-    <p class="reveal mt-4 text-xs text-muted/80 leading-relaxed max-w-3xl mx-auto text-center">
+    <p class="reveal mt-4 text-sm text-muted leading-relaxed max-w-3xl mx-auto text-center">
       Якщо на безкоштовному аудиті ми доходимо висновку, що заявка не пройде, до оплати справа не доходить — тож ви завжди платите вже після чесної оцінки шансів, а не наосліп. Ціни наведено орієнтовно і не є публічною офертою: остаточна вартість залежить від обсягу робіт і погоджується в умовах співпраці до внесення авансу. Оскільки оплачується робота з підготовки документів, а не результат розгляду заявки, вартість послуг не залежить від рішення комісії та не підлягає поверненню в разі відмови у гранті.
     </p>
   </div>

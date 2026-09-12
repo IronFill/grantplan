@@ -34,13 +34,16 @@ export const legalEntity = {
 /** Чи заповнені реквізити виконавця — керує показом юридичного блоку. */
 export const hasLegalEntity = Boolean(legalEntity.legalName);
 
-// Навігація (якорі лендингу)
+// Навігація: якорі лендингу + окремі сторінки. Розгорнуті блоки (послуги,
+// відгуки, команда) винесені з головної, тож ведемо одразу на них, а не
+// на якір, якого там більше немає.
 export const nav = [
   { label: 'Умови програми', href: '/umovy-prohramy' },
   { label: 'Як це працює', href: '/#how' },
   { label: 'Тарифи', href: '/#pricing' },
-  { label: 'Послуги', href: '/#services' },
+  { label: 'Послуги', href: '/poslugy' },
   { label: 'Приклад роботи', href: '/#case' },
-  { label: 'Питання', href: '/#faq' },
+  { label: 'Відгуки', href: '/vidhuky' },
+  { label: 'Про нас', href: '/pro-nas' },
   { label: 'Блог', href: '/blog' },
 ] as const;

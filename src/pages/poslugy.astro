@@ -1,0 +1,41 @@
+---
+// Повний перелік послуг і склад бізнес-плану. На головній лишились тарифи,
+// а розгорнутий опис того, що входить у пакет, живе тут.
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import Icon from '../components/Icon.astro';
+import Services from '../components/Services.astro';
+import PlanContents from '../components/PlanContents.astro';
+import Pricing from '../components/Pricing.astro';
+import LeadForm from '../components/LeadForm.astro';
+---
+<Layout
+  title="Послуги: що входить у бізнес-план під грант | ГрантПлан"
+  description="Повний склад бізнес-плану за формою Дії: кошторис, фінмодель, презентація, супровід подання та підготовка до співбесіди. Тарифи й строки."
+  path="/poslugy"
+>
+  <SiteHeader slot="header" />
+
+  <section class="pt-28 md:pt-36 pb-10 md:pb-14 border-b border-border/70">
+    <div class="container-site max-w-3xl">
+      <a href="/" class="flex w-fit items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="file-text" size={14} class="text-accent" /> Склад роботи
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">Що саме ви отримуєте</h1>
+      <p class="mt-5 text-muted text-lg leading-relaxed">
+        Не «консультація загалом», а конкретний пакет документів за формою Дії. Нижче — з чого складається бізнес-план, які ще послуги ми надаємо навколо нього і скільки це коштує.
+      </p>
+    </div>
+  </section>
+
+  <PlanContents />
+  <Services />
+  <Pricing />
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

@@ -71,9 +71,9 @@ const checks = [
   `${blockers.length} блокуючих умов, які банк перевіряє першими`,
 ];
 ---
-<!-- Секція в тому самому .container-site, що й решта головної. Ліворуч —
+{/* Секція в тому самому .container-site, що й решта головної. Ліворуч —
      опис тесту, праворуч — сама картка: раніше блок був звужений до 768px
-     і «провалювався» по ширині між сусідніми секціями. -->
+     і «провалювався» по ширині між сусідніми секціями. */}
 <section id="quiz" class="py-14 md:py-20 scroll-mt-20">
   <div class="container-site grid lg:grid-cols-[0.9fr_1.25fr] gap-10 lg:gap-14 items-start">
     <div class="reveal lg:sticky lg:top-24">
@@ -104,7 +104,7 @@ const checks = [
     <div class="reveal rounded-card-lg bg-raised border border-border p-6 md:p-10 relative overflow-hidden" data-quiz>
       <div class="absolute -right-20 -top-20 w-64 h-64 rounded-full blur-[110px] opacity-15" style="background:radial-gradient(circle,var(--color-accent),transparent 70%)" aria-hidden="true"></div>
 
-      <!-- Інтро -->
+      {/* Інтро */}
       <div class="relative text-center" data-quiz-intro>
         <span class="inline-grid place-items-center w-14 h-14 rounded-2xl bg-accent/15 text-accent mx-auto">
           <Icon name="sparkles" size={28} />
@@ -114,9 +114,9 @@ const checks = [
         <button type="button" class="btn btn-primary mt-7" data-quiz-start>Почати тест</button>
       </div>
 
-      <!-- Кроки -->
+      {/* Кроки */}
       <div class="relative hidden" data-quiz-steps>
-        <!-- Прогрес -->
+        {/* Прогрес */}
         <div class="flex items-center justify-between text-sm text-muted mb-2">
           <span data-quiz-counter>Питання 1 з {totalSteps}</span>
           <button type="button" class="hover:text-ink" data-quiz-back hidden>← Назад</button>
@@ -143,7 +143,7 @@ const checks = [
           </div>
         ))}
 
-        <!-- Останній крок: блокуючі умови (мультивибір) -->
+        {/* Останній крок: блокуючі умови (мультивибір) */}
         <div class="mt-7 hidden" data-quiz-q={questions.length} data-quiz-blockers>
           <h3 class="text-xl sm:text-2xl font-display font-semibold">
             Позначте те, що стосується вас або вашого бізнесу
@@ -167,23 +167,24 @@ const checks = [
         </div>
       </div>
 
-      <!-- Результат -->
+      {/* Результат */}
       <div class="relative hidden text-center" data-quiz-result>
         <span class="inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto" data-result-icon></span>
         <h3 class="mt-5 text-2xl sm:text-3xl" data-result-title></h3>
         <p class="mt-3 text-muted max-w-lg mx-auto" data-result-text></p>
-        <!-- Ліміт рахується за редакцією, що діяла до 1 серпня 2026. Поки
+        {/* Ліміт рахується за редакцією, що діяла до 1 серпня 2026. Поки
              не опубліковано параметри нової моделі, показуємо число як
              орієнтир і одразу поруч кажемо, за якою редакцією воно
              пораховане, — інакше вийшло б, що сайт називає точну суму за
-             правилами, яких уже немає. -->
+             правилами, яких уже немає. */}
+
         <div class="mt-4 mx-auto max-w-lg rounded-card border border-accent/40 bg-accent/5 px-4 py-3 text-left text-sm leading-relaxed hidden" data-result-roi></div>
 
         <p class="mt-4 mx-auto max-w-lg rounded-card border border-border bg-surface px-4 py-3 text-left text-xs text-muted leading-relaxed hidden" data-result-note>
           {quizNote}
         </p>
 
-        <!-- Захоплення контакту -->
+        {/* Захоплення контакту */}
         <form class="mt-7 max-w-md mx-auto text-left" data-quiz-form>
           <div class="absolute -left-[9999px]" aria-hidden="true">
             <label>Не заповнюйте<input type="text" name="company" tabindex="-1" autocomplete="off" /></label>
@@ -220,6 +221,7 @@ const checks = [
 
 <script>
   import { trackEvent } from '../lib/analytics';
+  import { maxServicePrice } from '../data/pricing';
 
   const root = document.querySelector<HTMLElement>('[data-quiz]');
   if (root) {
@@ -393,13 +395,10 @@ const checks = [
 
         // Порівняння з мінімальною сумою напряму (не з надбавкою) — щоб
         // відсоток лишався чесним навіть у найгіршому для клієнта випадку.
-        // 12 000 ₴ — верхня межа тарифу «Під ключ» з Pricing.astro/faq.ts;
-        // тримати число в парі з ними при зміні цін.
-        const TURNKEY_MAX = 12_000;
-        const roiPct = Math.ceil((TURNKEY_MAX / est.base.min) * 100);
+        const roiPct = Math.ceil((maxServicePrice / est.base.min) * 100);
         roi.hidden = false;
         roi.classList.remove('hidden');
-        roi.innerHTML = `<span class="font-display font-semibold text-ink">Вартість вкладень:</span> навіть повний супровід «під ключ» (до ${fmt(TURNKEY_MAX)}) — це не більше ${roiPct}% від мінімальної суми вашого напряму (${fmt(est.base.min)}). Решта — ваші кошти на розвиток бізнесу.`;
+        roi.innerHTML = `<span class="font-display font-semibold text-ink">Вартість вкладень:</span> навіть повний супровід «під ключ» (до ${fmt(maxServicePrice)}) — це не більше ${roiPct}% від мінімальної суми вашого напряму (${fmt(est.base.min)}). Решта — ваші кошти на розвиток бізнесу.`;
 
         resultPayload = `РЕЗУЛЬТАТ: ${trackName}, ${num(est.base.min)} – ${fmt(est.base.max)}, надбавки +${est.pct}% → до ${fmt(est.withBonus)}`;
       }

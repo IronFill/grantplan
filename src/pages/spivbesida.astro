@@ -78,7 +78,7 @@ const schema = {
 >
   <SiteHeader slot="header" />
 
-  <!-- Hero -->
+  {/* Hero */}
   <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
     <div class="container-site container-text">
       <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
@@ -94,9 +94,9 @@ const schema = {
     </div>
   </section>
 
-  <!-- Тіло статті: колонка тексту + липкий зміст праворуч. Раніше кожна
+  {/* Тіло статті: колонка тексту + липкий зміст праворуч. Раніше кожна
        секція була окремою колонкою max-w-3xl по центру, через що сторінка
-       була вужчою за шапку/футер і за головну. -->
+       була вужчою за шапку/футер і за головну. */}
   <section class="py-12 md:py-16">
     <div class="container-site lg:grid lg:grid-cols-[minmax(0,1fr)_260px] gap-10 lg:gap-16 items-start">
       <div class="space-y-10 md:space-y-14">
@@ -115,7 +115,7 @@ const schema = {
         </div>
       </div>
 
-      <!-- Категорії питань -->
+      {/* Категорії питань */}
       <div id="pytannya" class="scroll-mt-24 space-y-4">
       {categories.map((c) => (
         <article class="reveal rounded-card bg-surface border border-border p-6 md:p-7">
@@ -140,17 +140,17 @@ const schema = {
       ))}
       </div>
 
-      <!-- Чесна оговорка -->
+      {/* Чесна оговорка */}
       <div class="reveal rounded-card border border-border bg-raised p-6">
         <div class="flex items-start gap-3">
           <Icon name="shield-check" size={20} class="text-success shrink-0 mt-0.5" />
           <p class="text-sm text-muted leading-relaxed">
-            <span class="text-ink font-medium">Чесно.</span> Це не «злиті» офіційні питання — такого списку не існує і публічно ніхто ним не володіє. Це типові питання, зібрані на основі практики підготовки заявників і найпоширенішої причини відмов на співбесіді (<a href="/prychyny-vidmov" class="text-accent hover:underline">пункт 6 у переліку причин</a>): заявник не може своїми словами пояснити план, який подав. Мета — щоб ви вільно відповідали на подібні питання, а не завчили конкретні відповіді.
+            <span class="text-ink font-medium">Чесно.</span> Це не «злиті» офіційні питання — такого списку не існує і публічно ніхто ним не володіє. Це типові питання, зібрані на основі практики підготовки заявників і найпоширенішої причини відмов на співбесіді (<a href="/prychyny-vidmov" class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">пункт 6 у переліку причин</a>): заявник не може своїми словами пояснити план, який подав. Мета — щоб ви вільно відповідали на подібні питання, а не завчили конкретні відповіді.
           </p>
         </div>
       </div>
 
-      <!-- Як ми готуємо -->
+      {/* Як ми готуємо */}
       <div id="pidhotovka" class="reveal scroll-mt-24 rounded-card-lg border border-border bg-surface/60 p-6 md:p-7">
         <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Підготовка з нами</span>
         <h2 class="mt-2 text-2xl sm:text-3xl">Як проходить репетиція з нами</h2>

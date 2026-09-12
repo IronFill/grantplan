@@ -19,24 +19,25 @@ const year = new Date().getFullYear();
 
       <nav aria-label="Навігація у підвалі">
         <div class="text-sm font-semibold mb-3">Розділи</div>
-        <ul class="space-y-2 text-muted">
+        <ul class="space-y-1 text-muted">
           {nav.map((item) => (
-            <li><a href={item.href} class="hover:text-ink transition-colors">{item.label}</a></li>
+            <li><a href={item.href} class="block py-1 hover:text-ink transition-colors">{item.label}</a></li>
           ))}
-          <li><a href="/case-bpla" class="hover:text-ink transition-colors">Приклад плану</a></li>
-          <li><a href="/prychyny-vidmov" class="hover:text-ink transition-colors">Причини відмов</a></li>
-          <li><a href="/spivbesida" class="hover:text-ink transition-colors">Питання на співбесіді</a></li>
-          <li><a href="/pislya-hrantu" class="hover:text-ink transition-colors">Що буде після гранту</a></li>
-          <li><a href="/#comments" class="hover:text-ink transition-colors">Коментарі</a></li>
-          <li><a href="/privacy" class="hover:text-ink transition-colors">Політика конфіденційності</a></li>
+          <li><a href="/#faq" class="block py-1 hover:text-ink transition-colors">Часті питання</a></li>
+          <li><a href="/case-bpla" class="block py-1 hover:text-ink transition-colors">Приклад плану</a></li>
+          <li><a href="/prychyny-vidmov" class="block py-1 hover:text-ink transition-colors">Причини відмов</a></li>
+          <li><a href="/spivbesida" class="block py-1 hover:text-ink transition-colors">Питання на співбесіді</a></li>
+          <li><a href="/pislya-hrantu" class="block py-1 hover:text-ink transition-colors">Що буде після гранту</a></li>
+          <li><a href="/vidhuky#comments" class="block py-1 hover:text-ink transition-colors">Коментарі</a></li>
+          <li><a href="/privacy" class="block py-1 hover:text-ink transition-colors">Політика конфіденційності</a></li>
         </ul>
       </nav>
 
       <nav aria-label="Напрямки">
         <div class="text-sm font-semibold mb-3">Напрямки</div>
-        <ul class="space-y-2 text-muted">
+        <ul class="space-y-1 text-muted">
           {audiences.map((a) => (
-            <li><a href={`/grant/${a.slug}`} class="hover:text-ink transition-colors">{a.nav}</a></li>
+            <li><a href={`/grant/${a.slug}`} class="block py-1 hover:text-ink transition-colors">{a.nav}</a></li>
           ))}
         </ul>
       </nav>
@@ -80,5 +81,5 @@ const year = new Date().getFullYear();
   </div>
 </footer>
 
-<!-- Клацання [data-analytics] відстежуються централізовано в Layout.astro -->
+{/* Клацання [data-analytics] відстежуються централізовано в Layout.astro */}
 

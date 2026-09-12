@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import { tiers } from '../data/pricing';
 import { cases } from '../data/cases';
 import { getProgramStatus } from '../data/program';
 
@@ -9,31 +10,31 @@ const [caseA, caseB] = cases;
 const status = getProgramStatus();
 ---
 <section class="relative overflow-hidden pt-28 md:pt-36 pb-16 md:pb-24">
-  <!-- Фото Харкова (нічна аерозйомка) як фон hero -->
+  {/* Фото Харкова (нічна аерозйомка) як фон hero */}
   <div
     class="pointer-events-none absolute inset-0 opacity-[0.12]"
     style={`background-image: url('/images/hero-kharkiv.webp'); background-size: cover; background-position: center 60%;`}
     aria-hidden="true"
   ></div>
-  <!-- Затемнення поверх фото: зліва майже суцільне (читабельність тексту), праворуч м'якше -->
+  {/* Затемнення поверх фото: зліва майже суцільне (читабельність тексту), праворуч м'якше */}
   <div
     class="pointer-events-none absolute inset-0"
     style="background: linear-gradient(90deg, var(--color-bg) 0%, color-mix(in srgb, var(--color-bg) 90%, transparent) 55%, color-mix(in srgb, var(--color-bg) 75%, transparent) 100%);"
     aria-hidden="true"
   ></div>
-  <!-- Ледь помітна карбонова фактура -->
+  {/* Ледь помітна карбонова фактура */}
   <div
     class="pointer-events-none absolute inset-0 opacity-[0.04]"
     style="background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2228%22 height=%2228%22 viewBox=%220 0 28 28%22><path d=%22M0 14h28M14 0v28%22 stroke=%22white%22 stroke-width=%220.5%22/></svg>');"
     aria-hidden="true"
   ></div>
-  <!-- м'яке оранжеве світіння -->
+  {/* м'яке оранжеве світіння */}
   <div
     class="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[720px] h-[420px] rounded-full blur-[120px] opacity-[0.12]"
     style="background: radial-gradient(circle, var(--color-accent), transparent 70%);"
     aria-hidden="true"
   ></div>
-  <!-- другий, менший шар світла — кінематографічна глибина за карткою кейсу -->
+  {/* другий, менший шар світла — кінематографічна глибина за карткою кейсу */}
   <div
     class="pointer-events-none absolute top-1/3 right-0 hidden lg:block w-[420px] h-[420px] rounded-full blur-[100px] opacity-[0.07]"
     style="background: radial-gradient(circle, var(--color-accent-hover), transparent 70%);"
@@ -41,12 +42,12 @@ const status = getProgramStatus();
   ></div>
 
   <div class="container-site relative grid lg:grid-cols-[1.05fr_0.95fr] gap-12 lg:gap-10 items-center">
-    <!-- Ліва колонка. Кожен елемент — окремий .reveal з наростаючою
+    {/* Ліва колонка. Кожен елемент — окремий .reveal з наростаючою
          transition-delay (той самий прийом, що й у AntiRisk.astro для
          карток): замість того, щоб уся колонка проявлялась одним блоком,
          вона "вибудовується" зверху вниз — той самий ефект, що дає
          набагато більше відчуття продуманості, ніж розкидані по сторінці
-         дрібні анімації. -->
+         дрібні анімації. */}
     <div>
       <div class="reveal flex flex-wrap items-center gap-2" style="transition-delay:0ms">
         <span class="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-accent/10 px-3.5 py-1.5 text-sm text-accent font-medium">
@@ -63,12 +64,12 @@ const status = getProgramStatus();
         Грант до <span class="text-accent-gradient">500 000 ₴</span> для Харківщини — без відмови через слабкий бізнес-план
       </h1>
 
-      <p class="reveal mt-6 text-lg text-muted max-w-xl" style="transition-delay:140ms">
-        Заявку оцінюють у балах: до 200 — за ділову репутацію в банку, до 50 — за співбесіду, прохідний поріг 130. Юрист відповідає за відповідність чинній постанові, фінансистка — за цифри, які витримують перевірку банківського оцінювача.
+      <p class="reveal mt-6 text-lg max-w-xl" style="transition-delay:140ms">
+        Через {tiers.plan.term} у вас на руках готовий пакет: заповнена форма Дії, кошторис із підтвердженими цінами та фінмодель, які між собою сходяться.
       </p>
 
-      <p class="reveal mt-4 text-base font-medium max-w-xl" style="transition-delay:190ms">
-        Через 2–3 робочі дні у вас на руках готовий пакет: заповнена форма Дії, кошторис із підтвердженими цінами та фінмодель, які між собою сходяться.
+      <p class="reveal mt-4 text-base text-muted max-w-xl" style="transition-delay:190ms">
+        Готує його юрист — він відповідає за відповідність чинній постанові, а цифри рахує фінансистка: саме вони мають витримати перевірку банківського оцінювача.
       </p>
 
       <p class="reveal mt-4 flex items-start gap-2.5 text-sm text-muted max-w-xl" style="transition-delay:225ms">
@@ -96,7 +97,7 @@ const status = getProgramStatus();
       </ul>
     </div>
 
-    <!-- Права колонка: приклади слайдів реальних кейсів (переворот) -->
+    {/* Права колонка: приклади слайдів реальних кейсів (переворот) */}
     <div class="reveal hidden lg:block" style="transition-delay:140ms">
       <button
         type="button"

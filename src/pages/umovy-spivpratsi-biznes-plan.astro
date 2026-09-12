@@ -4,6 +4,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import MobileCta from '../components/MobileCta.astro';
 import { site } from '../data/site';
+import { tiers } from '../data/pricing';
 
 const updated = '11 вересня 2026';
 ---
@@ -49,7 +50,7 @@ const updated = '11 вересня 2026';
               <tbody>
                 <tr class="border-b border-border bg-surface">
                   <th class="text-left font-semibold text-ink p-3 w-1/3">Орієнтовна вартість</th>
-                  <td class="p-3">5 000 – 7 000 ₴, залежно від обсягу й складності проєкту</td>
+                  <td class="p-3">{tiers.plan.label}, залежно від обсягу й складності проєкту</td>
                 </tr>
                 <tr class="border-b border-border">
                   <th class="text-left font-semibold text-ink p-3">Порядок оплати</th>
@@ -109,7 +110,7 @@ const updated = '11 вересня 2026';
           <ul class="mt-3 space-y-2 list-disc pl-5">
             <li>Ці умови діють з моменту їх погодження Замовником (у листуванні, усно або шляхом внесення авансового платежу) і до повного виконання зобов'язань обома сторонами.</li>
             <li>Виконавець не є державним органом, не приймає рішення про надання гранту та не гарантує його отримання — рішення ухвалює виключно Державна служба зайнятості відповідно до чинного порядку програми.</li>
-            <li>Інформація та документи, надані Замовником, використовуються виключно для підготовки бізнес-плану й подання заявки та не передаються третім особам, крім випадків, необхідних для самої подачі (уповноважений банк, центр зайнятості), відповідно до <a href="/privacy" class="text-accent hover:underline">політики конфіденційності</a> Виконавця.</li>
+            <li>Інформація та документи, надані Замовником, використовуються виключно для підготовки бізнес-плану й подання заявки та не передаються третім особам, крім випадків, необхідних для самої подачі (уповноважений банк, центр зайнятості), відповідно до <a href="/privacy" class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">політики конфіденційності</a> Виконавця.</li>
             <li>Питання, не врегульовані цими умовами, сторони вирішують шляхом переговорів відповідно до законодавства України.</li>
           </ul>
         </div>
@@ -117,10 +118,10 @@ const updated = '11 вересня 2026';
 
       <div class="mt-10 pt-8 border-t border-border/70">
         <p class="text-sm text-muted">
-          Готуєте тариф «Під ключ»? Дивіться <a href="/umovy-spivpratsi-pid-kluch" class="text-accent hover:underline">умови співпраці для нього</a>.
+          Готуєте тариф «Під ключ»? Дивіться <a href="/umovy-spivpratsi-pid-kluch" class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">умови співпраці для нього</a>.
         </p>
         <p class="mt-3 text-sm text-muted">
-          Питання щодо умов — <a href={`tel:${site.phone}`} class="text-accent hover:underline">{site.phoneDisplay}</a> або <a href={`mailto:${site.email}`} class="text-accent hover:underline">{site.email}</a>.
+          Питання щодо умов — <a href={`tel:${site.phone}`} class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">{site.phoneDisplay}</a> або <a href={`mailto:${site.email}`} class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">{site.email}</a>.
         </p>
       </div>
     </div>

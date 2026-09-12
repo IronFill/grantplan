@@ -20,7 +20,7 @@ const fmtDate = (iso: string) =>
 >
   <SiteHeader slot="header" />
 
-  <!-- Hero -->
+  {/* Hero */}
   <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
     <div class="container-site container-text">
       <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
@@ -34,11 +34,11 @@ const fmtDate = (iso: string) =>
     </div>
   </section>
 
-  <!-- Список постів -->
+  {/* Список постів */}
   <section class="py-14 md:py-20">
     <div class="container-site">
-      <!-- Дві колонки: список постів заповнює ту саму ширину, що й решта
-           сайту, замість вузької стрічки по центру. -->
+      {/* Дві колонки: список постів заповнює ту саму ширину, що й решта
+           сайту, замість вузької стрічки по центру. */}
       <div class="grid md:grid-cols-2 gap-4">
         {posts.map((p) => (
           <a href={`/blog/${p.slug}`} class="reveal card-hover block rounded-card bg-surface border border-border p-6 md:p-7">
