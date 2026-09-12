@@ -177,6 +177,8 @@ const checks = [
              орієнтир і одразу поруч кажемо, за якою редакцією воно
              пораховане, — інакше вийшло б, що сайт називає точну суму за
              правилами, яких уже немає. -->
+        <div class="mt-4 mx-auto max-w-lg rounded-card border border-accent/40 bg-accent/5 px-4 py-3 text-left text-sm leading-relaxed hidden" data-result-roi></div>
+
         <p class="mt-4 mx-auto max-w-lg rounded-card border border-border bg-surface px-4 py-3 text-left text-xs text-muted leading-relaxed hidden" data-result-note>
           {quizNote}
         </p>
@@ -331,6 +333,9 @@ const checks = [
       const title = resultBox.querySelector<HTMLElement>('[data-result-title]')!;
       const text = resultBox.querySelector<HTMLElement>('[data-result-text]')!;
       const note = resultBox.querySelector<HTMLElement>('[data-result-note]')!;
+      const roi = resultBox.querySelector<HTMLElement>('[data-result-roi]')!;
+      roi.hidden = true;
+      roi.classList.add('hidden');
 
       // 1) Жорсткий відсів: блокуючі умови програми
       const hardBlockers = Array.from(root!.querySelectorAll<HTMLInputElement>('[data-blocker]'))
@@ -385,6 +390,16 @@ const checks = [
         }
         parts.push('Блокуючих умов ви не позначили. Точну суму й реальні шанси визначимо на безкоштовному аудиті.');
         text.textContent = parts.join(' ');
+
+        // Порівняння з мінімальною сумою напряму (не з надбавкою) — щоб
+        // відсоток лишався чесним навіть у найгіршому для клієнта випадку.
+        // 12 000 ₴ — верхня межа тарифу «Під ключ» з Pricing.astro/faq.ts;
+        // тримати число в парі з ними при зміні цін.
+        const TURNKEY_MAX = 12_000;
+        const roiPct = Math.ceil((TURNKEY_MAX / est.base.min) * 100);
+        roi.hidden = false;
+        roi.classList.remove('hidden');
+        roi.innerHTML = `<span class="font-display font-semibold text-ink">Вартість вкладень:</span> навіть повний супровід «під ключ» (до ${fmt(TURNKEY_MAX)}) — це не більше ${roiPct}% від мінімальної суми вашого напряму (${fmt(est.base.min)}). Решта — ваші кошти на розвиток бізнесу.`;
 
         resultPayload = `РЕЗУЛЬТАТ: ${trackName}, ${num(est.base.min)} – ${fmt(est.base.max)}, надбавки +${est.pct}% → до ${fmt(est.withBonus)}`;
       }
