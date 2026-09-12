@@ -4,20 +4,20 @@ import { site, nav } from '../data/site';
 ---
 <header id="site-header" class="fixed top-0 inset-x-0 z-[60] transition-colors" data-header>
   <div class="container-site flex items-center justify-between h-16 md:h-[72px]" data-header-bar>
-    <!-- Лого -->
+    {/* Лого */}
     <a href="/" class="flex items-center gap-2.5 font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
       <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
       ГрантПлан<span class="text-accent">.</span>
     </a>
 
-    <!-- Десктоп-навігація -->
+    {/* Десктоп-навігація */}
     <nav class="hidden xl:flex items-center gap-6" aria-label="Головна навігація">
       {nav.map((item) => (
         <a href={item.href} class="text-muted hover:text-ink transition-colors text-[0.95rem] whitespace-nowrap">{item.label}</a>
       ))}
     </nav>
 
-    <!-- Праворуч -->
+    {/* Праворуч */}
     <div class="flex items-center gap-3">
       <a
         href={`tel:${site.phone}`}
@@ -31,9 +31,9 @@ import { site, nav } from '../data/site';
         Безкоштовний аудит
       </a>
 
-      <!-- "Нагору": живе в шапці, а не плаваючою кнопкою над контентом —
+      {/* "Нагору": живе в шапці, а не плаваючою кнопкою над контентом —
            так воно фізично нічого не перекриває на мобільному. З'являється
-           лише після прокрутки (див. скрипт нижче). -->
+           лише після прокрутки (див. скрипт нижче). */}
       <button
         type="button"
         class="icon-btn hover:text-accent hover:border-accent hidden"
@@ -43,8 +43,8 @@ import { site, nav } from '../data/site';
         <Icon name="arrow-up" size={20} />
       </button>
 
-      <!-- Перемикач теми: на мобільному він у висувному меню (нижче),
-           щоб не захаращувати вузьку шапку. -->
+      {/* Перемикач теми: на мобільному він у висувному меню (нижче),
+           щоб не захаращувати вузьку шапку. */}
       <button
         type="button"
         class="icon-btn hover:text-accent hover:border-accent hidden xl:inline-flex"
@@ -55,7 +55,7 @@ import { site, nav } from '../data/site';
         <Icon name="moon" size={20} class="icon-moon" />
       </button>
 
-      <!-- Бургер -->
+      {/* Бургер */}
       <button
         type="button"
         class="icon-btn xl:hidden"
@@ -71,10 +71,10 @@ import { site, nav } from '../data/site';
 
 </header>
 
-<!-- Повноекранне мобільне меню — навмисно ПОЗА <header>. Під час скролу
+{/* Повноекранне мобільне меню — навмисно ПОЗА <header>. Під час скролу
      шапка отримує .header-blur з backdrop-filter, а він створює containing
      block для position:fixed нащадків: усередині шапки панель схлопувалась
-     до її висоти (64px) і меню не відкривалось після будь-якої прокрутки. -->
+     до її висоти (64px) і меню не відкривалось після будь-якої прокрутки. */}
 <div
   id="mobile-menu"
   class="xl:hidden fixed inset-0 z-[60] bg-bg flex-col hidden overflow-y-auto overscroll-contain"

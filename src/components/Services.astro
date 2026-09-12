@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import { support } from '../data/pricing';
 
 // Ціни — орієнтовні вилки, замініть на реальні (узгоджено з власником).
 const services = [
@@ -24,7 +25,7 @@ const services = [
   {
     icon: 'shield-check',
     title: 'Супровід після гранту',
-    price: 'від 2 500 ₴/міс',
+    price: support.label,
     text: 'Допомагаємо виконати зобов’язання програми: робочі місця, сплата податків і звітність протягом трьох років.',
   },
 ];

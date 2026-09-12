@@ -11,6 +11,7 @@
 // цитата з живим фото (не іконка «quote» в рамці) поруч із фактами
 // у вигляді простого списку з розділювачами, без боксів.
 import Icon from './Icon.astro';
+import { fullRangeLabel } from '../data/pricing';
 
 const triggers = [
   {
@@ -20,7 +21,7 @@ const triggers = [
   },
   {
     value: 'Ціни опубліковані',
-    label: '5 000 – 12 000 ₴ · без «дізнайтеся за дзвінком»',
+    label: `${fullRangeLabel} · без «дізнайтеся за дзвінком»`,
     text: 'Вартість видно до першого контакту, а безкоштовний аудит — справді безкоштовний. Якщо стане зрозуміло, що заявка не пройде, ми скажемо це і не візьмемо грошей.',
   },
   {
@@ -39,7 +40,7 @@ const triggers = [
     </div>
 
     <div class="mt-10 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-14">
-      <!-- Цитата з живим обличчям замість іконки «quote» в рамці -->
+      {/* Цитата з живим обличчям замість іконки «quote» в рамці */}
       <div class="reveal rounded-card-lg bg-raised border border-border p-6 md:p-8">
         <div class="flex items-center gap-4">
           <img
@@ -64,7 +65,7 @@ const triggers = [
         </a>
       </div>
 
-      <!-- Факти списком із розділювачами — без боксів та іконок -->
+      {/* Факти списком із розділювачами — без боксів та іконок */}
       <div class="reveal divide-y divide-border">
         {triggers.map((t) => (
           <div class="py-5 first:pt-0 last:pb-0">

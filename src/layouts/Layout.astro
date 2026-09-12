@@ -66,9 +66,9 @@ const allSchema = [baseSchema, ...schema];
     <meta name="theme-color" content="#14181C" />
     <meta name="color-scheme" content="dark light" />
 
-    <!-- Тема (світла/темна): застосовуємо збережений вибір ДО першого
+    {/* Тема (світла/темна): застосовуємо збережений вибір ДО першого
          пофарбування, щоб уникнути "спалаху" не тієї теми. За замовчуванням —
-         темна (фірмовий стиль); світла — лише за явним вибором користувача. -->
+         темна (фірмовий стиль); світла — лише за явним вибором користувача. */}
     <script is:inline>
       (function () {
         try {
@@ -81,11 +81,11 @@ const allSchema = [baseSchema, ...schema];
       })();
     </script>
 
-    <!-- Favicon (оранжевий квадрат зі скругленням + галочка-графік) -->
+    {/* Favicon (оранжевий квадрат зі скругленням + галочка-графік) */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Open Graph -->
+    {/* Open Graph */}
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ГрантПлан" />
     <meta property="og:title" content={title} />
@@ -96,13 +96,13 @@ const allSchema = [baseSchema, ...schema];
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="uk_UA" />
 
-    <!-- Twitter -->
+    {/* Twitter */}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageAbs} />
 
-    <!-- Аналітика Plausible (без cookies, працює завжди) -->
+    {/* Аналітика Plausible (без cookies, працює завжди) */}
     <script
       is:inline
       defer
@@ -116,9 +116,9 @@ const allSchema = [baseSchema, ...schema];
         };
     </script>
 
-    <!-- GA4 / Meta Pixel: вантажаться лише якщо задані PUBLIC_GA4_ID /
+    {/* GA4 / Meta Pixel: вантажаться лише якщо задані PUBLIC_GA4_ID /
          PUBLIC_META_PIXEL_ID і користувач уже погодився на cookies раніше
-         (див. src/lib/analytics.ts і CookieConsent.astro). -->
+         (див. src/lib/analytics.ts і CookieConsent.astro). */}
     <script>
       import { initAnalyticsFromStoredConsent } from '../lib/analytics';
       initAnalyticsFromStoredConsent();
@@ -129,17 +129,17 @@ const allSchema = [baseSchema, ...schema];
   <body>
     <a href="#main" class="skip-link">Перейти до змісту</a>
     <slot name="header" />
-    <!-- tabindex="-1": не в порядку табуляції, але доступний для
+    {/* tabindex="-1": не в порядку табуляції, але доступний для
          програмного .focus() — потрібно і skip-link'у (раніше вів на
          елемент, який неможливо було фактично сфокусувати), і кнопці
-         "нагору" у шапці (SiteHeader.astro). -->
+         "нагору" у шапці (SiteHeader.astro). */}
     <main id="main" tabindex="-1">
       <slot />
     </main>
     <slot name="footer" />
     <CookieConsent />
 
-    <!-- Глобальний fade-up при скролі (IntersectionObserver, один раз) -->
+    {/* Глобальний fade-up при скролі (IntersectionObserver, один раз) */}
     <script>
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const supported = 'IntersectionObserver' in window;
@@ -173,8 +173,8 @@ const allSchema = [baseSchema, ...schema];
       // тож .reveal лишаються повністю видимими (див. global.css).
     </script>
 
-    <!-- Делеговане відстеження [data-analytics] по всій сторінці — єдине
-         місце замість дублювання в кожному компоненті з такою кнопкою. -->
+    {/* Делеговане відстеження [data-analytics] по всій сторінці — єдине
+         місце замість дублювання в кожному компоненті з такою кнопкою. */}
     <script>
       import { trackEvent } from '../lib/analytics';
       document.addEventListener('click', (e) => {
@@ -183,7 +183,7 @@ const allSchema = [baseSchema, ...schema];
         if (ev) trackEvent(ev);
       });
     </script>
-    <!-- рік для футера, якщо потрібен через JS -->
+    {/* рік для футера, якщо потрібен через JS */}
     <span hidden data-year={year}></span>
   </body>
 </html>

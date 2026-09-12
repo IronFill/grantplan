@@ -1,6 +1,39 @@
+# Заголовки для Netlify та Cloudflare Pages (обидва читають цей файл).
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=()
+  # CSP поки в режимі звіту: браузер нічого не блокує, лише пише порушення
+  # в консоль. Так видно, чи не забуто якесь джерело, без ризику покласти
+  # аналітику або форму на живому сайті.
+  #
+  # Щоб увімкнути по-справжньому: відкрити сайт, переконатись, що в консолі
+  # немає повідомлень «Report Only», і перейменувати заголовок на
+  # Content-Security-Policy. Перед запуском Google Ads додати сюди
+  # googleadservices.com і googlesyndication.com.
+  #
+  # 'unsafe-inline' потрібен: Astro вбудовує скрипт вибору теми до першого
+  # пофарбування сторінки, а Tailwind — критичні стилі.
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://plausible.io https://www.googletagmanager.com https://connect.facebook.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://www.facebook.com https://www.google-analytics.com; font-src 'self'; connect-src 'self' https://plausible.io https://www.google-analytics.com https://region1.google-analytics.com https://connect.facebook.net; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'
+
+# Файли зі збірки мають хеш в імені — нове видання отримує нове ім'я,
+# тож старе можна кешувати назавжди.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/images/*
+  Cache-Control: public, max-age=2592000
+
+/case/*
+  Cache-Control: public, max-age=2592000
+
+# HTML не кешуємо надовго: інакше правки доходитимуть до тих, хто вже
+# заходив, лише за кілька днів.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
