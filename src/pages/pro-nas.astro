@@ -1,0 +1,42 @@
+---
+// Хто ми, чим доводимо компетентність і що насправді вирішує долю заявки.
+// Ці три блоки раніше стояли на головній і забирали там ~7.6 екрана —
+// на лендингу лишився компактний TeamTeaser із посиланням сюди.
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import MobileCta from '../components/MobileCta.astro';
+import Icon from '../components/Icon.astro';
+import Team from '../components/Team.astro';
+import TrustBlock from '../components/TrustBlock.astro';
+import Expertise from '../components/Expertise.astro';
+import LeadForm from '../components/LeadForm.astro';
+---
+<Layout
+  title="Про нас: хто готує ваш бізнес-план | ГрантПлан"
+  description="Юрист і фінансистка, які ведуть кожен проєкт особисто. Досвід, підхід до підготовки документів і те, що насправді вирішує долю заявки на грант."
+  path="/pro-nas"
+>
+  <SiteHeader slot="header" />
+
+  <section class="pt-28 md:pt-36 pb-10 md:pb-14 border-b border-border/70">
+    <div class="container-site max-w-3xl">
+      <a href="/" class="flex w-fit items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="users" size={14} class="text-accent" /> Двоє на кожному проєкті
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">Хто готує ваші документи</h1>
+      <p class="mt-5 text-muted text-lg leading-relaxed">
+        Ваш пакет ведуть двоє: юрист відповідає за відповідність вимогам чинного порядку, фінансистка — за цифри, які має витримати перевірка банківського оцінювача. Нижче — досвід кожного, наш підхід до роботи й розбір того, що насправді вирішує долю заявки.
+      </p>
+    </div>
+  </section>
+
+  <Team />
+  <TrustBlock />
+  <Expertise />
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>

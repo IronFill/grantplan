@@ -1,0 +1,79 @@
+---
+// Блок-навігатор: те, що раніше лежало розгорнутими секціями на головній
+// і розтягувало її до 39 екранів. Тепер кожна тема — окрема сторінка, а тут
+// лише вхід у неї. Хто вже готовий залишити заявку — не мусить це читати;
+// хто сумнівається — бачить, куди піти по деталі.
+import Icon from './Icon.astro';
+
+const links = [
+  {
+    href: '/poslugy',
+    icon: 'file-text',
+    title: 'Що входить у бізнес-план',
+    text: 'Повний склад пакета за формою Дії: кошторис, фінмодель на 36 місяців, презентація та супровід.',
+  },
+  {
+    href: '/prychyny-vidmov',
+    icon: 'shield-alert',
+    title: 'Чому відмовляють у гранті',
+    text: '10 типових причин відмов, юридичні нюанси та де саме ми зупиняємо кожну з них.',
+  },
+  {
+    href: '/pro-nas',
+    icon: 'users',
+    title: 'Хто готує ваші документи',
+    text: 'Досвід юриста й фінансистки, підхід до роботи та розбір того, що насправді вирішує долю заявки.',
+  },
+  {
+    href: '/umovy-prohramy',
+    icon: 'landmark',
+    title: 'Офіційні умови програми',
+    text: 'Суми, надбавки, бальна система та строки — з посиланнями на першоджерела, щоб перевірити самим.',
+  },
+  {
+    href: '/spivbesida',
+    icon: 'mic',
+    title: 'Питання на співбесіді',
+    text: 'Критерії оцінки та типові питання комісії центру зайнятості — до чого готуватись.',
+  },
+  {
+    href: '/pislya-hrantu',
+    icon: 'calendar-clock',
+    title: 'Що буде після гранту',
+    text: 'Робочі місця, податки та звітність: зобов’язання отримувача на найближчі роки.',
+  },
+];
+---
+<section class="py-14 md:py-20 border-t border-border/70 bg-surface/30">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Якщо хочете деталей</span>
+      <h2 class="mt-2 text-3xl sm:text-4xl">Розібратись глибше</h2>
+      <p class="mt-3 text-muted text-lg">
+        Коротко головне ви вже прочитали. Нижче — розгорнуті матеріали для тих, хто хоче перевірити нас і програму до того, як залишати заявку.
+      </p>
+    </div>
+
+    {/* Навігатор має лишатись навігатором: щільні рядки, а не картки.
+         Розгорнутий опис показуємо лише там, де для нього є місце (sm+),
+         інакше блок-покажчик сам розтягується на два екрани. */}
+    <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {links.map((l) => (
+        <a
+          href={l.href}
+          class="reveal card-hover group rounded-card bg-surface border border-border p-4 sm:p-5 flex items-center sm:items-start gap-3.5"
+          data-analytics={`click_deepdive_${l.href.replace(/\//g, '')}`}
+        >
+          <span class="inline-grid place-items-center w-10 h-10 rounded-xl bg-accent/10 text-accent shrink-0">
+            <Icon name={l.icon} size={20} />
+          </span>
+          <span class="flex-1 min-w-0">
+            <span class="block font-display font-semibold leading-snug group-hover:text-accent transition-colors">{l.title}</span>
+            <span class="hidden sm:block mt-1.5 text-sm text-muted leading-relaxed">{l.text}</span>
+          </span>
+          <Icon name="arrow-right" size={17} class="text-muted group-hover:text-accent transition-colors shrink-0 sm:mt-2.5" />
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

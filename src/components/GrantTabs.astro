@@ -68,7 +68,7 @@ const tabs = [
     </div>
 
     <div class="reveal mt-10" data-tabs>
-      <!-- Перемикач: горизонтальний скрол на мобільному, ряд на десктопі -->
+      {/* Перемикач: горизонтальний скрол на мобільному, ряд на десктопі */}
       <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory md:overflow-visible" role="tablist" aria-label="Грантові напрями">
         {tabs.map((t, i) => (
           <button
@@ -93,7 +93,7 @@ const tabs = [
         ))}
       </div>
 
-      <!-- Панелі -->
+      {/* Панелі */}
       <div class="mt-6">
         {tabs.map((t, i) => (
           <div
@@ -156,7 +156,7 @@ const tabs = [
     </div>
 
     <p class="reveal mt-6 text-sm text-muted max-w-3xl">
-      Дані станом на липень 2026, звірені з <a href="/umovy-prohramy" class="text-accent hover:underline">офіційними джерелами</a>. З 1 вересня 2026 умови «Власної справи» оновлюються.
+      Дані станом на липень 2026, звірені з <a href="/umovy-prohramy" class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">офіційними джерелами</a>. З 1 вересня 2026 умови «Власної справи» оновлюються.
     </p>
   </div>
 </section>
