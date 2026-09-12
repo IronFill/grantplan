@@ -11,7 +11,7 @@ import { site } from '../data/site';
         До 20 хвилин: чесно скажемо, чи проходить ваша ідея під умови програми, — ще до оплати. Оберіть зручні дату й час нижче, або напишіть напряму:
       </p>
 
-      <!-- Прямі кнопки-месенджери -->
+      {/* Прямі кнопки-месенджери */}
       <div class="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-xl">
         <a href={site.telegram} target="_blank" rel="noopener" class="btn btn-ghost !min-h-[52px]" data-analytics="click_telegram">
           <Icon name="send" size={18} /> Telegram
@@ -30,29 +30,29 @@ import { site } from '../data/site';
 
     <div class="reveal mt-8 rounded-card-lg bg-surface border border-border p-5 md:p-8">
       <div id="lf-form-wrap" class="grid lg:grid-cols-2 gap-8 lg:gap-12">
-        <!-- Календар -->
+        {/* Календар */}
         <div>
           <div class="flex items-center justify-between mb-4">
             <button type="button" data-lf-prev aria-label="Попередній місяць"
-              class="inline-grid place-items-center w-10 h-10 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors disabled:opacity-30 disabled:pointer-events-none">
+              class="inline-grid place-items-center w-11 h-11 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors disabled:opacity-30 disabled:pointer-events-none">
               <Icon name="chevron-down" size={18} class="rotate-90" />
             </button>
             <div data-lf-month class="font-display font-semibold text-lg capitalize">—</div>
             <button type="button" data-lf-next aria-label="Наступний місяць"
-              class="inline-grid place-items-center w-10 h-10 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors">
+              class="inline-grid place-items-center w-11 h-11 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors">
               <Icon name="chevron-down" size={18} class="-rotate-90" />
             </button>
           </div>
           <div class="grid grid-cols-7 gap-1.5 text-center text-xs text-muted mb-2">
             <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Нд</span>
           </div>
-          <div data-lf-days class="grid grid-cols-7 gap-1.5"></div>
+          <div data-lf-days class="grid grid-cols-7 gap-1"></div>
           <p class="mt-4 text-xs text-muted flex items-center gap-2">
             <span class="inline-block w-3 h-3 rounded-full bg-accent"></span> обрана дата · неділя — вихідний
           </p>
         </div>
 
-        <!-- Час + контакти -->
+        {/* Час + контакти */}
         <div class="lg:border-l lg:border-border/70 lg:pl-12">
           <div data-lf-time-empty class="text-muted text-sm py-4">
             Спочатку оберіть день у календарі ←
@@ -66,11 +66,11 @@ import { site } from '../data/site';
           </div>
 
           <form id="lead-form" novalidate hidden>
-            <!-- Honeypot (приховане поле від спаму) -->
+            {/* Honeypot (приховане поле від спаму) */}
             <div class="hidden" aria-hidden="true">
               <label>Не заповнюйте це поле<input type="text" name="hp_gp_2026" tabindex="-1" autocomplete="off" /></label>
             </div>
-            <!-- Прихований payload квізу (заповнюється JS) -->
+            {/* Прихований payload квізу (заповнюється JS) */}
             <input type="hidden" name="quiz" id="lead-quiz" value="" />
             <input type="hidden" name="source" value="audit" />
             <input type="hidden" name="date" data-lf-date value="" />
@@ -132,7 +132,7 @@ import { site } from '../data/site';
         </div>
       </div>
 
-      <!-- Екран подяки -->
+      {/* Екран подяки */}
       <div id="lead-success" class="hidden text-center py-10">
         <span class="inline-grid place-items-center w-16 h-16 rounded-full bg-success/15 text-success mx-auto">
           <Icon name="check-circle" size={32} />
@@ -205,13 +205,13 @@ import { site } from '../data/site';
         const disabled = isPast || isSunday;
         const isSelected = !!selected && d.getTime() === selected.getTime();
         btn.setAttribute('aria-pressed', String(isSelected));
-        btn.className = 'aspect-square rounded-xl text-sm font-medium transition-colors ' +
+        btn.className = 'aspect-square min-h-[44px] rounded-xl text-sm font-medium transition-colors ' +
           (disabled
             ? 'text-muted/30 pointer-events-none'
             : 'border border-border hover:border-accent hover:text-accent');
         if (disabled) btn.disabled = true;
         if (isSelected) {
-          btn.className = 'aspect-square rounded-xl text-sm font-semibold bg-accent text-accent-ink';
+          btn.className = 'aspect-square min-h-[44px] rounded-xl text-sm font-semibold bg-accent text-accent-ink';
         }
         btn.addEventListener('click', () => pickDate(d));
         daysGrid.appendChild(btn);

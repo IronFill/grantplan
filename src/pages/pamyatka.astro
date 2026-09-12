@@ -5,6 +5,7 @@ import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
 import { rejections } from '../data/rejections';
 import { site } from '../data/site';
+import { tiers, rework } from '../data/pricing';
 
 const anketa = [
   { blk: 'А · Заявник', qs: [
@@ -68,7 +69,7 @@ const scaleRows = [
       <h1 class="text-3xl sm:text-4xl">Пам’ятка консультанта</h1>
       <p class="mt-2 text-muted">Шпаргалка на дзвінок і супровід клієнта. Оновлення програми — ревізія у вересні 2026.</p>
 
-      <!-- 1. Програма коротко -->
+      {/* 1. Програма коротко */}
       <section class="mt-10">
         <h2 class="text-2xl">1. Програма коротко</h2>
         <div class="mt-4 grid md:grid-cols-2 gap-4">
@@ -89,7 +90,7 @@ const scaleRows = [
         </div>
       </section>
 
-      <!-- 2. Перший дзвінок -->
+      {/* 2. Перший дзвінок */}
       <section class="mt-10">
         <h2 class="text-2xl">2. Перший дзвінок: тон і правила</h2>
         <div class="mt-4 rounded-card bg-surface border border-border p-5 sm:p-6 space-y-2.5 text-[0.95rem] text-muted">
@@ -100,7 +101,7 @@ const scaleRows = [
         </div>
       </section>
 
-      <!-- 3. Структура консультації -->
+      {/* 3. Структура консультації */}
       <section class="mt-10">
         <h2 class="text-2xl">3. Структура безкоштовної консультації (15 хв)</h2>
         <ol class="mt-4 space-y-3">
@@ -114,7 +115,7 @@ const scaleRows = [
         </ol>
       </section>
 
-      <!-- 4. Анкета -->
+      {/* 4. Анкета */}
       <section class="mt-10">
         <h2 class="text-2xl">4. Анкета клієнта (20 питань, ~30 хв)</h2>
         <div class="mt-4 space-y-4">
@@ -129,7 +130,7 @@ const scaleRows = [
         </div>
       </section>
 
-      <!-- 5. Причини відмов -->
+      {/* 5. Причини відмов */}
       <section class="mt-10">
         <h2 class="text-2xl">5. 10 причин відмов (акцент: 1, 2, 6)</h2>
         <div class="mt-4 grid sm:grid-cols-2 gap-3">
@@ -142,7 +143,7 @@ const scaleRows = [
         </div>
       </section>
 
-      <!-- 6. Заперечення -->
+      {/* 6. Заперечення */}
       <section class="mt-10">
         <h2 class="text-2xl">6. Відповіді на заперечення</h2>
         <div class="mt-4 space-y-3">
@@ -155,14 +156,14 @@ const scaleRows = [
         </div>
       </section>
 
-      <!-- 7. Тарифи -->
+      {/* 7. Тарифи */}
       <section class="mt-10">
         <h2 class="text-2xl">7. Тарифи (нагадування)</h2>
         <div class="mt-4 rounded-card bg-surface border border-border p-5 text-[0.95rem] text-muted space-y-1.5">
-          <div>Аудит ідеї — безкоштовно (до 20 хв).</div>
-          <div>Бізнес-план — 5 000–7 000 ₴ · строк 2–3 дні · 2 раунди правок.</div>
-          <div>«Під ключ» — 10 000–12 000 ₴ · строк 4–7 робочих днів (+ презентація, супровід подання, репетиція співбесіди).</div>
-          <div>Доопрацювання після відмови — від 2 500 ₴ · Оплата: 50% аванс, 50% після готовності.</div>
+          <div>Аудит ідеї — безкоштовно ({tiers.audit.term}).</div>
+          <div>Бізнес-план — {tiers.plan.label} · строк {tiers.plan.term} · 2 раунди правок.</div>
+          <div>«Під ключ» — {tiers.turnkey.label} · строк {tiers.turnkey.term} (+ презентація, супровід подання, репетиція співбесіди).</div>
+          <div>Доопрацювання після відмови — {rework.label} · Оплата: 50% аванс, 50% після готовності.</div>
           <div class="pt-2 text-ink">Перші 2–3 замовлення — за нижньою межею тарифу в обмін на розгорнутий відгук і дозвіл на кейс.</div>
         </div>
       </section>
