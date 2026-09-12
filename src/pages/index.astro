@@ -4,23 +4,17 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Hero from '../components/Hero.astro';
 import StatsBelt from '../components/StatsBelt.astro';
-import RiskAccordion from '../components/RiskAccordion.astro';
-import AntiRisk from '../components/AntiRisk.astro';
 import Method from '../components/Method.astro';
-import Expertise from '../components/Expertise.astro';
-import PlanContents from '../components/PlanContents.astro';
 import Pricing from '../components/Pricing.astro';
-import CaseTeaser from '../components/CaseTeaser.astro';
-import Team from '../components/Team.astro';
-import TrustBlock from '../components/TrustBlock.astro';
-import Services from '../components/Services.astro';
+import CasesTeaser from '../components/CasesTeaser.astro';
+import TeamTeaser from '../components/TeamTeaser.astro';
+import ReviewsTeaser from '../components/ReviewsTeaser.astro';
+import DeepDive from '../components/DeepDive.astro';
 import HonestyBlock from '../components/HonestyBlock.astro';
 import GrantTabs from '../components/GrantTabs.astro';
 import Quiz from '../components/Quiz.astro';
 import ChecklistCta from '../components/ChecklistCta.astro';
 import Faq from '../components/Faq.astro';
-import Reviews from '../components/Reviews.astro';
-import Comments from '../components/Comments.astro';
 import LeadForm from '../components/LeadForm.astro';
 import MobileCta from '../components/MobileCta.astro';
 import { faq } from '../data/faq';
@@ -53,28 +47,25 @@ const serviceSchema = {
 <Layout schema={[faqSchema, serviceSchema]}>
   <SiteHeader slot="header" />
 
-  <!-- Порядок блоків: спершу відповідаємо на два перші питання клієнта
-       («скільки дають» і «чи підходжу я»), далі — доказова база,
-       і лише після неї ціна. -->
+  <!-- Лендинг тримаємо коротким: спершу відповідаємо на два перші питання
+       клієнта («скільки дають» і «чи підходжу я»), далі — як це працює й
+       скільки коштує, і аж потім докази. Розгорнута доказова база (команда,
+       експертиза, кейси, відгуки, склад послуг, розбір відмов) винесена на
+       окремі сторінки: тут від неї лишились тизери й блок DeepDive, щоб
+       людина дійшла до суті, не втомившись від читання. -->
   <Hero />
   <StatsBelt />
   <GrantTabs />
   <Quiz />
-  <AntiRisk />
-  <RiskAccordion />
   <Method />
-  <Expertise />
-  <PlanContents />
-  <CaseTeaser />
-  <Team />
-  <TrustBlock />
+  <CasesTeaser />
   <Pricing />
-  <Services />
+  <TeamTeaser />
   <HonestyBlock />
+  <ReviewsTeaser />
+  <DeepDive />
   <ChecklistCta />
   <Faq />
-  <Reviews />
-  <Comments />
   <LeadForm />
 
   <SiteFooter slot="footer" />

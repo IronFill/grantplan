@@ -1,0 +1,37 @@
+---
+// Компактна вітрина кейсів для головної: назва, головна цифра й посилання
+// замість чотирьох карток із обкладинками (це забирало 3.3 екрана). Самі
+// кейси нікуди не поділись — кожен має власну сторінку, куди й ведуть картки.
+import Icon from './Icon.astro';
+import { cases } from '../data/cases';
+---
+<section id="case" class="py-14 md:py-20 border-t border-border/70 bg-surface/30 scroll-mt-20">
+  <div class="container-site">
+    <div class="reveal max-w-2xl">
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="badge-check" size={14} class="text-success" /> Реальні кейси · гранти отримано
+      </span>
+      <h2 class="mt-4 text-3xl sm:text-4xl">Ми не ховаємо роботу за NDA</h2>
+      <p class="mt-3 text-muted text-lg">
+        Відкриті кейси клієнтів: кошторис із ринковими цінами, фінмодель на 3 роки, реальні робочі місця та податки для бюджету.
+      </p>
+    </div>
+
+    <div class="mt-8 grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      {cases.map((c) => (
+        <a
+          href={`/${c.slug}`}
+          class="reveal card-hover group rounded-card bg-surface border border-border p-5 flex flex-col"
+          data-analytics={`click_case_${c.slug}`}
+        >
+          <h3 class="font-display font-semibold group-hover:text-accent transition-colors">{c.title}</h3>
+          <div class="mt-3 font-display font-extrabold text-xl text-accent">{c.stats[0].value}</div>
+          <div class="text-xs text-muted mt-0.5">{c.stats[0].label}</div>
+          <span class="mt-4 pt-4 border-t border-border/70 inline-flex items-center gap-1.5 text-sm text-muted group-hover:text-accent transition-colors">
+            Розібрати кейс <Icon name="arrow-right" size={15} />
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

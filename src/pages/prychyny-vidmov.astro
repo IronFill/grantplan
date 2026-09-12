@@ -6,6 +6,8 @@ import MobileCta from '../components/MobileCta.astro';
 import LeadForm from '../components/LeadForm.astro';
 import ArticleAside from '../components/ArticleAside.astro';
 import ChecklistCta from '../components/ChecklistCta.astro';
+import AntiRisk from '../components/AntiRisk.astro';
+import RiskAccordion from '../components/RiskAccordion.astro';
 import Icon from '../components/Icon.astro';
 import { rejections } from '../data/rejections';
 import { site } from '../data/site';
@@ -90,6 +92,12 @@ const schema = {
       />
     </div>
   </section>
+
+  <!-- Обидва блоки переїхали з головної: там вони забирали ~3.9 екрана,
+       а по темі це продовження саме цієї сторінки — де ми зупиняємо
+       відмову й на які юридичні дрібниці дивиться комісія. -->
+  <AntiRisk />
+  <RiskAccordion />
 
   <ChecklistCta />
   <LeadForm />
