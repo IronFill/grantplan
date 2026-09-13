@@ -150,21 +150,41 @@ const isCurrent = (href: string) => !href.includes('#') && href.replace(/\/$/, '
   </nav>
   <div class="container-site mt-6 pb-8 flex flex-col gap-3">
     <a href="/#lead" class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
-    <a href={`tel:${site.phone}`} class="btn btn-ghost w-full" data-analytics="click_phone" data-menu-link>
-      <Icon name="phone" size={18} /> Подзвонити
-    </a>
-    {/* Перемикач теми — утиліта, а не дія: у рамці btn-ghost він важив
-         стільки ж, скільки «Подзвонити», і три однакові кнопки поспіль
-         зчитувались як три рівноцінні пропозиції. */}
-    <button
-      type="button"
-      class="mt-1 inline-flex items-center justify-center gap-2 min-h-[44px] text-sm text-muted hover:text-accent transition-colors"
-      data-theme-toggle
+    <a
+      href={site.telegram}
+      target="_blank"
+      rel="noopener"
+      class="btn btn-ghost w-full"
+      data-analytics="click_telegram"
+      data-menu-link
     >
-      <Icon name="sun" size={17} class="icon-sun" />
-      <Icon name="moon" size={17} class="icon-moon" />
-      <span data-theme-label>Змінити тему</span>
-    </button>
+      <Icon name="send" size={18} /> Написати в Telegram
+    </a>
+
+    {/* Телефон лишається доступним: у шапці кнопка дзвінка ховається під
+         640px, тож на вузькому екрані це єдина точка входу окрім футера.
+         Показуємо сам номер — це корисніше за слово «Подзвонити».
+         Перемикач теми поруч, бо це утиліта, а не дія: у рамці btn-ghost
+         він важив стільки ж, скільки заклик до контакту. */}
+    <div class="mt-1 flex items-center justify-between gap-3">
+      <a
+        href={`tel:${site.phone}`}
+        class="inline-flex items-center gap-2 min-h-[44px] text-sm text-muted hover:text-accent transition-colors"
+        data-analytics="click_phone"
+        data-menu-link
+      >
+        <Icon name="phone" size={17} /> {site.phoneDisplay}
+      </a>
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 min-h-[44px] text-sm text-muted hover:text-accent transition-colors"
+        data-theme-toggle
+      >
+        <Icon name="sun" size={17} class="icon-sun" />
+        <Icon name="moon" size={17} class="icon-moon" />
+        <span data-theme-label>Змінити тему</span>
+      </button>
+    </div>
   </div>
 </div>
 
