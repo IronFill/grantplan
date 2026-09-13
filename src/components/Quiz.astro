@@ -63,8 +63,29 @@ const bonusGrounds = [
     label: 'Оновлення основних засобів, знищених або пошкоджених війною',
     short: 'оновлення зруйнованих основних засобів',
   },
-  { id: 'veteran', pct: 20, label: 'Суб’єкт ветеранського підприємництва', short: 'ветеранське підприємництво' },
-  { id: 'vat', pct: 20, label: 'Зареєстровані платником ПДВ', short: 'платник ПДВ' },
+  // requiresEntity — підстава доступна лише тим, хто вже суб'єкт
+  // господарювання. Статус ветеранського підприємництва за статтею 2
+  // Закону мають ФОП, самозайняті або юрособи, а платником ПДВ фізособа
+  // теж бути не може. Пункт 6 дає надбавку тим, хто «є» ними на момент
+  // оцінки заяви, а незареєстрована фізособа реєструється лише протягом
+  // 20 днів після рішення (пункт 4). Реєструватись наперед не вихід:
+  // діючий ФОП — це вже підпункт 2 пункту 4, тобто напрям масштабування,
+  // де потрібен діючий бізнес.
+  {
+    id: 'veteran',
+    pct: 20,
+    label: 'Суб’єкт ветеранського підприємництва',
+    short: 'ветеранське підприємництво',
+    hint: 'статус за статтею 2 Закону «Про ветеранське підприємництво» — його мають і члени сім’ї ветерана, але лише як ФОП, самозайнята особа або юрособа',
+    requiresEntity: true,
+  },
+  {
+    id: 'vat',
+    pct: 20,
+    label: 'Зареєстровані платником ПДВ',
+    short: 'платник ПДВ',
+    requiresEntity: true,
+  },
   {
     id: 'patent',
     pct: 20,
@@ -199,7 +220,10 @@ const checks = [
           </p>
           <div class="mt-5 grid gap-2.5">
             {bonusGrounds.map((g) => (
-              <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface px-5 py-4 cursor-pointer hover:border-accent transition-colors">
+              <label
+                class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface px-5 py-4 cursor-pointer hover:border-accent transition-colors has-[:disabled]:opacity-55 has-[:disabled]:cursor-not-allowed has-[:disabled]:hover:border-border"
+                data-ground-row
+              >
                 <input
                   type="checkbox"
                   class="mt-1 w-4 h-4 accent-accent shrink-0"
@@ -208,10 +232,16 @@ const checks = [
                   data-pct={g.pct}
                   data-label={g.label}
                   data-short={g.short}
+                  data-requires-entity={g.requiresEntity ? '' : undefined}
                 />
                 <span class="flex-1 min-w-0">
                   <span class="block text-[0.95rem] leading-snug">{g.label}</span>
                   {g.hint && <span class="block mt-1 text-xs text-muted leading-relaxed">{g.hint}</span>}
+                  {g.requiresEntity && (
+                    <span class="mt-1 text-xs text-accent leading-relaxed hidden" data-entity-note>
+                      Недоступно, поки ви не зареєстровані: цю підставу враховують за статусом на дату подання заяви.
+                    </span>
+                  )}
                 </span>
                 <span class="font-display font-semibold text-accent text-sm shrink-0">+{g.pct}%</span>
               </label>
@@ -332,6 +362,9 @@ const checks = [
     let current = 0;
 
     function showStep(i: number) {
+      // Статус до цього кроку вже відомий, тож звіряємо доступність підстав
+      // щоразу: людина могла повернутись назад і змінити відповідь.
+      if (qCards[i]?.hasAttribute('data-quiz-grounds')) syncEntityGrounds();
       qCards.forEach((c, idx) => c.classList.toggle('hidden', idx !== i));
       counter.textContent = `Питання ${i + 1} з ${total}`;
       progress.style.width = `${((i + 1) / total) * 100}%`;
@@ -367,6 +400,23 @@ const checks = [
     // Крок надбавок: «нічого з переліченого» взаємовиключне з рештою
     const groundBoxes = Array.from(root.querySelectorAll<HTMLInputElement>('[data-ground]'));
     const groundNone = root.querySelector<HTMLInputElement>('[data-ground-none]');
+
+    // Дві підстави доступні лише зареєстрованим суб'єктам господарювання
+    // (див. коментар до requiresEntity вище). Вимикаємо їх, коли людина
+    // відповіла, що ФОПа ще немає, — інакше квіз пообіцяв би суму, якої
+    // на дату подання заяви не буде.
+    function syncEntityGrounds() {
+      const isEntity = answers['status'] === 'ФОП' || answers['status'] === 'Юридична особа';
+      groundBoxes
+        .filter((b) => b.hasAttribute('data-requires-entity'))
+        .forEach((b) => {
+          b.disabled = !isEntity;
+          if (!isEntity) b.checked = false;
+          const note = b.closest('[data-ground-row]')?.querySelector('[data-entity-note]');
+          note?.classList.toggle('hidden', isEntity);
+          note?.classList.toggle('block', !isEntity);
+        });
+    }
     groundBoxes.forEach((box) => {
       box.addEventListener('change', () => {
         if (box.checked && groundNone) groundNone.checked = false;
@@ -420,7 +470,7 @@ const checks = [
       // Підстави з мультивибору. Пункт 6 Порядку: за одночасної наявності
       // кількох умов відсотки підсумовуються, тож рахуємо кожну окремо.
       groundBoxes
-        .filter((b) => b.checked)
+        .filter((b) => b.checked && !b.disabled)
         .forEach((b) => {
           const p = Number(b.dataset.pct || '0');
           pct += p;
