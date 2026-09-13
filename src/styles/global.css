@@ -183,10 +183,37 @@
 
   /* Хедер blur при скролі */
   .header-blur {
-    background-color: color-mix(in srgb, var(--color-bg) 82%, transparent);
-    backdrop-filter: saturate(140%) blur(12px);
-    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    background-color: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    backdrop-filter: saturate(150%) blur(20px);
+    -webkit-backdrop-filter: saturate(150%) blur(20px);
     border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Без підтримки backdrop-filter (старі WebView) плівка була б прозорою —
+     там показуємо повністю непрозорий фон. */
+  @supports not (backdrop-filter: blur(1px)) {
+    .header-blur {
+      background-color: var(--color-bg);
+    }
+  }
+
+  /* Горизонтальні стрічки (вкладки напрямів): ховаємо смугу прокрутки й
+     розчиняємо правий край. Без цього обрізана навпіл вкладка читається як
+     зламана верстка, а не як «гортайте далі». */
+  .scroll-fade-x {
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent);
+  }
+  .scroll-fade-x::-webkit-scrollbar {
+    display: none;
+  }
+  /* На десктопі стрічка вміщається цілком — маска лише зрізала б останню вкладку */
+  @media (min-width: 768px) {
+    .scroll-fade-x {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
   }
 
   /* Скляна картка (hero-макет) — на токенах, щоб адаптуватись під тему */

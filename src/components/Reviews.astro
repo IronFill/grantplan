@@ -31,7 +31,9 @@ import { reviews } from '../data/reviews';
             <div class="font-semibold">{r.name}</div>
             <div class="text-sm text-muted">{r.business}</div>
             <div class="flex gap-0.5 text-accent mt-2">
-              {Array.from({ length: r.rating }).map(() => <Icon name="star" size={14} />)}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Icon name="star" size={14} filled={i < r.rating} class={i < r.rating ? '' : 'text-border'} />
+              ))}
             </div>
           </figcaption>
         </figure>

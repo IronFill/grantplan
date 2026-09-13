@@ -49,35 +49,27 @@ const status = getProgramStatus();
          набагато більше відчуття продуманості, ніж розкидані по сторінці
          дрібні анімації. */}
     <div>
-      <div class="reveal flex flex-wrap items-center gap-2" style="transition-delay:0ms">
+      {/* Порядок навмисно щільний: бейдж → заголовок → один абзац по суті →
+           кнопки. До правки тут ішли два бейджі й три абзаци поспіль, і на
+           мобільному кнопка «Дізнатися свій ліміт» опинялась нижче згину —
+           людина бачила лише текст. Хто ми й хто рахує цифри, розказує
+           окремий блок нижче, тут це зайве. */}
+      <div class="reveal" style="transition-delay:0ms">
         <span class="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-accent/10 px-3.5 py-1.5 text-sm text-accent font-medium">
           <Icon name="alert-triangle" size={15} />
           {status.badge}
         </span>
-        <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm text-muted">
-          <span class="w-2 h-2 rounded-full bg-success"></span>
-          Харків · працюємо по всій Україні
-        </span>
       </div>
 
-      <h1 class="reveal mt-6 text-[1.75rem] leading-[1.1] sm:text-5xl lg:text-[3.4rem] font-extrabold" style="transition-delay:70ms">
+      <h1 class="reveal mt-5 text-[1.9rem] leading-[1.08] sm:text-5xl lg:text-[3.4rem] font-extrabold" style="transition-delay:70ms">
         Грант до <span class="text-accent-gradient">500 000 ₴</span> для Харківщини — без відмови через слабкий бізнес-план
       </h1>
 
-      <p class="reveal mt-6 text-lg max-w-xl" style="transition-delay:140ms">
+      <p class="reveal mt-5 text-lg max-w-xl" style="transition-delay:140ms">
         Через {tiers.plan.term} у вас на руках готовий пакет: заповнена форма Дії, кошторис із підтвердженими цінами та фінмодель, які між собою сходяться.
       </p>
 
-      <p class="reveal mt-4 text-base text-muted max-w-xl" style="transition-delay:190ms">
-        Готує його юрист — він відповідає за відповідність чинній постанові, а цифри рахує фінансистка: саме вони мають витримати перевірку банківського оцінювача.
-      </p>
-
-      <p class="reveal mt-4 flex items-start gap-2.5 text-sm text-muted max-w-xl" style="transition-delay:225ms">
-        <Icon name="calendar-clock" size={17} class="text-accent shrink-0 mt-0.5" />
-        <span>{status.actionLine}</span>
-      </p>
-
-      <div class="reveal mt-8 flex flex-col sm:flex-row gap-3" style="transition-delay:260ms">
+      <div class="reveal mt-7 flex flex-col sm:flex-row gap-3" style="transition-delay:190ms">
         <a href="/#quiz" class="btn btn-primary" data-analytics="click_cta_hero">
           Дізнатися свій ліміт за 2 хвилини
         </a>
@@ -86,15 +78,21 @@ const status = getProgramStatus();
         </a>
       </div>
 
-      <a href="/umovy-prohramy" class="reveal mt-4 py-1 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover" style="transition-delay:320ms" data-analytics="click_umovy_hero">
-        Всі умови програми з офіційних джерел <Icon name="arrow-right" size={16} />
-      </a>
-
-      <ul class="reveal mt-7 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" style="transition-delay:380ms">
+      <ul class="reveal mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted" style="transition-delay:240ms">
         <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Чесна оцінка шансів до оплати</li>
         <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Прозорі ціни</li>
-        <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> 2 раунди правок включено</li>
+        <li class="inline-flex items-center gap-2"><Icon name="check" size={16} class="text-success" /> Харків · по всій Україні</li>
       </ul>
+
+      <div class="reveal mt-6 pt-5 border-t border-border/60 max-w-xl" style="transition-delay:290ms">
+        <p class="flex items-start gap-2.5 text-sm text-muted">
+          <Icon name="calendar-clock" size={17} class="text-accent shrink-0 mt-0.5" />
+          <span>{status.actionLine}</span>
+        </p>
+        <a href="/umovy-prohramy" class="mt-2 py-1 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-hover" data-analytics="click_umovy_hero">
+          Всі умови програми з офіційних джерел <Icon name="arrow-right" size={16} />
+        </a>
+      </div>
     </div>
 
     {/* Права колонка: приклади слайдів реальних кейсів (переворот) */}

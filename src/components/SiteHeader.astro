@@ -1,13 +1,15 @@
 ---
 import Icon from './Icon.astro';
-import { site, nav } from '../data/site';
+import { site, nav, navSecondary } from '../data/site';
 ---
 <header id="site-header" class="fixed top-0 inset-x-0 z-[60] transition-colors" data-header>
   <div class="container-site flex items-center justify-between h-16 md:h-[72px]" data-header-bar>
     {/* Лого */}
     <a href="/" class="flex items-center gap-2.5 font-display font-extrabold text-xl tracking-tight" aria-label="ГрантПлан — на головну">
       <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
-      ГрантПлан<span class="text-accent">.</span>
+      {/* Текст логотипа — одним flex-елементом: інакше gap контейнера
+           розсовує «ГрантПлан» і крапку, і та висить окремо в повітрі. */}
+      <span>ГрантПлан<span class="text-accent">.</span></span>
     </a>
 
     {/* Десктоп-навігація */}
@@ -83,7 +85,7 @@ import { site, nav } from '../data/site';
   <div class="container-site flex items-center justify-between h-16">
     <span class="flex items-center gap-2.5 font-display font-extrabold text-xl">
       <img src="/images/logo.png" alt="" width="36" height="36" class="h-9 w-9 shrink-0" />
-      ГрантПлан<span class="text-accent">.</span>
+      <span>ГрантПлан<span class="text-accent">.</span></span>
     </span>
     <button
       type="button"
@@ -96,6 +98,13 @@ import { site, nav } from '../data/site';
   </div>
   <nav class="container-site flex flex-col gap-1 mt-6" aria-label="Мобільна навігація">
     {nav.map((item) => (
+      <a
+        href={item.href}
+        class="py-4 text-2xl font-display font-semibold border-b border-border/60"
+        data-menu-link
+      >{item.label}</a>
+    ))}
+    {navSecondary.map((item) => (
       <a
         href={item.href}
         class="py-4 text-2xl font-display font-semibold border-b border-border/60"
