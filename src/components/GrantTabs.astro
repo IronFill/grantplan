@@ -59,7 +59,7 @@ const tabs = [
   },
 ];
 ---
-<section id="programs" class="py-14 md:py-20 border-t border-border/70 bg-surface/30 scroll-mt-20">
+<section id="programs" class="py-14 md:py-20 scroll-mt-20">
   <div class="container-site">
     <div class="reveal max-w-2xl">
       <span class="text-accent font-display font-semibold text-sm uppercase tracking-wide">Грантові напрями 2026</span>
@@ -69,7 +69,7 @@ const tabs = [
 
     <div class="reveal mt-10" data-tabs>
       {/* Перемикач: горизонтальний скрол на мобільному, ряд на десктопі */}
-      <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory md:overflow-visible" role="tablist" aria-label="Грантові напрями">
+      <div class="scroll-fade-x flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory md:overflow-visible" role="tablist" aria-label="Грантові напрями">
         {tabs.map((t, i) => (
           <button
             type="button"

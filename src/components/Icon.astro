@@ -5,8 +5,11 @@ interface Props {
   size?: number;
   class?: string;
   stroke?: number;
+  /** Залити фігуру поточним кольором — для зірок рейтингу, де контур
+      читається як «порожня» зірка. */
+  filled?: boolean;
 }
-const { name, size = 24, class: cls = '', stroke = 1.75 } = Astro.props;
+const { name, size = 24, class: cls = '', stroke = 1.75, filled = false } = Astro.props;
 
 // Кожна іконка — вміст <svg> (шляхи в поточному координатному просторі 24x24).
 const paths: Record<string, string> = {
@@ -76,7 +79,7 @@ const inner = paths[name] ?? '';
   width={size}
   height={size}
   viewBox="0 0 24 24"
-  fill="none"
+  fill={filled ? 'currentColor' : 'none'}
   stroke="currentColor"
   stroke-width={stroke}
   stroke-linecap="round"

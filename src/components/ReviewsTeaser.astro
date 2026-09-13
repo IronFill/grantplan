@@ -8,7 +8,7 @@ import { reviews } from '../data/reviews';
 const teaser = reviews.slice(0, 2);
 const total = reviews.length;
 ---
-<section class="py-14 md:py-20 border-t border-border/70">
+<section class="py-14 md:py-20 bg-surface/30">
   <div class="container-site">
     <div class="reveal flex flex-wrap items-end justify-between gap-4 max-w-4xl">
       <div>
@@ -35,7 +35,9 @@ const total = reviews.length;
               <div class="text-sm text-muted">{r.business}</div>
             </div>
             <div class="flex gap-0.5 text-accent shrink-0">
-              {Array.from({ length: r.rating }).map(() => <Icon name="star" size={14} />)}
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Icon name="star" size={14} filled={i < r.rating} class={i < r.rating ? '' : 'text-border'} />
+              ))}
             </div>
           </figcaption>
         </figure>

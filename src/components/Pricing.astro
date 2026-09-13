@@ -95,7 +95,7 @@ const plans = [
             class={`btn mt-7 w-full ${p.featured ? 'btn-primary' : 'btn-ghost'}`}
             data-analytics={p.analytics}
           >{p.cta}</a>
-          {p.termsHref && (
+          {p.termsHref ? (
             <a
               href={p.termsHref}
               class="mt-1 py-3 text-center text-sm text-muted hover:text-accent underline underline-offset-2"
@@ -103,6 +103,8 @@ const plans = [
             >
               Умови співпраці
             </a>
+          ) : (
+            <span class="mt-1 py-3 text-center text-sm invisible" aria-hidden="true">Умови співпраці</span>
           )}
         </article>
       ))}
@@ -111,9 +113,15 @@ const plans = [
     <p class="reveal mt-6 text-sm text-muted text-center">
       Доопрацювання плану після відмови — {rework.label} · Оплата частинами: 50% аванс, 50% після готовності
     </p>
-    <p class="reveal mt-4 text-sm text-muted leading-relaxed max-w-3xl mx-auto text-center">
-      Якщо на безкоштовному аудиті ми доходимо висновку, що заявка не пройде, до оплати справа не доходить — тож ви завжди платите вже після чесної оцінки шансів, а не наосліп. Ціни наведено орієнтовно і не є публічною офертою: остаточна вартість залежить від обсягу робіт і погоджується в умовах співпраці до внесення авансу. Оскільки оплачується робота з підготовки документів, а не результат розгляду заявки, вартість послуг не залежить від рішення комісії та не підлягає поверненню в разі відмови у гранті.
-    </p>
+    <details class="reveal mt-4 max-w-3xl mx-auto rounded-card border border-border bg-surface/60">
+      <summary class="cursor-pointer list-none px-5 py-3.5 text-sm text-muted hover:text-ink transition-colors flex items-center justify-between gap-3">
+        <span>Умови оплати та повернення коштів</span>
+        <Icon name="chevron-down" size={17} class="shrink-0 transition-transform" />
+      </summary>
+      <p class="px-5 pb-5 text-sm text-muted leading-relaxed">
+        Якщо на безкоштовному аудиті ми доходимо висновку, що заявка не пройде, до оплати справа не доходить — тож ви завжди платите вже після чесної оцінки шансів, а не наосліп. Ціни наведено орієнтовно і не є публічною офертою: остаточна вартість залежить від обсягу робіт і погоджується в умовах співпраці до внесення авансу. Оскільки оплачується робота з підготовки документів, а не результат розгляду заявки, вартість послуг не залежить від рішення комісії та не підлягає поверненню в разі відмови у гранті.
+      </p>
+    </details>
   </div>
 </section>
 
