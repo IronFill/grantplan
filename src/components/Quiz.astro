@@ -8,14 +8,16 @@ import { getProgramPhase } from '../data/program';
 // суму за редакцією, яка вже не діє.
 const quizNote =
   getProgramPhase() === 'new-open'
-    ? 'Це орієнтир за логікою постанови КМУ № 616, чинної з 1 вересня 2026. Тут не враховано надбавку +50% за пріоритетний сектор економіки (визначається за КВЕД) та інші підстави для +20%: статус платника ПДВ, чинний патент, статус ВПО. Точний розрахунок робимо на безкоштовному аудиті.'
+    ? 'Це орієнтир за постановою КМУ № 616, чинною з 1 вересня 2026: базовий діапазон напряму плюс надбавки, які підсумовуються, але не вище стелі. Два уточнення, які вирішуються не на сайті: належність до пріоритетного сектору визначає центр зайнятості за КВЕД під час розгляду заяви, а критерії оцінювання встановлює Мінекономіки окремим актом. Тому точну суму рахуємо на безкоштовному аудиті.'
     : 'Розрахунок за редакцією, що приймала заявки до 1 серпня 2026 року. З 1 вересня діють гнучкі діапазони з системою надбавок, тож ваша фактична сума може відрізнятися — перерахуємо її на безкоштовному аудиті за правилами, чинними на дату подання.';
 
 const questions = [
   {
+    // Статус вирішує не лише прохідність, а й доступний напрям: масштабування
+    // пункт 6 Порядку дає лише суб'єктам господарювання з підпункту 2 пункту 4.
     q: 'Ваш статус?',
     key: 'status',
-    options: ['ФОП', 'Фізособа', 'Ветеран або член родини', 'Молодь 18–25'],
+    options: ['Фізособа — ще не зареєстрований', 'ФОП', 'Юридична особа'],
   },
   {
     // З 1 вересня 2026 сума залежить насамперед від напряму, а не від
@@ -25,14 +27,9 @@ const questions = [
     options: ['Відкриваю нову', 'Масштабую діючу'],
   },
   {
-    q: 'Чи є прострочені кредити понад 30 днів або банкрутство?',
-    key: 'debts',
-    options: ['Так', 'Ні', 'Не знаю'],
-  },
-  {
     q: 'Скільки робочих місць готові створити?',
     key: 'jobs',
-    options: ['0', '1', '2+'],
+    options: ['0', '1', '2 і більше'],
   },
   {
     q: 'Область реєстрації?',
@@ -40,35 +37,84 @@ const questions = [
     options: ['Харківська чи інша прифронтова', 'Інша область'],
   },
   {
-    q: 'Чи готові офіційно працювати і платити податки 3 роки?',
-    key: 'commit',
-    options: ['Так', 'Ні'],
+    // Пункт 10 Порядку дає вибір строку проєкту: 2, 3 або 5 років. Питати
+    // «чи готові 3 роки?» означало б відсіювати тих, кому підходять два.
+    q: 'На який строк готові взяти зобов’язання — працювати офіційно і платити податки?',
+    key: 'term',
+    options: ['2 роки', '3 роки', '5 років', 'Не готовий(-а)'],
   },
 ];
 
-// Останній крок — блокуючі умови. Це не «бали», а жорсткий відсів:
-// банк-партнер перевіряє їх ще до того, як хтось прочитає бізнес-план.
-const blockers = [
-  { id: 'tot', label: 'Бізнес зареєстрований або фактично працює на тимчасово окупованій території' },
-  { id: 'rf', label: 'Є економічна діяльність на території РФ' },
-  { id: 'sanctions', label: 'Щодо вас або компанії застосовані санкції' },
-  { id: 'bankrupt', label: 'Порушено справу про банкрутство' },
-  { id: 'budget', label: 'Є непогашені борги перед бюджетом України' },
-  { id: 'criminal', label: 'Є судове рішення у кримінальній справі, зокрема за корупційні злочини' },
+// Підстави для збільшення суми (пункт 6 Порядку). Мультивибір, бо вони
+// сумуються: «у разі одночасної наявності двох і більше умов … збільшення
+// застосовується шляхом сумування відповідних відсотків». Прифронтовий
+// регіон і два робочі місця — теж підстави, але їх питаємо окремо вище.
+const bonusGrounds = [
+  {
+    id: 'sector',
+    pct: 50,
+    label: 'Діяльність у пріоритетному секторі економіки',
+    short: 'пріоритетний сектор економіки',
+    hint: 'промисловість і харчова, агро, IT, будівництво й відновлення, транспорт, енергетика, ОПК, охорона здоров’я, креативні індустрії, освіта, кібербезпека та інші — повний перелік КВЕД у додатку до Порядку',
+  },
+  {
+    id: 'rebuild',
+    pct: 30,
+    label: 'Оновлення основних засобів, знищених або пошкоджених війною',
+    short: 'оновлення зруйнованих основних засобів',
+  },
+  { id: 'veteran', pct: 20, label: 'Суб’єкт ветеранського підприємництва', short: 'ветеранське підприємництво' },
+  { id: 'vat', pct: 20, label: 'Зареєстровані платником ПДВ', short: 'платник ПДВ' },
+  {
+    id: 'patent',
+    pct: 20,
+    label: 'Чинний патент на винахід або корисну модель за темою проєкту',
+    short: 'чинний патент',
+  },
+  {
+    id: 'idp',
+    pct: 20,
+    label: 'ВПО з досвідом підприємництва понад 6 місяців або релоковане підприємство',
+    short: 'ВПО або релоковане підприємство',
+  },
+  { id: 'young', pct: 5, label: 'Вам від 18 до 25 років', short: 'вік 18–25' },
 ];
 
-const totalSteps = questions.length + 1;
+// Жорсткий відсів — пункти 9 і 19 Порядку: заявку відхиляють автоматично,
+// бізнес-план ніхто не читатиме.
+const hardBlockers = [
+  { id: 'tot', label: 'Бізнес зареєстрований або фактично працює на тимчасово окупованій території чи в зоні активних бойових дій' },
+  { id: 'rf', label: 'Є господарська діяльність на території РФ або Білорусі' },
+  { id: 'sanctions', label: 'Щодо вас або компанії застосовані санкції' },
+  { id: 'bankrupt', label: 'Порушено справу про банкрутство або триває ліквідація' },
+  { id: 'criminal', label: 'Є рішення суду у кримінальній справі, зокрема за корупційні злочини' },
+  { id: 'activity', label: 'Зброя, тютюн, алкоголь (крім вина та медових напоїв), обмін валют' },
+  { id: 'finance', label: 'Ломбард, кредитна чи страхова організація, інвестфонд, НПФ, професійний учасник ринку цінних паперів' },
+  { id: 'fund', label: 'Уже отримували грант Українського молодіжного або ветеранського фонду на ті самі напрями витрат' },
+  { id: 'five', label: 'Ви керівник, засновник або кінцевий бенефіціар у п’яти й більше платниках податків' },
+];
+
+// М'який відсів — критерії перевірки ділової репутації (пункт 17). Це не
+// автоматична відмова, але негативна репутація хоча б за одним критерієм
+// уже є підставою для відмови (пункт 19), тож мовчати про це не можна.
+const softBlockers = [
+  { id: 'taxdebt', label: 'Є податковий борг' },
+  { id: 'enforcement', label: 'Є відкриті виконавчі провадження, де ви боржник' },
+  { id: 'overdue', label: 'Є прострочені кредити або інші прострочені зобов’язання' },
+];
+
+const totalSteps = questions.length + 2;
 
 // Ліва колонка описує рівно те, що питає сам тест, — список зібрано під
 // questions/blockers вище, щоб він не розійшовся з реальними кроками.
 const checks = [
-  'Ваш статус: ФОП, фізособа, ветеран або молодь 18–25',
+  'Ваш статус: фізособа, ФОП чи юридична особа',
   'Напрям: нова справа чи масштабування діючої',
-  'Прострочені кредити понад 30 днів і банкрутство',
   'Скільки робочих місць готові створити',
   'Область реєстрації — прифронтова чи ні',
-  'Готовність працювати офіційно та платити податки 3 роки',
-  `${blockers.length} блокуючих умов, які банк перевіряє першими`,
+  'Строк зобов’язань: 2, 3 або 5 років',
+  `${bonusGrounds.length} підстав для надбавок — від +5% до +50%`,
+  `${hardBlockers.length} блокуючих умов, які банк перевіряє першими`,
 ];
 ---
 {/* Секція в тому самому .container-site, що й решта головної. Ліворуч —
@@ -143,8 +189,43 @@ const checks = [
           </div>
         ))}
 
+        {/* Передостанній крок: підстави для надбавок (мультивибір — вони сумуються) */}
+        <div class="mt-7 hidden" data-quiz-q={questions.length} data-quiz-grounds>
+          <h3 class="text-xl sm:text-2xl font-display font-semibold">
+            Що з переліченого стосується вас або вашого проєкту?
+          </h3>
+          <p class="mt-2 text-sm text-muted">
+            Кожен пункт додає відсотки до базової суми, і вони підсумовуються. Позначайте все, що підходить.
+          </p>
+          <div class="mt-5 grid gap-2.5">
+            {bonusGrounds.map((g) => (
+              <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface px-5 py-4 cursor-pointer hover:border-accent transition-colors">
+                <input
+                  type="checkbox"
+                  class="mt-1 w-4 h-4 accent-accent shrink-0"
+                  data-ground
+                  value={g.id}
+                  data-pct={g.pct}
+                  data-label={g.label}
+                  data-short={g.short}
+                />
+                <span class="flex-1 min-w-0">
+                  <span class="block text-[0.95rem] leading-snug">{g.label}</span>
+                  {g.hint && <span class="block mt-1 text-xs text-muted leading-relaxed">{g.hint}</span>}
+                </span>
+                <span class="font-display font-semibold text-accent text-sm shrink-0">+{g.pct}%</span>
+              </label>
+            ))}
+            <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-raised px-5 py-4 cursor-pointer hover:border-accent transition-colors">
+              <input type="checkbox" class="mt-1 w-4 h-4 accent-accent shrink-0" data-ground-none />
+              <span class="text-[0.95rem] leading-snug font-medium">Нічого з переліченого</span>
+            </label>
+          </div>
+          <button type="button" class="btn btn-primary w-full mt-5" data-quiz-next>Далі</button>
+        </div>
+
         {/* Останній крок: блокуючі умови (мультивибір) */}
-        <div class="mt-7 hidden" data-quiz-q={questions.length} data-quiz-blockers>
+        <div class="mt-7 hidden" data-quiz-q={questions.length + 1} data-quiz-blockers>
           <h3 class="text-xl sm:text-2xl font-display font-semibold">
             Позначте те, що стосується вас або вашого бізнесу
           </h3>
@@ -152,10 +233,22 @@ const checks = [
             Ці умови банк-партнер перевіряє першими — ще до того, як хтось прочитає ваш бізнес-план.
           </p>
           <div class="mt-5 grid gap-2.5">
-            {blockers.map((b) => (
+            {hardBlockers.map((b) => (
               <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface px-5 py-4 cursor-pointer hover:border-accent transition-colors">
                 <input type="checkbox" class="mt-1 w-4 h-4 accent-accent shrink-0" data-blocker value={b.id} data-label={b.label} />
                 <span class="text-[0.95rem] leading-snug">{b.label}</span>
+              </label>
+            ))}
+          </div>
+
+          {/* Окремим блоком, бо це інша природа: не автоматична відмова,
+               а бали ділової репутації, які банк рахує на першому етапі. */}
+          <p class="mt-6 text-sm font-medium">А це впливає на бали перевірки в банку:</p>
+          <div class="mt-2.5 grid gap-2.5">
+            {softBlockers.map((b) => (
+              <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-surface/60 px-5 py-4 cursor-pointer hover:border-accent transition-colors">
+                <input type="checkbox" class="mt-1 w-4 h-4 accent-accent shrink-0" data-soft value={b.id} data-label={b.label} />
+                <span class="text-[0.95rem] leading-snug text-muted">{b.label}</span>
               </label>
             ))}
             <label class="flex items-start gap-3 text-left rounded-xl border border-border bg-raised px-5 py-4 cursor-pointer hover:border-accent transition-colors">
@@ -271,16 +364,36 @@ const checks = [
       });
     });
 
-    // Крок блокуючих умов: «нічого з переліченого» взаємовиключне з рештою
+    // Крок надбавок: «нічого з переліченого» взаємовиключне з рештою
+    const groundBoxes = Array.from(root.querySelectorAll<HTMLInputElement>('[data-ground]'));
+    const groundNone = root.querySelector<HTMLInputElement>('[data-ground-none]');
+    groundBoxes.forEach((box) => {
+      box.addEventListener('change', () => {
+        if (box.checked && groundNone) groundNone.checked = false;
+      });
+    });
+    groundNone?.addEventListener('change', () => {
+      if (groundNone.checked) groundBoxes.forEach((b) => (b.checked = false));
+    });
+    root.querySelector<HTMLButtonElement>('[data-quiz-next]')?.addEventListener('click', () => {
+      if (current < total - 1) {
+        current++;
+        showStep(current);
+      }
+    });
+
+    // Крок блокуючих умов: «нічого з переліченого» взаємовиключне з рештою,
+    // включно з м'якими пунктами — вони на тому самому кроці.
     const blockerBoxes = Array.from(root.querySelectorAll<HTMLInputElement>('[data-blocker]'));
+    const softBoxes = Array.from(root.querySelectorAll<HTMLInputElement>('[data-soft]'));
     const noneBox = root.querySelector<HTMLInputElement>('[data-blocker-none]');
-    blockerBoxes.forEach((box) => {
+    [...blockerBoxes, ...softBoxes].forEach((box) => {
       box.addEventListener('change', () => {
         if (box.checked && noneBox) noneBox.checked = false;
       });
     });
     noneBox?.addEventListener('change', () => {
-      if (noneBox.checked) blockerBoxes.forEach((b) => (b.checked = false));
+      if (noneBox.checked) [...blockerBoxes, ...softBoxes].forEach((b) => (b.checked = false));
     });
     root.querySelector<HTMLButtonElement>('[data-quiz-finish]')?.addEventListener('click', finish);
 
@@ -295,7 +408,7 @@ const checks = [
     // від напряму, а надбавки за категорію/регіон/робочі місця
     // підсумовуються й нараховуються на базову суму запиту.
     function computeEstimate() {
-      const { status, track, jobs, region } = answers;
+      const { track, jobs, region } = answers;
       const scaling = track === 'Масштабую діючу';
 
       const base = scaling ? { min: 500_000, max: 1_500_000 } : { min: 100_000, max: 300_000 };
@@ -303,27 +416,35 @@ const checks = [
 
       const bonuses: string[] = [];
       let pct = 0;
-      if (status === 'Молодь 18–25') {
-        pct += 5;
-        bonuses.push('+5% молодь 18–25');
-      }
-      if (status === 'Ветеран або член родини') {
-        pct += 20;
-        bonuses.push('+20% ветеранське підприємництво');
-      }
-      if (jobs === '2+') {
-        pct += 20;
-        bonuses.push('+20% за 2 нові робочі місця');
-      }
+
+      // Підстави з мультивибору. Пункт 6 Порядку: за одночасної наявності
+      // кількох умов відсотки підсумовуються, тож рахуємо кожну окремо.
+      groundBoxes
+        .filter((b) => b.checked)
+        .forEach((b) => {
+          const p = Number(b.dataset.pct || '0');
+          pct += p;
+          bonuses.push(`+${p}% ${b.dataset.short || ''}`);
+        });
+
+      // Прифронтовий регіон — та сама надбавка +30%, але питаємо окремо,
+      // бо область потрібна нам і поза розрахунком.
       if (region === 'Харківська чи інша прифронтова') {
         pct += 30;
         bonuses.push('+30% прифронтовий регіон');
       }
 
-      // Надбавка рахується від базової суми, але не вище стелі напряму.
-      const withBonus = Math.min(Math.round((base.max * (100 + pct)) / 100), cap);
+      // Два нові робочі місця — окрема підстава на +20% (пункт 6).
+      if (jobs === '2 і більше') {
+        pct += 20;
+        bonuses.push('+20% за два нові робочі місця');
+      }
 
-      return { scaling, base, cap, pct, bonuses, withBonus };
+      // Надбавка рахується від базової суми, але не вище стелі напряму.
+      const raw = Math.round((base.max * (100 + pct)) / 100);
+      const withBonus = Math.min(raw, cap);
+
+      return { scaling, base, cap, pct, bonuses, withBonus, capped: raw > cap };
     }
 
     let resultPayload = '';
@@ -344,7 +465,11 @@ const checks = [
         .filter((b) => b.checked)
         .map((b) => b.getAttribute('data-label') || '');
 
-      const blocked = answers['debts'] === 'Так' || answers['commit'] === 'Ні';
+      const soft = softBoxes.filter((b) => b.checked).map((b) => b.getAttribute('data-label') || '');
+
+      // Без зобов'язання платити податки протягом строку проєкту грант
+      // повертається (пункт 23), тож це не «мінус бали», а стоп.
+      const blocked = answers['term'] === 'Не готовий(-а)';
 
       if (hardBlockers.length) {
         iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-accent/15 text-accent';
@@ -360,12 +485,10 @@ const checks = [
         iconWrap.className = 'inline-grid place-items-center w-14 h-14 rounded-2xl mx-auto bg-accent/15 text-accent';
         iconWrap.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
-        title.textContent = 'Поки що не варто подаватись — ось що виправити';
-        const reasons: string[] = [];
-        if (answers['debts'] === 'Так') reasons.push('закрити або реструктуризувати прострочені зобов’язання');
-        if (answers['commit'] === 'Ні') reasons.push('бути готовим офіційно працювати і платити податки 3 роки — це умова програми');
-        text.textContent = 'Щоб пройти: ' + reasons.join('; ') + '. Розкажемо детально на безкоштовному аудиті.';
-        resultPayload = 'РЕЗУЛЬТАТ: поки не проходить';
+        title.textContent = 'Поки що не варто подаватись — ось у чому річ';
+        text.textContent =
+          'Найкоротший строк проєкту за програмою — два роки, і весь цей час треба працювати офіційно та платити податки за себе й найманих працівників. Якщо сплачені податки виявляться меншими за суму гранту, різницю доведеться повернути. Це не додаткова умова від нас, а механіка самої програми. Якщо готові переглянути строк — напишіть, порахуємо на безкоштовному аудиті.';
+        resultPayload = 'РЕЗУЛЬТАТ: не готовий до зобов’язань за строком';
         note.hidden = true;
       } else {
         const est = computeEstimate();
@@ -376,21 +499,38 @@ const checks = [
         iconWrap.innerHTML =
           '<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
 
+        // Головне — сума, а не діапазон напряму: по неї людина і йшла
+        // через сім кроків. Діапазон і склад надбавок — нижче, у поясненні.
         const trackName = est.scaling ? 'масштабування діючої справи' : 'старт власної справи';
-        title.innerHTML = `Ваш напрям — ${trackName}: <span class="text-accent">${num(est.base.min)} – ${fmt(est.base.max)}</span>`;
+        title.innerHTML = `Ваш орієнтир — <span class="text-accent">${fmt(est.withBonus)}</span>`;
 
-        const parts: string[] = [];
+        const parts: string[] = [
+          `Напрям «${trackName}»: базовий діапазон ${num(est.base.min)} – ${fmt(est.base.max)}.`,
+        ];
         if (est.bonuses.length) {
           parts.push(
-            `Ваші надбавки: ${est.bonuses.join(', ')} — разом +${est.pct}%, орієнтовно до ${fmt(est.withBonus)} (стеля напряму — ${fmt(est.cap)}).`,
+            est.capped
+              ? `Ваші надбавки: ${est.bonuses.join(', ')} — разом +${est.pct}%. Цього досить, щоб вийти на стелю напряму: ${fmt(est.cap)}.`
+              : `Ваші надбавки: ${est.bonuses.join(', ')} — разом +${est.pct}%.`,
           );
         } else {
           parts.push(`Надбавок за вашими відповідями не набирається, стеля напряму — ${fmt(est.cap)}.`);
         }
+        // Масштабування — лише для суб'єктів господарювання (пункт 6).
+        if (est.scaling && answers['status'] === 'Фізособа — ще не зареєстрований') {
+          parts.push(
+            'Важливо: грант на масштабування дають лише зареєстрованим ФОП і юрособам. Незареєстрованій фізособі доступний напрям старту — це інший діапазон.',
+          );
+        }
         if (est.scaling && answers['jobs'] === '0') {
           parts.push('Увага: масштабування зобов’язує створити щонайменше одне нове робоче місце.');
         }
-        parts.push('Блокуючих умов ви не позначили. Точну суму й реальні шанси визначимо на безкоштовному аудиті.');
+        if (soft.length) {
+          parts.push(
+            `Окремо перевіримо: ${soft.join('; ').toLowerCase()} — це критерії ділової репутації, за якими банк рахує бали на першому етапі. Автоматичної відмови це не дає, але саме тут заявки й зрізають.`,
+          );
+        }
+        parts.push('Точну суму й реальні шанси визначимо на безкоштовному аудиті.');
         text.textContent = parts.join(' ');
 
         // Порівняння з мінімальною сумою напряму (не з надбавкою) — щоб
