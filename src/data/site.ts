@@ -38,17 +38,18 @@ export const hasLegalEntity = Boolean(legalEntity.legalName);
 // 1440px — «Блог» налазив на кнопки праворуч. Лишили п'ять, що ведуть до
 // рішення (умови, процес, ціна, склад послуги, докази); решта доступна
 // з блоку «Розібратись глибше» на головній і з футера.
+// icon — лише для мобільного меню (у шапці пункти текстові).
 export const nav = [
-  { label: 'Умови програми', href: '/umovy-prohramy' },
-  { label: 'Як це працює', href: '/#how' },
-  { label: 'Тарифи', href: '/#pricing' },
-  { label: 'Послуги', href: '/poslugy' },
-  { label: 'Відгуки', href: '/vidhuky' },
+  { label: 'Умови програми', href: '/umovy-prohramy', icon: 'landmark' },
+  { label: 'Як це працює', href: '/#how', icon: 'target' },
+  { label: 'Тарифи', href: '/#pricing', icon: 'wallet' },
+  { label: 'Послуги', href: '/poslugy', icon: 'badge-check' },
+  { label: 'Відгуки', href: '/vidhuky', icon: 'quote' },
 ] as const;
 
 // Другорядні розділи: у мобільному меню та футері, але не в шапці.
 export const navSecondary = [
-  { label: 'Про нас', href: '/pro-nas' },
-  { label: 'Приклад роботи', href: '/case-bpla' },
-  { label: 'Блог', href: '/blog' },
+  { label: 'Про нас', href: '/pro-nas', icon: 'users' },
+  { label: 'Приклад роботи', href: '/case-bpla', icon: 'file-text' },
+  { label: 'Блог', href: '/blog', icon: 'message-circle' },
 ] as const;
