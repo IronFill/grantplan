@@ -1,6 +1,12 @@
 ---
 import Icon from './Icon.astro';
 import { site, nav, navSecondary } from '../data/site';
+
+// Поточний розділ підсвічуємо в мобільному меню, щоб було видно, де ти є.
+// Порівнюємо лише шлях без якоря: пункти на кшталт /#pricing ведуть у секцію
+// головної, і підсвічувати їх як «сторінку» було б неправдою.
+const here = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => !href.includes('#') && href.replace(/\/$/, '') === here;
 ---
 <header id="site-header" class="fixed top-0 inset-x-0 z-[60] transition-colors" data-header>
   <div class="container-site flex items-center justify-between h-16 md:h-[72px]" data-header-bar>
@@ -96,32 +102,89 @@ import { site, nav, navSecondary } from '../data/site';
       <Icon name="x" size={22} />
     </button>
   </div>
-  <nav class="container-site flex flex-col gap-1 mt-6" aria-label="Мобільна навігація">
+  {/* Основні розділи — картки з іконками. Голі рядки з волосяними лініями
+       читались як список без ієрархії: усі вісім пунктів однакової ваги,
+       хоча ведуть вони до дуже різних речей. */}
+  <nav class="container-site flex flex-col gap-2 mt-4" aria-label="Мобільна навігація">
     {nav.map((item) => (
       <a
         href={item.href}
-        class="py-4 text-2xl font-display font-semibold border-b border-border/60"
+        aria-current={isCurrent(item.href) ? 'page' : undefined}
+        class={`group flex items-center gap-3.5 rounded-xl border px-4 py-3 transition-colors ${
+          isCurrent(item.href)
+            ? 'border-accent bg-accent/10'
+            : 'border-border bg-surface hover:border-accent/60'
+        }`}
         data-menu-link
-      >{item.label}</a>
+      >
+        <span
+          class={`inline-grid place-items-center w-10 h-10 rounded-lg shrink-0 ${
+            isCurrent(item.href) ? 'bg-accent text-accent-ink' : 'bg-accent/10 text-accent'
+          }`}
+        >
+          <Icon name={item.icon} size={20} />
+        </span>
+        <span class="flex-1 font-display font-semibold text-lg leading-tight">{item.label}</span>
+        <Icon name="arrow-right" size={18} class="text-muted group-hover:text-accent transition-colors shrink-0" />
+      </a>
     ))}
-    {navSecondary.map((item) => (
-      <a
-        href={item.href}
-        class="py-4 text-2xl font-display font-semibold border-b border-border/60"
-        data-menu-link
-      >{item.label}</a>
-    ))}
+
+    {/* Другорядне — однією згрупованою карткою, дрібнішим кеглем:
+         так видно, що це додаткове читання, а не рівноцінні розділи. */}
+    <div class="mt-2 rounded-xl border border-border bg-surface/60 divide-y divide-border/60">
+      {navSecondary.map((item) => (
+        <a
+          href={item.href}
+          aria-current={isCurrent(item.href) ? 'page' : undefined}
+          class={`flex items-center gap-3 px-4 py-3.5 transition-colors hover:text-accent ${
+            isCurrent(item.href) ? 'text-accent' : 'text-muted'
+          }`}
+          data-menu-link
+        >
+          <Icon name={item.icon} size={18} class="shrink-0" />
+          <span class="flex-1 font-display font-semibold text-[0.95rem]">{item.label}</span>
+          <Icon name="arrow-right" size={16} class="shrink-0 opacity-60" />
+        </a>
+      ))}
+    </div>
   </nav>
-  <div class="container-site mt-8 flex flex-col gap-3">
+  <div class="container-site mt-6 pb-8 flex flex-col gap-3">
     <a href="/#lead" class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
-    <a href={`tel:${site.phone}`} class="btn btn-ghost w-full" data-analytics="click_phone" data-menu-link>
-      <Icon name="phone" size={18} /> Подзвонити
+    <a
+      href={site.telegram}
+      target="_blank"
+      rel="noopener"
+      class="btn btn-ghost w-full"
+      data-analytics="click_telegram"
+      data-menu-link
+    >
+      <Icon name="send" size={18} /> Написати в Telegram
     </a>
-    <button type="button" class="btn btn-ghost w-full" data-theme-toggle>
-      <Icon name="sun" size={18} class="icon-sun" />
-      <Icon name="moon" size={18} class="icon-moon" />
-      <span data-theme-label>Змінити тему</span>
-    </button>
+
+    {/* Телефон лишається доступним: у шапці кнопка дзвінка ховається під
+         640px, тож на вузькому екрані це єдина точка входу окрім футера.
+         Показуємо сам номер — це корисніше за слово «Подзвонити».
+         Перемикач теми поруч, бо це утиліта, а не дія: у рамці btn-ghost
+         він важив стільки ж, скільки заклик до контакту. */}
+    <div class="mt-1 flex items-center justify-between gap-3">
+      <a
+        href={`tel:${site.phone}`}
+        class="inline-flex items-center gap-2 min-h-[44px] text-sm text-muted hover:text-accent transition-colors"
+        data-analytics="click_phone"
+        data-menu-link
+      >
+        <Icon name="phone" size={17} /> {site.phoneDisplay}
+      </a>
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 min-h-[44px] text-sm text-muted hover:text-accent transition-colors"
+        data-theme-toggle
+      >
+        <Icon name="sun" size={17} class="icon-sun" />
+        <Icon name="moon" size={17} class="icon-moon" />
+        <span data-theme-label>Змінити тему</span>
+      </button>
+    </div>
   </div>
 </div>
 
