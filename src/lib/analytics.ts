@@ -56,8 +56,9 @@ export function loadConsentedAnalytics() {
     document.head.appendChild(s);
 
     window.dataLayer = window.dataLayer || [];
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer!.push(args);
+    window.gtag = function gtag(..._args: unknown[]) {
+      // Google tag expects the Arguments object, not a plain array.
+      window.dataLayer!.push(arguments);
     };
     window.gtag('js', new Date());
     window.gtag('config', GA4_ID);
