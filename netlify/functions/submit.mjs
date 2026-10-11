@@ -5,8 +5,16 @@
 //
 // Ендпоінт: /.netlify/functions/submit  (POST, JSON)
 
+import { validateLead, validateTelegramText } from '../../src/lib/lead-validation.js';
+
 const escape = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Відповідь на відхилену заявку: лише безпечні поля, без внутрішніх деталей.
+const rejection = ({ error, scope, field, max, length, message }) => ({
+  statusCode: 422,
+  body: JSON.stringify({ ok: false, error, scope, field, max, length, message }),
+});
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -21,18 +29,16 @@ export const handler = async (event) => {
   }
 
   // Honeypot — тихо ігноруємо ботів (справжні заявки з цим полем не блокуємо жорстко)
-  if (data.hp_gp_2026) {
+  if (data && typeof data === 'object' && data.hp_gp_2026) {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
 
-  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '', date = '', time = '' } = data;
-
-  if (!name || !/^\+380\d{9}$/.test(phone)) {
-    return { statusCode: 422, body: JSON.stringify({ ok: false, error: 'invalid' }) };
-  }
-
-  const token = process.env.TG_BOT_TOKEN;
-  const chatId = process.env.TG_CHAT_ID;
+  // Явна валідація до Telegram: надто довгі значення — це 422 з назвою поля,
+  // а не мовчазне обрізання. Межі спільні з формами і з Cloudflare-обробником:
+  // src/lib/lead-validation.js.
+  const checked = validateLead(data);
+  if (!checked.ok) return rejection(checked);
+  const { name, phone, messenger, idea, source, quiz, date, time } = checked.values;
 
   const isBooking = Boolean(date && time);
   const lines = [
@@ -48,6 +54,13 @@ export const handler = async (event) => {
   ].filter(Boolean);
 
   const text = lines.join('\n');
+
+  // Екранування подовжує текст (& → &amp;), тож перевіряємо вже готове повідомлення.
+  const sized = validateTelegramText(text);
+  if (!sized.ok) return rejection(sized);
+
+  const token = process.env.TG_BOT_TOKEN;
+  const chatId = process.env.TG_CHAT_ID;
 
   // Раніше тут повертався ok:true — користувач бачив «Заявку надіслано ✓»,
   // хоча заявка лишалась тільки в логах. Тепер це чесна помилка: фронтенд

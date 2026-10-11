@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '../data/site';
+import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
 ---
 <section id="lead" class="py-14 md:py-20 scroll-mt-20">
@@ -80,8 +81,8 @@ import { site } from '../data/site';
               <div>
                 <label for="lf-name" class="block text-sm font-medium mb-1.5">Ім’я <span class="text-accent">*</span></label>
                 <input
-                  id="lf-name" name="name" type="text" required autocomplete="name"
-                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+                  id="lf-name" name="name" type="text" required autocomplete="name" maxlength={LEAD_LIMITS.name}
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted focus:border-accent outline-none"
                   placeholder="Ваше ім’я"
                 />
               </div>
@@ -90,7 +91,7 @@ import { site } from '../data/site';
                 <label for="lf-phone" class="block text-sm font-medium mb-1.5">Телефон <span class="text-accent">*</span></label>
                 <input
                   id="lf-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
-                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted focus:border-accent outline-none"
                   placeholder="+380 __ ___ __ __" value="+380"
                   aria-describedby="lf-phone-error"
                 />
@@ -103,7 +104,7 @@ import { site } from '../data/site';
                   {['Telegram', 'Viber', 'Дзвінок'].map((m, i) => (
                     <label class="cursor-pointer">
                       <input type="radio" name="messenger" value={m} class="peer sr-only" checked={i === 0} />
-                      <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 transition-colors">{m}</span>
+                      <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent transition-colors">{m}</span>
                     </label>
                   ))}
                 </div>
@@ -112,10 +113,11 @@ import { site } from '../data/site';
               <div>
                 <label for="lf-idea" class="block text-sm font-medium mb-1.5">Коротко про ідею <span class="text-muted font-normal">(необов’язково)</span></label>
                 <textarea
-                  id="lf-idea" name="idea" rows="3"
-                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none resize-y"
+                  id="lf-idea" name="idea" rows="3" maxlength={LEAD_LIMITS.idea} aria-describedby="lf-idea-count"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted focus:border-accent outline-none resize-y"
                   placeholder="Наприклад: майстерня з ремонту техніки, 1 робоче місце"
                 ></textarea>
+                <p id="lf-idea-count" class="mt-1 text-xs text-muted text-right" data-idea-count>0 / {LEAD_LIMITS.idea}</p>
               </div>
 
               <label class="flex items-start gap-3 text-sm text-muted">
@@ -126,7 +128,7 @@ import { site } from '../data/site';
               <button type="submit" class="btn btn-primary w-full" data-submit>
                 Записатись на безкоштовний аудит
               </button>
-              <p class="text-sm text-accent-hover text-center hidden" data-lead-error data-tg={site.telegram}></p>
+              <p class="text-sm text-accent-hover text-center hidden" role="alert" data-lead-error data-tg={site.telegram}></p>
             </div>
           </form>
         </div>
@@ -146,6 +148,7 @@ import { site } from '../data/site';
 
 <script>
   import { trackEvent } from '../lib/analytics';
+  import { LEAD_LIMITS, LEAD_FIELD_LABELS } from '../lib/lead-validation.js';
 
   const root = document.getElementById('lead');
   if (root) {
@@ -174,6 +177,26 @@ import { site } from '../data/site';
     const leadError = root.querySelector('[data-lead-error]') as HTMLElement;
     const showError = (msg: string) => { if (leadError) { leadError.textContent = msg; leadError.classList.remove('hidden'); } };
     const hideError = () => leadError?.classList.add('hidden');
+
+    // Сервер відхилив значення (надто довге/некоректне): нічого не обрізаємо й не
+    // скидаємо — поля лишаються заповненими, людина виправляє й надсилає ще раз.
+    const ideaInput = root.querySelector('#lf-idea') as HTMLTextAreaElement | null;
+    const ideaCount = root.querySelector('[data-idea-count]') as HTMLElement | null;
+    const updateIdeaCount = () => {
+      if (ideaInput && ideaCount) ideaCount.textContent = `${ideaInput.value.length} / ${LEAD_LIMITS.idea}`; // одиниці UTF-16, як у maxlength
+    };
+    ideaInput?.addEventListener('input', updateIdeaCount);
+    updateIdeaCount();
+
+    type Rejection = { error?: string; scope?: string; field?: string; max?: number; message?: string };
+    const rejectionMessage = (r: Rejection): string => {
+      const label = r.field ? (LEAD_FIELD_LABELS as Record<string, string>)[r.field] : undefined;
+      if (r.error === 'too_long' && r.scope !== 'message' && label && typeof r.max === 'number') {
+        return `Поле «${label}» задовге: максимум ${r.max} символів. Скоротіть текст і надішліть ще раз — введене збережено.`;
+      }
+      if (typeof r.message === 'string' && r.message.length <= 300) return `${r.message} Введене збережено.`;
+      return 'Перевірте введені дані й надішліть ще раз — введене збережено.';
+    };
 
     const today = new Date(); today.setHours(0, 0, 0, 0);
     let viewYear = today.getFullYear();
@@ -341,8 +364,19 @@ import { site } from '../data/site';
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
+        let result: (Rejection & { ok?: boolean }) | null = null;
+        try { result = await res.json(); } catch { /* відповідь не JSON — розбереться перевірка нижче */ }
+        if (res.status === 422 && result?.ok === false) {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Записатись на безкоштовний аудит';
+          }
+          showError(rejectionMessage(result));
+          const target = result.field === 'idea' ? ideaInput : result.field === 'phone' ? phoneInput : (form.elements.namedItem('name') as HTMLInputElement | null);
+          target?.focus();
+          return; // подію submit_form не відправляємо: заявку не прийнято
+        }
         if (!res.ok) throw new Error('bad response');
-        const result = await res.json();
         if (result?.ok !== true) throw new Error('delivery not confirmed');
         if (summaryEl && selected) summaryEl.textContent = `${fmtLong(selected)}, ${timeInput.value}`;
         formWrap.classList.add('hidden');

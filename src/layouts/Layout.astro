@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { site } from '../data/site';
+import { tiers } from '../data/pricing';
 import CookieConsent from '../components/CookieConsent.astro';
 
 interface Props {
@@ -46,8 +47,9 @@ const baseSchema = {
     addressRegion: 'Харківська область',
     addressCountry: 'UA',
   },
-  geo: { '@type': 'GeoCoordinates', latitude: 49.9935, longitude: 36.2304 },
-  priceRange: '₴₴',
+  // Без geo: послуга надається онлайн, точної адреси офісу в розмітці немає, а координати
+  // центру міста не є фактом про бізнес. Діапазон цін — з єдиного джерела data/pricing.ts.
+  priceRange: `${tiers.plan.min}–${tiers.turnkey.max} UAH`,
 };
 
 const allSchema = [baseSchema, ...schema];

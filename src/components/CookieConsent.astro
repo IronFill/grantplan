@@ -5,19 +5,22 @@
 ---
 <div
   id="cookie-consent"
-  class="hidden fixed inset-x-0 bottom-20 lg:bottom-0 z-50 border-t border-border bg-surface"
-  style="padding-bottom: env(safe-area-inset-bottom);"
+  class="hidden fixed inset-x-0 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] lg:bottom-0 lg:pb-[env(safe-area-inset-bottom)] z-50 border-t border-border bg-surface"
   role="dialog"
   aria-live="polite"
   aria-label="Згода на використання cookies"
 >
-  <div class="container-site py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-    <p class="text-sm text-muted flex-1">
+  {/* Мобільна нижня CTA-панель (MobileCta) має висоту 74px + safe-area-inset-bottom.
+       Банер стоїть над нею з тим самим відступом: з фіксованими 5rem на iPhone
+       із «домашньою смугою» він налазив би на панель. Компактніший текст і
+       кнопки в один ряд забирають менше висоти першого екрана. */}
+  <div class="container-site py-3 sm:py-4 flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-6">
+    <p class="text-xs leading-snug sm:text-sm sm:leading-normal text-muted flex-1">
       Використовуємо cookies для аналітики й реклами (Google, Meta), щоб бачити, які матеріали справді допомагають. До згоди ці сервіси не вантажаться. Детальніше — у <a href="/privacy" class="text-accent underline">політиці конфіденційності</a>.
     </p>
-    <div class="flex gap-2 shrink-0">
-      <button type="button" id="cookie-decline" class="btn btn-ghost !min-h-[40px] !py-0 !px-4 text-sm">Тільки необхідні</button>
-      <button type="button" id="cookie-accept" class="btn btn-primary !min-h-[40px] !py-0 !px-4 text-sm">Прийняти</button>
+    <div class="flex gap-2 sm:shrink-0">
+      <button type="button" id="cookie-decline" class="btn btn-ghost flex-1 sm:flex-none !min-h-[44px] !py-0 !px-4 text-sm">Тільки необхідні</button>
+      <button type="button" id="cookie-accept" class="btn btn-primary flex-1 sm:flex-none !min-h-[44px] !py-0 !px-4 text-sm">Прийняти</button>
     </div>
   </div>
 </div>

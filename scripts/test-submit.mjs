@@ -113,6 +113,16 @@ console.log('Прийом заявок:');
   check('Без прив\'язаного KV форма працює далі', res.status === 200, `status=${res.status}`);
 }
 
+// 6.1. Надто довгі поля — явна відмова 422, а не мовчазне обрізання
+// (повний набір граничних тестів для обох обробників — scripts/test-lead-limits.mjs)
+{
+  sentMessages = [];
+  const res = await onRequestPost(ctx(CONFIGURED, { body: { ...VALID, idea: 'я'.repeat(1001) } }));
+  const data = await res.json();
+  check('Надто довга ідея → 422 too_long з назвою поля', res.status === 422 && data.error === 'too_long' && data.field === 'idea', `status=${res.status}`);
+  check('Надто довга ідея не йде в Telegram', sentMessages.length === 0);
+}
+
 // 7. Помилка Telegram не видається за успіх
 {
   globalThis.fetch = async () => new Response('Bad Request', { status: 400 });

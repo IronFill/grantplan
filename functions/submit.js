@@ -5,8 +5,14 @@
 //
 // Ендпоінт: /submit  (POST, JSON)
 
+import { validateLead, validateTelegramText } from '../src/lib/lead-validation.js';
+
 const escape = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+// Відповідь на відхилену заявку: лише безпечні поля, без внутрішніх деталей.
+const rejection = ({ error, scope, field, max, length, message }) =>
+  Response.json({ ok: false, error, scope, field, max, length, message }, { status: 422 });
 
 // Ліміт заявок з однієї IP. Захист від флуду в Telegram: honeypot ловить лише
 // найпростіших ботів, а форму можна слати curl'ом без обмежень.
@@ -47,25 +53,16 @@ export async function onRequestPost(context) {
   }
 
   // Honeypot — тихо ігноруємо ботів (справжні заявки з цим полем не блокуємо жорстко)
-  if (data.hp_gp_2026) {
+  if (data && typeof data === 'object' && data.hp_gp_2026) {
     return Response.json({ ok: true });
   }
 
-  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '', date = '', time = '' } = data;
-
-  if (!name || !/^\+380\d{9}$/.test(phone)) {
-    return Response.json({ ok: false, error: 'invalid' }, { status: 422 });
-  }
-
-  // Ліміт перевіряємо вже після валідації, щоб биті запити й боти на honeypot
-  // не з'їдали квоту справжнього відвідувача з тієї ж IP (спільний офіс, NAT).
-  const { allowed } = await checkRateLimit(env, request, 'submit');
-  if (!allowed) {
-    return Response.json({ ok: false, error: 'rate_limited' }, { status: 429 });
-  }
-
-  const token = env.TG_BOT_TOKEN;
-  const chatId = env.TG_CHAT_ID;
+  // Явна валідація до ліміту й до Telegram: надто довгі значення — це 422 з
+  // назвою поля, а не мовчазне обрізання (людина побачила б «успіх», хоча
+  // частину ідеї втрачено). Межі спільні з формами: src/lib/lead-validation.js.
+  const checked = validateLead(data);
+  if (!checked.ok) return rejection(checked);
+  const { name, phone, messenger, idea, source, quiz, date, time } = checked.values;
 
   const isBooking = Boolean(date && time);
   const lines = [
@@ -81,6 +78,20 @@ export async function onRequestPost(context) {
   ].filter(Boolean);
 
   const text = lines.join('\n');
+
+  // Екранування подовжує текст (& → &amp;), тож перевіряємо вже готове повідомлення.
+  const sized = validateTelegramText(text);
+  if (!sized.ok) return rejection(sized);
+
+  // Ліміт перевіряємо вже після валідації, щоб биті запити й боти на honeypot
+  // не з'їдали квоту справжнього відвідувача з тієї ж IP (спільний офіс, NAT).
+  const { allowed } = await checkRateLimit(env, request, 'submit');
+  if (!allowed) {
+    return Response.json({ ok: false, error: 'rate_limited' }, { status: 429 });
+  }
+
+  const token = env.TG_BOT_TOKEN;
+  const chatId = env.TG_CHAT_ID;
 
   // Раніше тут поверталось ok:true — користувач бачив «Заявку надіслано ✓»,
   // хоча заявка нікуди не пішла, крім логів, які ніхто не читає. Тепер це

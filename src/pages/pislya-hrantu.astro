@@ -31,8 +31,8 @@ const timeline = [
   },
   {
     icon: 'coins',
-    title: 'Сплата податків — 3 роки',
-    text: 'Сплачені податки (єдиний податок, ЄСВ, ПДФО, військовий збір) — головне підтвердження того, що бізнес реально працює. Мінімальний строк ведення діяльності — 3 роки з моменту отримання коштів.',
+    title: 'Сплата податків протягом строку проєкту',
+    text: 'Сплачені податки (єдиний податок, ЄСВ, ПДФО, військовий збір) — головне підтвердження того, що бізнес реально працює. Строк реалізації проєкту обирають у договорі: 2, 3 або 5 років — протягом нього потрібно сплачувати податки й єдиний внесок. Якщо сплачене виявиться меншим за суму гранту, різницю повертають.',
   },
   {
     icon: 'file-text',
@@ -75,7 +75,7 @@ const schema = {
 ---
 <Layout
   title="Що буде після гранту «Власна справа»: обов’язки | ГрантПлан"
-  description="Договір і рахунок за 15 днів, цільове використання коштів, робочі місця на 3 роки, звітність — розбір обов’язків після отримання гранту."
+  description="Договір і рахунок за 15 днів, цільове використання коштів, робочі місця на 18, 24 або 54 місяці, звітність — розбір обов’язків після отримання гранту."
   path="/pislya-hrantu"
   schema={[schema]}
 >
@@ -84,7 +84,7 @@ const schema = {
   {/* Hero */}
   <section class="relative pt-28 md:pt-36 pb-12 md:pb-16 border-b border-border/70">
     <div class="container-site container-text">
-      <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm mb-6">← На головну</a>
+      <a href="/" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm py-2 -mt-2 mb-4">← На головну</a>
       <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
         <Icon name="handshake" size={14} class="text-accent" /> Після рішення
       </span>
