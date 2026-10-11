@@ -57,7 +57,6 @@ export function loadConsentedAnalytics() {
 
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag(..._args: unknown[]) {
-      // Google tag expects the Arguments object, not a plain array.
       window.dataLayer!.push(arguments);
     };
     window.gtag('js', new Date());
