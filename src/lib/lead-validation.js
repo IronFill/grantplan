@@ -1,3 +1,4 @@
+import { validBooking } from './booking-clock.js';
 // Єдина серверна валідація заявки з форм (основна форма запису й квіз).
 //
 // Один модуль для обох обробників (functions/submit.js — Cloudflare Pages,
@@ -92,6 +93,17 @@ export function validateLead(data) {
     }
   }
 
+  if (data.consent !== 'on' && data.consent !== true) {
+    return { ok: false, status: 422, error: 'invalid', field: 'consent', message: 'Потрібна згода на обробку персональних даних.' };
+  }
+  if (data.requestId !== undefined) {
+    if (typeof data.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(data.requestId)) {
+      return { ok: false, status: 422, error: 'invalid', field: 'requestId', message: 'Оновіть сторінку та спробуйте ще раз.' };
+    }
+    if (!validBooking(values.date, values.time)) {
+      return { ok: false, status: 422, error: 'invalid', field: 'date', message: 'Оберіть коректні дату та час у календарі.' };
+    }
+  }
   return { ok: true, values };
 }
 
