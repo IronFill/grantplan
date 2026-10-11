@@ -19,7 +19,7 @@ function check(label, condition, detail = '') {
   }
 }
 
-const VALID = { name: 'Іван Петренко', phone: '+380501234567', messenger: 'Telegram' };
+const VALID = { consent: 'on', name: 'Іван Петренко', phone: '+380501234567', messenger: 'Telegram' };
 
 // --- Заглушки -----------------------------------------------------------------
 let telegram = [];
@@ -99,7 +99,7 @@ for (const [runnerName, send] of Object.entries(runners)) {
   // 3. Усі поля на межі разом — вкладається в Telegram
   {
     telegram = [];
-    const all = { name: 'І'.repeat(100), phone: VALID.phone, messenger: 'я'.repeat(40), idea: 'я'.repeat(1000), source: 'я'.repeat(40), quiz: 'я'.repeat(1500), date: 'я'.repeat(60), time: 'я'.repeat(20) };
+    const all = { consent: 'on', name: 'І'.repeat(100), phone: VALID.phone, messenger: 'я'.repeat(40), idea: 'я'.repeat(1000), source: 'я'.repeat(40), quiz: 'я'.repeat(1500), date: 'я'.repeat(60), time: 'я'.repeat(20) };
     const res = await send(all);
     check('усі поля на межі одночасно: приймається', res.status === 200, `status=${res.status}`);
     check(`видима довжина повідомлення ≤ ${TELEGRAM_TEXT_LIMIT}`, telegramVisibleLength(lastText()) <= TELEGRAM_TEXT_LIMIT, `довжина=${telegramVisibleLength(lastText())}`);
