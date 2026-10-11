@@ -73,11 +73,6 @@ const plans = [
               : 'bg-surface border-border'
           }`}
         >
-          {p.featured && (
-            <span class="absolute -top-3 left-6 inline-flex items-center gap-1.5 rounded-full bg-accent text-accent-ink px-3 py-1 text-xs font-semibold font-display">
-              <Icon name="star" size={13} /> Бізнес-план
-            </span>
-          )}
           <h3 class="text-xl font-display font-semibold">{p.name}</h3>
           <div class="mt-3 font-display font-extrabold text-2xl sm:text-[1.75rem] text-accent">{p.price}</div>
 
