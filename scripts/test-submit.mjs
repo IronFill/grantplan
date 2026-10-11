@@ -26,7 +26,7 @@ function ctx(env, { body, ip = '1.1.1.1' } = {}) {
   };
 }
 
-const VALID = { name: 'Іван Петренко', phone: '+380501234567', messenger: 'Telegram' };
+const VALID = { consent: 'on', name: 'Іван Петренко', phone: '+380501234567', messenger: 'Telegram' };
 const CONFIGURED = { TG_BOT_TOKEN: 'token', TG_CHAT_ID: '123' };
 
 let failures = 0;
