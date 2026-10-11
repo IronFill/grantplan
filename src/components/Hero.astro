@@ -70,8 +70,8 @@ const status = getProgramStatus();
       </p>
 
       <div class="reveal mt-7 flex flex-col sm:flex-row gap-3" style="transition-delay:190ms">
-        <a href="/#quiz" class="btn btn-primary" data-analytics="click_cta_hero">
-          Дізнатися свій ліміт за 2 хвилини
+        <a href="/#lead" class="btn btn-primary" data-analytics="click_cta_hero">
+          Записатися на безкоштовний аудит
         </a>
         <a href="/case-bpla" class="btn btn-ghost">
           Подивитись приклад плану
@@ -101,6 +101,7 @@ const status = getProgramStatus();
         type="button"
         data-hero-flip
         aria-label="Показати інший приклад бізнес-плану"
+        aria-pressed="false"
         class="hero-flip block w-full text-left rotate-[0.5deg] cursor-pointer"
       >
         <div class="hero-flip-inner">
@@ -135,7 +136,7 @@ const status = getProgramStatus();
     width: 100%;
     aspect-ratio: 1280 / 800;
     transform-style: preserve-3d;
-    transition: transform 0.9s cubic-bezier(0.4, 0.2, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0.4, 0.2, 0.2, 1);
   }
   .hero-flip.is-flipped .hero-flip-inner {
     transform: rotateY(180deg);
@@ -155,19 +156,10 @@ const status = getProgramStatus();
 </style>
 
 <script>
-  const flipEls = document.querySelectorAll<HTMLElement>('[data-hero-flip]');
-  flipEls.forEach((el) => {
-    let auto: ReturnType<typeof setInterval> | null = null;
-    const toggle = () => el.classList.toggle('is-flipped');
-    const startAuto = () => {
-      if (auto) clearInterval(auto);
-      auto = setInterval(toggle, 6000);
-    };
+  document.querySelectorAll<HTMLElement>('[data-hero-flip]').forEach((el) => {
     el.addEventListener('click', () => {
-      toggle();
-      startAuto(); // клік скидає таймер, щоб не перевернулось одразу після ручного кліку
+      const flipped = el.classList.toggle('is-flipped');
+      el.setAttribute('aria-pressed', String(flipped));
     });
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduceMotion) startAuto();
   });
 </script>
