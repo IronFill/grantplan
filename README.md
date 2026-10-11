@@ -2,7 +2,7 @@
 
 Production-ready лендинг юридичної послуги підготовки бізнес-планів під державний грант **«Власна справа»** (Харків, по всій Україні).
 
-Стек: **Astro 5** (статична збірка) + **Tailwind CSS 4** + ванільний JS (островки). Шрифти — Manrope + Inter через `@fontsource`. Форми — Telegram Bot API через Netlify Function.
+Стек: **Astro 7** (статична збірка) + **Tailwind CSS 4** + ванільний JS (островки). Шрифти — Manrope + Inter через `@fontsource`. Форми — Telegram Bot API через Netlify Function.
 
 ---
 
@@ -208,3 +208,8 @@ GA4 на проді вже підключено (`PUBLIC_GA4_ID` заданий 
 - Focus-visible кільця, `aria-expanded` на бургері й акордеоні, skip-link, labels у формах.
 
 Перевірка брейкпоінтів: 375 / 768 / 1280 / 1920. Lighthouse (mobile): цілі Performance ≥ 95, Accessibility ≥ 95, SEO 100.
+
+
+## Lead delivery recovery
+
+See docs/lead-delivery.md for private outbox retention, ambiguous-delivery handling and platform limits.
