@@ -4,9 +4,10 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { LEAD_LIMITS } from '../src/lib/lead-validation.js';
 
-const DIST = new URL('../dist/', import.meta.url).pathname;
+const DIST = fileURLToPath(new URL('../dist/', import.meta.url));
 if (!fs.existsSync(DIST)) {
   console.error('✗ Немає dist/ — спершу npm run build');
   process.exit(1);
