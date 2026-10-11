@@ -9,9 +9,9 @@ const fmt = (n: number) => n.toLocaleString('uk-UA').replace(/,/g, ' ');
 // не публікує. Тримайте напоготові підставу, якщо запитають.
 const stats = [
   { prefix: 'до ', to: 500000, suffix: ' ₴', value: `до ${fmt(500000)} ₴`, label: 'на старт власної справи — з надбавками' },
-  { value: 'До оплати', label: 'оцінка відповідності ідеї умовам програми' },
+  { prefix: '~', to: 70, suffix: '%', value: '~70%', label: 'відмов через слабкий бізнес-план — за нашою практикою' },
   { value: '2–3 дні', label: 'строк підготовки' },
-  { value: 'Онлайн', label: 'працюємо з проєктами по всій Україні' },
+  { to: 34000, suffix: '+', value: `${fmt(34000)}+`, label: 'підприємців по Україні вже отримали грант за програмою' },
 ];
 ---
 <section class="py-12 md:py-16 border-y border-border/70 bg-surface/40">
@@ -29,6 +29,7 @@ const stats = [
       >
         <div
           class="font-display font-extrabold text-[2rem] sm:text-4xl lg:text-[2.5rem] leading-none text-accent tabular-nums whitespace-nowrap"
+          {...(s.to != null ? { 'data-counter': '', 'data-to': s.to, 'data-prefix': s.prefix ?? '', 'data-suffix': s.suffix ?? '' } : {})}
         >{s.value}</div>
         <div class="mt-2.5 text-sm text-muted leading-snug sm:max-w-[16rem]">{s.label}</div>
       </div>
@@ -38,7 +39,48 @@ const stats = [
     {/* Джерела даних потрібні, але вони — виноска, а не другий заголовок:
          тримаємо їх дрібнішими, щоб цифри лишались головним у блоці. */}
     <p class="text-xs text-muted/80 leading-relaxed max-w-3xl">
-      Сума залежить від напряму та застосовних надбавок. Перевіряємо відповідність проєкту чинним умовам; отримання гранту не гарантуємо. <a href="/umovy-prohramy" class="text-accent underline py-2 inline-block">Умови та офіційні джерела</a>.
+      Суми та кількість отримувачів — за даними Державної служби зайнятості й порталу «Дія». Частка відмов через слабкий бізнес-план — власна оцінка ГрантПлану на основі консультаційної практики; офіційна статистика за причинами відмов не оприлюднюється.
     </p>
   </div>
 </section>
+
+<script>
+  const counters = document.querySelectorAll<HTMLElement>('[data-counter]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const fmt = (n: number) => Math.round(n).toLocaleString('uk-UA').replace(/,/g, ' ');
+  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+  function animate(el: HTMLElement) {
+    const to = Number(el.dataset.to || '0');
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    if (reduceMotion || !to) return; // фінальне значення вже в розмітці
+
+    const duration = 1200;
+    const start = performance.now();
+
+    function frame(now: number) {
+      const t = Math.min((now - start) / duration, 1);
+      const val = to * easeOutCubic(t);
+      el.textContent = `${prefix}${fmt(val)}${suffix}`;
+      if (t < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  if (counters.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            animate(entry.target as HTMLElement);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    counters.forEach((el) => io.observe(el));
+  }
+</script>
