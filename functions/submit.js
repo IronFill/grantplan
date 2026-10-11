@@ -8,6 +8,12 @@
 const escape = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
+// Telegram відхиляє повідомлення довші за 4096 символів (sendMessage). Поля
+// форми приходять з браузера без обмежень, тож довгий текст (або запит напряму
+// через curl) інакше дав би 502, а справжній клієнт — «не вдалося надіслати».
+// Обрізаємо за кодовими точками, щоб не розрізати емодзі навпіл.
+const clip = (s, max) => Array.from(String(s ?? '')).slice(0, max).join('');
+
 // Ліміт заявок з однієї IP. Захист від флуду в Telegram: honeypot ловить лише
 // найпростіших ботів, а форму можна слати curl'ом без обмежень.
 // Сховище — той самий KV, що й для коментарів (окремий namespace не потрібен).
@@ -70,14 +76,14 @@ export async function onRequestPost(context) {
   const isBooking = Boolean(date && time);
   const lines = [
     isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
-    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
-    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
-    `👤 <b>Ім’я:</b> ${escape(name)}`,
+    date ? `📅 <b>Дата:</b> ${escape(clip(date, 60))}` : '',
+    time ? `🕐 <b>Час:</b> ${escape(clip(time, 20))}` : '',
+    `👤 <b>Ім’я:</b> ${escape(clip(name, 100))}`,
     `📞 <b>Телефон:</b> ${escape(phone)}`,
-    messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',
-    idea ? `💡 <b>Ідея:</b> ${escape(idea)}` : '',
-    quiz ? `🧮 <b>Квіз:</b> ${escape(quiz)}` : '',
-    `🔖 <b>Джерело:</b> ${escape(source)}`,
+    messenger ? `💬 <b>Месенджер:</b> ${escape(clip(messenger, 40))}` : '',
+    idea ? `💡 <b>Ідея:</b> ${escape(clip(idea, 1000))}` : '',
+    quiz ? `🧮 <b>Квіз:</b> ${escape(clip(quiz, 1500))}` : '',
+    `🔖 <b>Джерело:</b> ${escape(clip(source, 60))}`,
   ].filter(Boolean);
 
   const text = lines.join('\n');

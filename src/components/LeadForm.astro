@@ -81,7 +81,7 @@ import { site } from '../data/site';
                 <label for="lf-name" class="block text-sm font-medium mb-1.5">Ім’я <span class="text-accent">*</span></label>
                 <input
                   id="lf-name" name="name" type="text" required autocomplete="name"
-                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted focus:border-accent outline-none"
                   placeholder="Ваше ім’я"
                 />
               </div>
@@ -90,7 +90,7 @@ import { site } from '../data/site';
                 <label for="lf-phone" class="block text-sm font-medium mb-1.5">Телефон <span class="text-accent">*</span></label>
                 <input
                   id="lf-phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel"
-                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted focus:border-accent outline-none"
                   placeholder="+380 __ ___ __ __" value="+380"
                   aria-describedby="lf-phone-error"
                 />
@@ -103,7 +103,7 @@ import { site } from '../data/site';
                   {['Telegram', 'Viber', 'Дзвінок'].map((m, i) => (
                     <label class="cursor-pointer">
                       <input type="radio" name="messenger" value={m} class="peer sr-only" checked={i === 0} />
-                      <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 transition-colors">{m}</span>
+                      <span class="inline-flex items-center rounded-xl border border-border px-4 py-2.5 text-sm peer-checked:border-accent peer-checked:text-accent peer-checked:bg-accent/10 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent transition-colors">{m}</span>
                     </label>
                   ))}
                 </div>
@@ -113,7 +113,7 @@ import { site } from '../data/site';
                 <label for="lf-idea" class="block text-sm font-medium mb-1.5">Коротко про ідею <span class="text-muted font-normal">(необов’язково)</span></label>
                 <textarea
                   id="lf-idea" name="idea" rows="3"
-                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted/70 focus:border-accent outline-none resize-y"
+                  class="w-full rounded-xl bg-raised border border-border px-4 py-3 text-base placeholder:text-muted focus:border-accent outline-none resize-y"
                   placeholder="Наприклад: майстерня з ремонту техніки, 1 робоче місце"
                 ></textarea>
               </div>
@@ -126,7 +126,7 @@ import { site } from '../data/site';
               <button type="submit" class="btn btn-primary w-full" data-submit>
                 Записатись на безкоштовний аудит
               </button>
-              <p class="text-sm text-accent-hover text-center hidden" data-lead-error data-tg={site.telegram}></p>
+              <p class="text-sm text-accent-hover text-center hidden" role="alert" data-lead-error data-tg={site.telegram}></p>
             </div>
           </form>
         </div>

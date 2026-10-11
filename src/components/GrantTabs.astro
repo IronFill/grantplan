@@ -69,7 +69,7 @@ const tabs = [
 
     <div class="reveal mt-10" data-tabs>
       {/* Перемикач: горизонтальний скрол на мобільному, ряд на десктопі */}
-      <div class="scroll-fade-x flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory md:overflow-visible" role="tablist" aria-label="Грантові напрями">
+      <div class="scroll-fade-x flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 snap-x snap-mandatory md:grid md:grid-cols-[repeat(auto-fit,minmax(14rem,1fr))] md:overflow-visible" role="tablist" aria-label="Грантові напрями">
         {tabs.map((t, i) => (
           <button
             type="button"
@@ -86,7 +86,7 @@ const tabs = [
               <Icon name={t.icon} size={18} />
             </span>
             <span>
-              <span class="block text-sm font-display font-semibold whitespace-nowrap">{t.label}</span>
+              <span class="block text-sm font-display font-semibold whitespace-nowrap md:whitespace-normal">{t.label}</span>
               <span class="block text-xs text-accent font-medium whitespace-nowrap">{t.limit}</span>
             </span>
           </button>
@@ -156,7 +156,7 @@ const tabs = [
     </div>
 
     <p class="reveal mt-6 text-sm text-muted max-w-3xl">
-      Дані станом на липень 2026, звірені з <a href="/umovy-prohramy" class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">офіційними джерелами</a>. З 1 вересня 2026 умови «Власної справи» оновлюються.
+      Умови подано за постановою КМУ від 15 травня 2026 р. № 616, чинною з 1 вересня 2026 року. Деталі та посилання на <a href="/umovy-prohramy" class="text-accent underline underline-offset-2 decoration-accent/40 hover:decoration-accent">офіційні джерела</a> — на сторінці умов програми.
     </p>
   </div>
 </section>
