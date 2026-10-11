@@ -4,6 +4,7 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import MobileCta from '../../components/MobileCta.astro';
 import Icon from '../../components/Icon.astro';
+import AudiencePreparation from '../../components/AudiencePreparation.astro';
 import Method from '../../components/Method.astro';
 import ProgramScale from '../../components/ProgramScale.astro';
 import Pricing from '../../components/Pricing.astro';
@@ -126,6 +127,7 @@ const faqSchema = {
     </div>
   </section>
 
+  <AudiencePreparation slug={a.slug} />
   <Method />
   <ProgramScale />
   <Pricing />
