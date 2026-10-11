@@ -43,6 +43,9 @@ const broken = [];
 
 for (const page of pages) {
   const html = fs.readFileSync(page, 'utf8');
+  if (html.includes('\uFFFD')) {
+    broken.push(`  ${path.relative(DIST, page)}: damaged UTF-8 text`);
+  }
   const hrefs = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1]);
   for (const href of hrefs) {
     if (EXTERNAL.test(href)) continue;
