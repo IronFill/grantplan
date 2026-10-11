@@ -386,3 +386,6 @@
 [data-hidden='true'] {
   display: none !important;
 }
+
+/* Standalone text links have a comfortable touch area; inline prose stays inline. */
+main nav a, main a.inline-flex { min-height: 32px; }

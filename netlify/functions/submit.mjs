@@ -6,9 +6,8 @@
 // Ендпоінт: /.netlify/functions/submit  (POST, JSON)
 
 import { validateLead, validateTelegramText } from '../../src/lib/lead-validation.js';
-
-const escape = (s = '') =>
-  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+import { deliverLead, leadMessage } from '../../src/lib/lead-delivery.js';
+import { connectLambda, getStore } from '@netlify/blobs';
 
 // Відповідь на відхилену заявку: лише безпечні поля, без внутрішніх деталей.
 const rejection = ({ error, scope, field, max, length, message }) => ({
@@ -38,66 +37,32 @@ export const handler = async (event) => {
   // src/lib/lead-validation.js.
   const checked = validateLead(data);
   if (!checked.ok) return rejection(checked);
-  const { name, phone, messenger, idea, source, quiz, date, time } = checked.values;
-
-  const isBooking = Boolean(date && time);
-  const lines = [
-    isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
-    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
-    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
-    `👤 <b>Ім’я:</b> ${escape(name)}`,
-    `📞 <b>Телефон:</b> ${escape(phone)}`,
-    messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',
-    idea ? `💡 <b>Ідея:</b> ${escape(idea)}` : '',
-    quiz ? `🧮 <b>Квіз:</b> ${escape(quiz)}` : '',
-    `🔖 <b>Джерело:</b> ${escape(source)}`,
-  ].filter(Boolean);
-
-  const text = lines.join('\n');
+  const text = leadMessage(checked.values);
 
   // Екранування подовжує текст (& → &amp;), тож перевіряємо вже готове повідомлення.
   const sized = validateTelegramText(text);
   if (!sized.ok) return rejection(sized);
 
-  const token = process.env.TG_BOT_TOKEN;
-  const chatId = process.env.TG_CHAT_ID;
-
-  // Раніше тут повертався ok:true — користувач бачив «Заявку надіслано ✓»,
-  // хоча заявка лишалась тільки в логах. Тепер це чесна помилка: фронтенд
-  // покаже запасний шлях (Telegram / дзвінок), і лід не загубиться мовчки.
-  if (!token || !chatId) {
-    console.error('TG env not set — заявка не доставлена. Lead:', text);
-    return { statusCode: 503, body: JSON.stringify({ ok: false, error: 'not_configured' }) };
-  }
-
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true }),
-    });
-    if (!res.ok) {
-      const detail = await res.text();
-      console.error('Telegram error:', detail);
-      return { statusCode: 502, body: JSON.stringify({ ok: false }) };
+  // Netlify uses the existing Blobs service; local unit tests have no site context.
+  let store;
+  if (event.blobs || process.env.NETLIFY === 'true' || process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    try {
+      if (event.blobs) connectLambda(event);
+      const blobs = getStore({ name: 'grantplan-leads', consistency: 'strong' });
+      store = { get: key => blobs.get(key), put: (key, value) => blobs.set(key, value) };
+      const ip = event.headers?.['x-nf-client-connection-ip'];
+      if (!ip) return { statusCode: 503, body: JSON.stringify({ ok: false, error: 'rate_limit_unavailable' }) };
+      const key = 'rate:' + Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(ip)))).map(n => n.toString(16).padStart(2,'0')).join('');
+      const prior = await blobs.get(key, { type: 'json' });
+      const now = Date.now();
+      const current = prior && prior.until > now ? prior : { count: 0, until: now + 3600000 };
+      if (current.count >= 5) return { statusCode: 429, body: JSON.stringify({ ok: false, error: 'rate_limited' }) };
+      await blobs.setJSON(key, { ...current, count: current.count + 1 });
+    } catch {
+      return { statusCode: 503, body: JSON.stringify({ ok: false, error: 'storage_unavailable' }) };
     }
-    const delivery = await res.json();
-    if (delivery?.ok !== true) return { statusCode: 502, body: JSON.stringify({ ok: false }) };
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
-  } catch (err) {
-    console.error('Send failed:', err);
-    return { statusCode: 502, body: JSON.stringify({ ok: false }) };
   }
+  const result = await deliverLead({ store, token: process.env.TG_BOT_TOKEN,
+    chatId: process.env.TG_CHAT_ID, requestId: data.requestId, values: checked.values, text });
+  return { statusCode: result.status, body: JSON.stringify(result.body) };
 };
-
-// --- FALLBACK: Formspree (розкоментуйте і приберіть Telegram-блок вище) ---
-// export const handler = async (event) => {
-//   const data = JSON.parse(event.body || '{}');
-//   if (data.company) return { statusCode: 200, body: '{"ok":true}' };
-//   const res = await fetch('https://formspree.io/f/XXXXXXX', {
-//     method: 'POST',
-//     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-//     body: JSON.stringify(data),
-//   });
-//   return { statusCode: res.ok ? 200 : 502, body: JSON.stringify({ ok: res.ok }) };
-// };

@@ -6,9 +6,7 @@
 // Ендпоінт: /submit  (POST, JSON)
 
 import { validateLead, validateTelegramText } from '../src/lib/lead-validation.js';
-
-const escape = (s = '') =>
-  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+import { deliverLead, leadMessage } from '../src/lib/lead-delivery.js';
 
 // Відповідь на відхилену заявку: лише безпечні поля, без внутрішніх деталей.
 const rejection = ({ error, scope, field, max, length, message }) =>
@@ -62,22 +60,7 @@ export async function onRequestPost(context) {
   // частину ідеї втрачено). Межі спільні з формами: src/lib/lead-validation.js.
   const checked = validateLead(data);
   if (!checked.ok) return rejection(checked);
-  const { name, phone, messenger, idea, source, quiz, date, time } = checked.values;
-
-  const isBooking = Boolean(date && time);
-  const lines = [
-    isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
-    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
-    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
-    `👤 <b>Ім’я:</b> ${escape(name)}`,
-    `📞 <b>Телефон:</b> ${escape(phone)}`,
-    messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',
-    idea ? `💡 <b>Ідея:</b> ${escape(idea)}` : '',
-    quiz ? `🧮 <b>Квіз:</b> ${escape(quiz)}` : '',
-    `🔖 <b>Джерело:</b> ${escape(source)}`,
-  ].filter(Boolean);
-
-  const text = lines.join('\n');
+  const text = leadMessage(checked.values);
 
   // Екранування подовжує текст (& → &amp;), тож перевіряємо вже готове повідомлення.
   const sized = validateTelegramText(text);
@@ -90,36 +73,12 @@ export async function onRequestPost(context) {
     return Response.json({ ok: false, error: 'rate_limited' }, { status: 429 });
   }
 
-  const token = env.TG_BOT_TOKEN;
-  const chatId = env.TG_CHAT_ID;
-
-  // Раніше тут поверталось ok:true — користувач бачив «Заявку надіслано ✓»,
-  // хоча заявка нікуди не пішла, крім логів, які ніхто не читає. Тепер це
-  // чесна помилка: фронтенд покаже запасний шлях (написати в Telegram або
-  // зателефонувати), і лід не загубиться мовчки через недоналаштований деплой.
-  if (!token || !chatId) {
-    console.error('TG env not set — заявка не доставлена. Lead:', text);
-    return Response.json({ ok: false, error: 'not_configured' }, { status: 503 });
-  }
-
-  try {
-    const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML', disable_web_page_preview: true }),
-    });
-    if (!res.ok) {
-      const detail = await res.text();
-      console.error('Telegram error:', detail);
-      return Response.json({ ok: false }, { status: 502 });
-    }
-    const delivery = await res.json();
-    if (delivery?.ok !== true) return Response.json({ ok: false }, { status: 502 });
-    return Response.json({ ok: true });
-  } catch (err) {
-    console.error('Send failed:', err);
-    return Response.json({ ok: false }, { status: 502 });
-  }
+  const result = await deliverLead({
+    store: env.LEADS_KV || env.COMMENTS_KV,
+    token: env.TG_BOT_TOKEN, chatId: env.TG_CHAT_ID,
+    requestId: data.requestId, values: checked.values, text,
+  });
+  return Response.json(result.body, { status: result.status });
 }
 
 export async function onRequestGet() {

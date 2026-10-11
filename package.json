@@ -13,7 +13,7 @@
     "check": "astro check",
     "check:links": "node scripts/check-links.mjs",
     "check:forms": "node scripts/check-built-forms.mjs",
-    "test": "node scripts/test-submit.mjs && node scripts/test-lead-limits.mjs && node scripts/test-comments.mjs",
+    "test": "node scripts/test-submit.mjs && node scripts/test-lead-limits.mjs && node scripts/test-comments.mjs && node scripts/test-lead-delivery.mjs",
     "verify": "npm run check && npm run test && npm run build && npm run check:links && npm run check:forms",
     "astro": "astro"
   },

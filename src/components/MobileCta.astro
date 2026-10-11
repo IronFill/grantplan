@@ -6,6 +6,7 @@ import { site } from '../data/site';
      Висота ≈ 74px (py-3 + кнопка 48px + рамка): від неї залежить відступ
      `bottom-[calc(4.75rem+…)]` у CookieConsent.astro — міняєте одне, перевірте й інше. */}
 <div
+  data-mobile-cta
   class="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-border header-blur"
   style="padding-bottom: env(safe-area-inset-bottom);"
 >
@@ -24,3 +25,17 @@ import { site } from '../data/site';
     </a>
   </div>
 </div>
+
+<style is:global>
+  .cookie-banner-open [data-mobile-cta] { display: none; }
+  [data-mobile-cta][data-in-view="true"] { display: none; }
+</style>
+<script>
+  const panel = document.querySelector<HTMLElement>('[data-mobile-cta]');
+  const lead = document.getElementById('lead');
+  if (panel && lead && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      panel.dataset.inView = String(entry.isIntersecting);
+    }, { threshold: 0 }).observe(lead);
+  }
+</script>

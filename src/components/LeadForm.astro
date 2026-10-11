@@ -9,7 +9,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     <div class="reveal max-w-2xl">
       <h2 class="text-3xl sm:text-4xl">Запишіться на безкоштовний аудит ідеї</h2>
       <p class="mt-4 text-muted text-lg">
-        До 20 хвилин: чесно скажемо, чи проходить ваша ідея під умови програми, — ще до оплати. Оберіть зручні дату й час нижче, або напишіть напряму:
+        До 20 хвилин: чесно скажемо, чи проходить ваша ідея під умови програми, — ще до оплати. Оберіть бажані дату й час за Києвом. Ми узгодимо їх у Telegram або телефоном. Або напишіть напряму:
       </p>
 
       {/* Прямі кнопки-месенджери */}
@@ -56,13 +56,14 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         {/* Час + контакти */}
         <div class="lg:border-l lg:border-border/70 lg:pl-12">
           <div data-lf-time-empty class="text-muted text-sm py-4">
-            Спочатку оберіть день у календарі ←
+            Оберіть день у календарі, потім бажаний час.
           </div>
 
           <div data-lf-time-wrap hidden>
             <div class="text-sm font-medium mb-3">
-              Вільний час на <span data-lf-picked-date class="text-accent">—</span>
+              Бажаний час на <span data-lf-picked-date class="text-accent">—</span>
             </div>
+            <p class="text-sm text-muted mb-3">За київським часом. Це запит на консультацію, не підтверджене бронювання.</p>
             <div data-lf-slots class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6"></div>
           </div>
 
@@ -74,6 +75,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
             {/* Прихований payload квізу (заповнюється JS) */}
             <input type="hidden" name="quiz" id="lead-quiz" value="" />
             <input type="hidden" name="source" value="audit" />
+            <input type="hidden" name="requestId" data-request-id />
             <input type="hidden" name="date" data-lf-date value="" />
             <input type="hidden" name="time" data-lf-time value="" />
 
@@ -126,7 +128,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
               </label>
 
               <button type="submit" class="btn btn-primary w-full" data-submit>
-                Записатись на безкоштовний аудит
+                Надіслати заявку
               </button>
               <p class="text-sm text-accent-hover text-center hidden" role="alert" data-lead-error data-tg={site.telegram}></p>
             </div>
@@ -140,7 +142,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
           <Icon name="check-circle" size={32} />
         </span>
         <h3 class="mt-5 text-2xl font-display font-semibold">Заявку надіслано ✓</h3>
-        <p class="mt-2 text-muted">Ви записані на <span data-lf-summary class="text-ink font-medium">—</span>. Зв’яжемося з вами у Telegram або телефоном для підтвердження.</p>
+        <p class="mt-2 text-muted">Бажаний час: <span data-lf-summary class="text-ink font-medium">—</span>. Зв’яжемося з вами у Telegram або телефоном для підтвердження.</p>
       </div>
     </div>
   </div>
@@ -148,6 +150,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
 <script>
   import { trackEvent } from '../lib/analytics';
+  import { kyivClock } from '../lib/booking-clock.js';
   import { LEAD_LIMITS, LEAD_FIELD_LABELS } from '../lib/lead-validation.js';
 
   const root = document.getElementById('lead');
@@ -198,33 +201,33 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
       return 'Перевірте введені дані й надішліть ще раз — введене збережено.';
     };
 
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    let viewYear = today.getFullYear();
-    let viewMonth = today.getMonth();
+    const today = kyivClock(); today.setUTCHours(0, 0, 0, 0);
+    let viewYear = today.getUTCFullYear();
+    let viewMonth = today.getUTCMonth();
     let selected: Date | null = null;
 
-    const fmtLong = (d: Date) => `${WEEKDAYS[d.getDay()]}, ${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+    const fmtLong = (d: Date) => `${WEEKDAYS[d.getUTCDay()]}, ${d.getUTCDate()} ${MONTHS_GEN[d.getUTCMonth()]}`;
 
     function renderCalendar() {
       monthLabel.textContent = `${MONTHS[viewMonth]} ${viewYear}`;
-      prevBtn.disabled = (viewYear === today.getFullYear() && viewMonth === today.getMonth());
+      prevBtn.disabled = (viewYear === today.getUTCFullYear() && viewMonth === today.getUTCMonth());
 
       daysGrid.innerHTML = '';
-      const first = new Date(viewYear, viewMonth, 1);
-      const offset = (first.getDay() + 6) % 7;
-      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      const first = new Date(Date.UTC(viewYear, viewMonth, 1));
+      const offset = (first.getUTCDay() + 6) % 7;
+      const daysInMonth = new Date(Date.UTC(viewYear, viewMonth + 1, 0)).getUTCDate();
 
       for (let i = 0; i < offset; i++) {
         daysGrid.appendChild(document.createElement('span'));
       }
       for (let day = 1; day <= daysInMonth; day++) {
-        const d = new Date(viewYear, viewMonth, day);
+        const d = new Date(Date.UTC(viewYear, viewMonth, day));
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.textContent = String(day);
         btn.setAttribute('aria-label', fmtLong(d));
         const isPast = d < today;
-        const isSunday = d.getDay() === 0;
+        const isSunday = d.getUTCDay() === 0;
         const disabled = isPast || isSunday;
         const isSelected = !!selected && d.getTime() === selected.getTime();
         btn.setAttribute('aria-pressed', String(isSelected));
@@ -243,17 +246,19 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
     function pickDate(d: Date) {
       selected = d;
-      dateInput.value = `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()} (${WEEKDAYS[d.getDay()]})`;
+      dateInput.value = `${String(d.getUTCDate()).padStart(2,'0')}.${String(d.getUTCMonth()+1).padStart(2,'0')}.${d.getUTCFullYear()} (${WEEKDAYS[d.getUTCDay()]})`;
       timeInput.value = '';
+      const requestId = form.querySelector<HTMLInputElement>('[data-request-id]');
+      if (requestId) requestId.value = '';
       renderCalendar();
       pickedDateEl.textContent = fmtLong(d);
       slotsGrid.innerHTML = '';
       const isToday = d.getTime() === today.getTime();
-      const now = new Date();
+      const now = kyivClock();
       const availableSlots = isToday
         ? SLOTS.filter((t) => {
             const [h, m] = t.split(':').map(Number);
-            return h > now.getHours() || (h === now.getHours() && m > now.getMinutes());
+            return h > now.getUTCHours() || (h === now.getUTCHours() && m > now.getUTCMinutes());
           })
         : SLOTS;
       availableSlots.forEach((t) => {
@@ -266,7 +271,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         slotsGrid.appendChild(b);
       });
       if (!availableSlots.length) {
-        slotsGrid.innerHTML = '<p class="text-sm text-muted col-span-full">На сьогодні вільних слотів більше немає — оберіть інший день.</p>';
+        slotsGrid.innerHTML = '<p class="text-sm text-muted col-span-full">На сьогодні час для звернення вже минув — оберіть інший день.</p>';
       }
       timeEmpty.setAttribute('hidden', '');
       timeWrap.removeAttribute('hidden');
@@ -275,6 +280,8 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
     function pickTime(t: string, el: HTMLButtonElement) {
       timeInput.value = t;
+      const requestId = form.querySelector<HTMLInputElement>('[data-request-id]');
+      if (requestId) requestId.value = '';
       slotsGrid.querySelectorAll('button').forEach((b) => {
         b.setAttribute('aria-pressed', 'false');
         b.className = 'rounded-xl border border-border px-2 py-2.5 text-sm hover:border-accent hover:text-accent transition-colors';
@@ -356,6 +363,8 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         submitBtn.textContent = 'Надсилаємо…';
       }
 
+      const requestId = form.querySelector<HTMLInputElement>('[data-request-id]')!;
+      if (!requestId.value) requestId.value = crypto.randomUUID();
       const data = Object.fromEntries(new FormData(form).entries());
 
       try {
@@ -364,17 +373,22 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
-        let result: (Rejection & { ok?: boolean }) | null = null;
+        let result: (Rejection & { ok?: boolean; saved?: boolean }) | null = null;
         try { result = await res.json(); } catch { /* відповідь не JSON — розбереться перевірка нижче */ }
         if (res.status === 422 && result?.ok === false) {
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Записатись на безкоштовний аудит';
+            submitBtn.textContent = 'Надіслати заявку';
           }
           showError(rejectionMessage(result));
           const target = result.field === 'idea' ? ideaInput : result.field === 'phone' ? phoneInput : (form.elements.namedItem('name') as HTMLInputElement | null);
           target?.focus();
           return; // подію submit_form не відправляємо: заявку не прийнято
+        }
+        if (result?.saved && !result.ok) {
+          showError('Заявку збережено, але доставку не підтверджено. Зв’яжіться з нами у Telegram або телефоном, щоб узгодити звернення.');
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Надіслати заявку'; }
+          return;
         }
         if (!res.ok) throw new Error('bad response');
         if (result?.ok !== true) throw new Error('delivery not confirmed');
@@ -385,7 +399,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Записатись на безкоштовний аудит';
+          submitBtn.textContent = 'Надіслати заявку';
         }
         const tg = leadError?.dataset.tg || '';
         if (leadError) {
@@ -395,6 +409,11 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
       }
     });
 
+    form.addEventListener('input', (event) => {
+      if ((event.target as HTMLInputElement).name === 'consent' && leadError?.textContent?.startsWith('Потрібна згода')) leadError?.classList.add('hidden');
+      const requestId = form.querySelector<HTMLInputElement>('[data-request-id]');
+      if (requestId) requestId.value = '';
+    });
     renderCalendar();
   }
 </script>
