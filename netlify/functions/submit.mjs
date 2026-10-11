@@ -1,9 +1,9 @@
-// Netlify Function: �਩��� ��� � �ନ � ���ᨫ�� �� � Telegram.
-// ��?��? ��祭�� (Netlify  Site settings  Environment variables):
-//   TG_BOT_TOKEN - ⮪�� ��� �?� @BotFather
-//   TG_CHAT_ID   - id ���/������ ��� ���
+// Netlify Function: приймає заявку з форми та надсилає її в Telegram.
+// Змінні оточення (Netlify → Site settings → Environment variables):
+//   TG_BOT_TOKEN — токен бота від @BotFather
+//   TG_CHAT_ID   — id чату/каналу для заявок
 //
-// �����?��: /.netlify/functions/submit  (POST, JSON)
+// Ендпоінт: /.netlify/functions/submit  (POST, JSON)
 
 const escape = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -20,7 +20,7 @@ export const handler = async (event) => {
     return { statusCode: 400, body: 'Bad JSON' };
   }
 
-  // Honeypot - �� ?������ ���?� (�ࠢ��? ��� � 樬 ����� �� ������ ����⪮)
+  // Honeypot — тихо ігноруємо ботів (справжні заявки з цим полем не блокуємо жорстко)
   if (data.hp_gp_2026) {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
@@ -36,24 +36,24 @@ export const handler = async (event) => {
 
   const isBooking = Boolean(date && time);
   const lines = [
-    isBooking ? '??? <b>����� �� ��������?� - �࠭⏫��</b>' : '?? <b>���� ��� - �࠭⏫��</b>',
-    date ? `?? <b>���:</b> ${escape(date)}` : '',
-    time ? `?? <b>���:</b> ${escape(time)}` : '',
-    `?? <b>?�'�:</b> ${escape(name)}`,
-    `?? <b>����䮭:</b> ${escape(phone)}`,
-    messenger ? `?? <b>��ᥭ����:</b> ${escape(messenger)}` : '',
-    idea ? `?? <b>?���:</b> ${escape(idea)}` : '',
-    quiz ? `?? <b>��?�:</b> ${escape(quiz)}` : '',
-    `?? <b>���५�:</b> ${escape(source)}`,
+    isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
+    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
+    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
+    `👤 <b>Ім’я:</b> ${escape(name)}`,
+    `📞 <b>Телефон:</b> ${escape(phone)}`,
+    messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',
+    idea ? `💡 <b>Ідея:</b> ${escape(idea)}` : '',
+    quiz ? `🧮 <b>Квіз:</b> ${escape(quiz)}` : '',
+    `🔖 <b>Джерело:</b> ${escape(source)}`,
   ].filter(Boolean);
 
   const text = lines.join('\n');
 
-  // ���?� ��� �����⠢�� ok:true - �����㢠� ��稢 <��� ���?᫠�� ?>,
-  // �� ��� ��蠫��� �?�쪨 � �����. ����� � �᭠ �������: �஭⥭�
-  // ������ ����᭨� ��� (Telegram / ���?���), ? �?� �� ���㡨���� ���窨.
+  // Раніше тут повертався ok:true — користувач бачив «Заявку надіслано ✓»,
+  // хоча заявка лишалась тільки в логах. Тепер це чесна помилка: фронтенд
+  // покаже запасний шлях (Telegram / дзвінок), і лід не загубиться мовчки.
   if (!token || !chatId) {
-    console.error('TG env not set - ��� �� ���⠢����. Lead:', text);
+    console.error('TG env not set — заявка не доставлена. Lead:', text);
     return { statusCode: 503, body: JSON.stringify({ ok: false, error: 'not_configured' }) };
   }
 
@@ -69,9 +69,7 @@ export const handler = async (event) => {
       return { statusCode: 502, body: JSON.stringify({ ok: false }) };
     }
     const delivery = await res.json();
-    if (delivery?.ok !== true) {
-      return { statusCode: 502, body: JSON.stringify({ ok: false }) };
-    }
+    if (delivery?.ok !== true) return { statusCode: 502, body: JSON.stringify({ ok: false }) };
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   } catch (err) {
     console.error('Send failed:', err);
@@ -79,7 +77,7 @@ export const handler = async (event) => {
   }
 };
 
-// --- FALLBACK: Formspree (஧�������� ? �ਡ��?�� Telegram-���� ���) ---
+// --- FALLBACK: Formspree (розкоментуйте і приберіть Telegram-блок вище) ---
 // export const handler = async (event) => {
 //   const data = JSON.parse(event.body || '{}');
 //   if (data.company) return { statusCode: 200, body: '{"ok":true}' };
