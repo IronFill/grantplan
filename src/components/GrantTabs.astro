@@ -24,7 +24,7 @@ const tabs = [
     chip: 'Подання через Дію · рішення — 20 календарних днів після кінця періоду',
     spend: ['Обладнання для бізнесу', 'Сировина та матеріали', 'Оренда приміщення й обладнання', 'Маркетинг і реклама'],
     note: null,
-    cta: { text: 'Пройти скоринг шансів', href: '/#quiz' },
+    cta: { text: 'Перевірити, чи підходить грант — 2 хв', href: '/#quiz' },
   },
   {
     id: 'masshtab',
@@ -40,7 +40,7 @@ const tabs = [
     chip: 'Робочі місця створити за 3 місяці з дня зарахування коштів',
     spend: ['Виробниче обладнання й транспорт', 'Сировина та матеріали', 'Оренда приміщень і обладнання', 'Цифровізація, брендинг і маркетинг'],
     note: 'Ветерани, молодь 18–25, ВПО та платники ПДВ отримують надбавки до суми на обох напрямах — окремого ветеранського напряму з 1 вересня 2026 року вже немає, його умови увійшли до єдиного порядку.',
-    cta: { text: 'Пройти скоринг шансів', href: '/#quiz' },
+    cta: { text: 'Перевірити, чи підходить грант — 2 хв', href: '/#quiz' },
   },
   {
     id: 'pererobka',
@@ -51,7 +51,7 @@ const tabs = [
     tiers: [
       { sum: 'до 8 000 000 ₴', cond: 'обов’язкове співфінансування з боку бізнесу та створення нових робочих місць — точні пороги залежать від напряму й діючої редакції порядку' },
     ],
-    chip: '61 підприємство вже отримало 282 млн ₴ за цим напрямом',
+    chip: 'Окремий напрям: умови перевіряємо під конкретний проєкт',
     spend: ['Виробниче обладнання', 'Лінії та станки під конкретний напрям виробництва'],
     note:
       'Це реальний державний напрям програми єРобота «Новий рівень» для переробних підприємств, а не маркетингова назва. Ми свідомо не вказуємо тут універсальний % співфінансування чи мінімальну кількість робочих місць — вони залежать від напряму й чинної редакції порядку, тож перевіряємо їх під ваш конкретний проєкт. Це інший масштаб роботи, ніж наші базові тарифи — обговорюємо індивідуально.',
@@ -77,6 +77,7 @@ const tabs = [
             id={`tab-btn-${t.id}`}
             aria-controls={`tab-panel-${t.id}`}
             aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
             data-tab-btn={t.id}
             class={`shrink-0 snap-start flex items-center gap-2.5 rounded-xl border px-4 py-3.5 text-left transition-colors ${
               i === 0 ? 'border-accent bg-raised' : 'border-border bg-surface hover:border-accent/60'
@@ -171,6 +172,7 @@ const tabs = [
       buttons.forEach((b) => {
         const active = b.dataset.tabBtn === id;
         b.setAttribute('aria-selected', String(active));
+        b.tabIndex = active ? 0 : -1;
         b.classList.toggle('border-accent', active);
         b.classList.toggle('bg-raised', active);
         b.classList.toggle('border-border', !active);
@@ -181,6 +183,16 @@ const tabs = [
 
     buttons.forEach((b) => {
       b.addEventListener('click', () => activate(b.dataset.tabBtn!));
+      b.addEventListener('keydown', (e) => {
+        const index = buttons.indexOf(b);
+        const next = e.key === 'ArrowRight' ? (index + 1) % buttons.length :
+          e.key === 'ArrowLeft' ? (index - 1 + buttons.length) % buttons.length :
+          e.key === 'Home' ? 0 : e.key === 'End' ? buttons.length - 1 : -1;
+        if (next < 0) return;
+        e.preventDefault();
+        activate(buttons[next].dataset.tabBtn!);
+        buttons[next].focus({ preventScroll: true });
+      });
     });
   }
 </script>
