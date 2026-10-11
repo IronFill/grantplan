@@ -410,7 +410,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     });
 
     form.addEventListener('input', (event) => {
-      if ((event.target as HTMLInputElement).name === 'consent') leadError?.classList.add('hidden');
+      if ((event.target as HTMLInputElement).name === 'consent' && leadError?.textContent?.startsWith('Потрібна згода')) leadError?.classList.add('hidden');
       const requestId = form.querySelector<HTMLInputElement>('[data-request-id]');
       if (requestId) requestId.value = '';
     });
