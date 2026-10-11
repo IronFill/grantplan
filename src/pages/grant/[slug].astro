@@ -5,15 +5,8 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import MobileCta from '../../components/MobileCta.astro';
 import Icon from '../../components/Icon.astro';
 import AudiencePreparation from '../../components/AudiencePreparation.astro';
-import Method from '../../components/Method.astro';
-import ProgramScale from '../../components/ProgramScale.astro';
-import Pricing from '../../components/Pricing.astro';
-import CaseTeaser from '../../components/CaseTeaser.astro';
-import HonestyBlock from '../../components/HonestyBlock.astro';
-import Faq from '../../components/Faq.astro';
 import LeadForm from '../../components/LeadForm.astro';
 import { audiences } from '../../data/audiences';
-import { faq } from '../../data/faq';
 import { getProgramStatus } from '../../data/program';
 
 const status = getProgramStatus();
@@ -24,17 +17,8 @@ export function getStaticPaths() {
 
 const { a } = Astro.props;
 
-const faqSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faq.map((f) => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a },
-  })),
-};
 ---
-<Layout title={a.metaTitle} description={a.metaDescription} path={`/grant/${a.slug}`} schema={[faqSchema]}>
+<Layout title={a.metaTitle} description={a.metaDescription} path={`/grant/${a.slug}`}>
   <SiteHeader slot="header" />
 
   {/* Hero */}
@@ -65,7 +49,7 @@ const faqSchema = {
         <p class="mt-6 text-lg text-muted max-w-xl">{a.lead}</p>
 
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a href="#lead" class="btn btn-primary" data-analytics="click_cta_audience">Безкоштовний експрес-аудит ідеї</a>
+          <a href="#lead" class="btn btn-primary" data-analytics="click_cta_audience">Записатися на безкоштовний аудит</a>
           <a href={a.exampleCaseHref ?? '/case-bpla'} class="btn btn-ghost">Подивитись приклад плану</a>
         </div>
 
@@ -128,12 +112,6 @@ const faqSchema = {
   </section>
 
   <AudiencePreparation slug={a.slug} />
-  <Method />
-  <ProgramScale />
-  <Pricing />
-  <CaseTeaser />
-  <HonestyBlock />
-  <Faq />
   <LeadForm />
 
   <SiteFooter slot="footer" />
