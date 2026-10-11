@@ -617,7 +617,8 @@ const checks = [
       d = '380' + d;
       qphone.value = '+' + d.slice(0, 12);
     });
-    qform.addEventListener('input', () => {
+    qform.addEventListener('input', (event) => {
+      if ((event.target as HTMLInputElement).name === 'consent') qError.classList.add('hidden');
       qform.querySelector<HTMLInputElement>('[data-request-id]')!.value = '';
     });
     qform.addEventListener('submit', async (e) => {
