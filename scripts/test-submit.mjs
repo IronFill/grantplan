@@ -113,16 +113,14 @@ console.log('Прийом заявок:');
   check('Без прив\'язаного KV форма працює далі', res.status === 200, `status=${res.status}`);
 }
 
-// 6.1. Надто довгі поля не ламають доставку (ліміт Telegram — 4096 символів)
+// 6.1. Надто довгі поля — явна відмова 422, а не мовчазне обрізання
+// (повний набір граничних тестів для обох обробників — scripts/test-lead-limits.mjs)
 {
   sentMessages = [];
-  const long = 'я'.repeat(6000);
-  const res = await onRequestPost(ctx(CONFIGURED, { body: { ...VALID, name: 'І'.repeat(500), idea: long, quiz: long, source: long, date: long, time: long, messenger: long } }));
-  const text = sentMessages[0]?.body.text ?? '';
-  check('Довгі поля: заявка все одно приймається', res.status === 200, `status=${res.status}`);
-  check('Довгі поля: повідомлення вкладається в 4096 символів', text.length > 0 && Array.from(text).length <= 4096, `довжина=${Array.from(text).length}`);
-  check('Довгі поля: ім\'я обрізано до 100 символів', !text.includes('І'.repeat(101)) && text.includes('І'.repeat(100)));
-  check('Довгі поля: телефон лишився повним', text.includes('+380501234567'));
+  const res = await onRequestPost(ctx(CONFIGURED, { body: { ...VALID, idea: 'я'.repeat(1001) } }));
+  const data = await res.json();
+  check('Надто довга ідея → 422 too_long з назвою поля', res.status === 422 && data.error === 'too_long' && data.field === 'idea', `status=${res.status}`);
+  check('Надто довга ідея не йде в Telegram', sentMessages.length === 0);
 }
 
 // 7. Помилка Telegram не видається за успіх

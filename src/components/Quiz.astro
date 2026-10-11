@@ -2,6 +2,7 @@
 import Icon from './Icon.astro';
 import { site } from '../data/site';
 import { getProgramPhase } from '../data/program';
+import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
 // Поки нова модель не стартувала, число з квізу порахував би старий
 // порядок — тож підписуємо його чесно замість того, щоб мовчки видавати
@@ -314,7 +315,7 @@ const checks = [
           </div>
           <p class="text-sm text-muted mb-3 text-center">Надішлемо розрахунок і план дій:</p>
           <div class="grid sm:grid-cols-2 gap-3">
-            <input name="name" type="text" required placeholder="Ім’я"
+            <input name="name" type="text" required maxlength={LEAD_LIMITS.name} placeholder="Ім’я"
               class="rounded-xl bg-surface border border-border px-4 py-3 focus:border-accent outline-none" />
             <div>
               <input name="phone" type="tel" required inputmode="tel" value="+380" placeholder="+380 __ ___ __ __"
@@ -635,7 +636,17 @@ const checks = [
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
-        if (!res.ok) throw new Error();
+        let result: { ok?: boolean; error?: string; scope?: string; field?: string; max?: number; message?: string } | null = null;
+        try { result = await res.json(); } catch { /* відповідь не JSON — розбереться перевірка нижче */ }
+        if (res.status === 422 && result?.ok === false) {
+          // Сервер не прийняв значення: форма лишається заповненою, подію не відправляємо.
+          submit.disabled = false;
+          submit.textContent = 'Отримати розрахунок';
+          qError.textContent = (typeof result.message === 'string' && result.message.length <= 300 ? result.message + ' ' : '') + 'Введене збережено — виправте й надішліть ще раз.';
+          qError.classList.remove('hidden');
+          return;
+        }
+        if (!res.ok || result?.ok !== true) throw new Error();
         qform.classList.add('hidden');
         resultBox.querySelector('[data-quiz-thanks]')?.classList.remove('hidden');
         trackEvent('submit_form');

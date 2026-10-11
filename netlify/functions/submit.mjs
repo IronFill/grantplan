@@ -5,14 +5,16 @@
 //
 // Ендпоінт: /.netlify/functions/submit  (POST, JSON)
 
+import { validateLead, validateTelegramText } from '../../src/lib/lead-validation.js';
+
 const escape = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-// Telegram відхиляє повідомлення довші за 4096 символів (sendMessage). Поля
-// форми приходять з браузера без обмежень, тож довгий текст (або запит напряму
-// через curl) інакше дав би 502, а справжній клієнт — «не вдалося надіслати».
-// Обрізаємо за кодовими точками, щоб не розрізати емодзі навпіл.
-const clip = (s, max) => Array.from(String(s ?? '')).slice(0, max).join('');
+// Відповідь на відхилену заявку: лише безпечні поля, без внутрішніх деталей.
+const rejection = ({ error, scope, field, max, length, message }) => ({
+  statusCode: 422,
+  body: JSON.stringify({ ok: false, error, scope, field, max, length, message }),
+});
 
 export const handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -27,33 +29,38 @@ export const handler = async (event) => {
   }
 
   // Honeypot — тихо ігноруємо ботів (справжні заявки з цим полем не блокуємо жорстко)
-  if (data.hp_gp_2026) {
+  if (data && typeof data === 'object' && data.hp_gp_2026) {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
 
-  const { name = '', phone = '', messenger = '', idea = '', source = 'form', quiz = '', date = '', time = '' } = data;
-
-  if (!name || !/^\+380\d{9}$/.test(phone)) {
-    return { statusCode: 422, body: JSON.stringify({ ok: false, error: 'invalid' }) };
-  }
-
-  const token = process.env.TG_BOT_TOKEN;
-  const chatId = process.env.TG_CHAT_ID;
+  // Явна валідація до Telegram: надто довгі значення — це 422 з назвою поля,
+  // а не мовчазне обрізання. Межі спільні з формами і з Cloudflare-обробником:
+  // src/lib/lead-validation.js.
+  const checked = validateLead(data);
+  if (!checked.ok) return rejection(checked);
+  const { name, phone, messenger, idea, source, quiz, date, time } = checked.values;
 
   const isBooking = Boolean(date && time);
   const lines = [
     isBooking ? '🗓️ <b>Запис на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
-    date ? `📅 <b>Дата:</b> ${escape(clip(date, 60))}` : '',
-    time ? `🕐 <b>Час:</b> ${escape(clip(time, 20))}` : '',
-    `👤 <b>Ім’я:</b> ${escape(clip(name, 100))}`,
+    date ? `📅 <b>Дата:</b> ${escape(date)}` : '',
+    time ? `🕐 <b>Час:</b> ${escape(time)}` : '',
+    `👤 <b>Ім’я:</b> ${escape(name)}`,
     `📞 <b>Телефон:</b> ${escape(phone)}`,
-    messenger ? `💬 <b>Месенджер:</b> ${escape(clip(messenger, 40))}` : '',
-    idea ? `💡 <b>Ідея:</b> ${escape(clip(idea, 1000))}` : '',
-    quiz ? `🧮 <b>Квіз:</b> ${escape(clip(quiz, 1500))}` : '',
-    `🔖 <b>Джерело:</b> ${escape(clip(source, 60))}`,
+    messenger ? `💬 <b>Месенджер:</b> ${escape(messenger)}` : '',
+    idea ? `💡 <b>Ідея:</b> ${escape(idea)}` : '',
+    quiz ? `🧮 <b>Квіз:</b> ${escape(quiz)}` : '',
+    `🔖 <b>Джерело:</b> ${escape(source)}`,
   ].filter(Boolean);
 
   const text = lines.join('\n');
+
+  // Екранування подовжує текст (& → &amp;), тож перевіряємо вже готове повідомлення.
+  const sized = validateTelegramText(text);
+  if (!sized.ok) return rejection(sized);
+
+  const token = process.env.TG_BOT_TOKEN;
+  const chatId = process.env.TG_CHAT_ID;
 
   // Раніше тут повертався ok:true — користувач бачив «Заявку надіслано ✓»,
   // хоча заявка лишалась тільки в логах. Тепер це чесна помилка: фронтенд

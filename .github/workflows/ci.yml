@@ -34,3 +34,6 @@ jobs:
 
       - name: Перевірка биття внутрішніх посилань
         run: node scripts/check-links.mjs
+
+      - name: Межі полів форм у зібраних сторінках
+        run: node scripts/check-built-forms.mjs
