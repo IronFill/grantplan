@@ -47,6 +47,12 @@ try {
   assert.ok(options.text.includes('&lt;name&gt;'));
   assert.equal(validateLead(values).ok, false, 'Server requires consent');
   assert.equal(validateLead({ ...values, consent: 'on', requestId }).ok, true);
+  assert.equal(validateLead({ ...values, consent: 'on' }).ok, false, 'Request identity is mandatory');
+  for (const id of [undefined, requestId]) {
+    const rejected = validateLead({ ...values, consent: 'on', requestId: id, date: '99.99.9999', time: '03:00' });
+    assert.equal(rejected.ok, false);
+    assert.equal(rejected.field, 'date', 'Calendar validation cannot depend on request identity');
+  }
   assert.equal(validBooking('31.02.2026', '10:00'), false);
   assert.equal(validBooking('12.10.2026 (понеділок)', '10:00'), true);
   assert.equal(validBooking('12.10.2026', '18:00'), false);
