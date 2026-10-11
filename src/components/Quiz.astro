@@ -618,7 +618,7 @@ const checks = [
       qphone.value = '+' + d.slice(0, 12);
     });
     qform.addEventListener('input', (event) => {
-      if ((event.target as HTMLInputElement).name === 'consent') qError.classList.add('hidden');
+      if ((event.target as HTMLInputElement).name === 'consent' && qError?.textContent?.startsWith('Потрібна згода')) qError.classList.add('hidden');
       qform.querySelector<HTMLInputElement>('[data-request-id]')!.value = '';
     });
     qform.addEventListener('submit', async (e) => {
