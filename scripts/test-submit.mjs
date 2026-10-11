@@ -1,6 +1,6 @@
-// Тест логіки прийому заявок (functions/submit.js).
-// Підміняє Telegram API та KV — перевіряє логіку без мережі й wrangler.
-// Запуск: node scripts/test-submit.mjs
+// ���� ���?�� �਩��� ��� (functions/submit.js).
+// �?��?��� Telegram API � KV - ��ॢ?��� ���?�� ��� ��०? � wrangler.
+// �����: node scripts/test-submit.mjs
 
 import { onRequestPost } from '../functions/submit.js';
 
@@ -26,20 +26,20 @@ function ctx(env, { body, ip = '1.1.1.1' } = {}) {
   };
 }
 
-const VALID = { name: 'Іван Петренко', phone: '+380501234567', messenger: 'Telegram' };
+const VALID = { name: '?��� ���७��', phone: '+380501234567', messenger: 'Telegram' };
 const CONFIGURED = { TG_BOT_TOKEN: 'token', TG_CHAT_ID: '123' };
 
 let failures = 0;
 function check(label, condition, detail = '') {
   if (condition) {
-    console.log(`  ✓ ${label}`);
+    console.log(`  ? ${label}`);
   } else {
-    console.error(`  ✗ ${label}${detail ? ' — ' + detail : ''}`);
+    console.error(`  ? ${label}${detail ? ' - ' + detail : ''}`);
     failures++;
   }
 }
 
-// Перехоплюємо мережу: жоден тест не повинен реально стукати в Telegram.
+// ���宯��� ��०�: ����� ��� �� ������� ॠ�쭮 ��㪠� � Telegram.
 const realFetch = globalThis.fetch;
 let sentMessages = [];
 globalThis.fetch = async (url, init) => {
@@ -47,39 +47,39 @@ globalThis.fetch = async (url, init) => {
   return new Response(JSON.stringify({ ok: true }), { status: 200 });
 };
 
-console.log('Прийом заявок:');
+console.log('�਩�� ���:');
 
-// 1. Головний фікс: недоналаштований Telegram більше не вдає успіх
+// 1. �������� �?��: ���������⮢���� Telegram �?��� �� ���� ��?�
 {
   sentMessages = [];
   const res = await onRequestPost(ctx({}, { body: VALID }));
   const data = await res.json();
-  check('Без TG env повертає помилку, а не ok:true', res.status === 503 && data.ok === false, `status=${res.status} ok=${data.ok}`);
-  check('Без TG env нічого не надсилається', sentMessages.length === 0);
+  check('��� TG env ������� �������, � �� ok:true', res.status === 503 && data.ok === false, `status=${res.status} ok=${data.ok}`);
+  check('��� TG env �?箣� �� ���ᨫ������', sentMessages.length === 0);
 }
 
-// 2. Нормальний шлях
+// 2. ��ଠ�쭨� ���
 {
   sentMessages = [];
   const res = await onRequestPost(ctx(CONFIGURED, { body: VALID }));
   const data = await res.json();
-  check('Валідна заявка приймається', res.status === 200 && data.ok === true, `status=${res.status}`);
-  check('Заявка йде в Telegram', sentMessages.length === 1 && sentMessages[0].url.includes('sendMessage'));
-  check('Повідомлення містить ім\'я та телефон',
-    sentMessages[0]?.body.text.includes('Іван Петренко') && sentMessages[0]?.body.text.includes('+380501234567'));
+  check('���?��� ��� �਩�������', res.status === 200 && data.ok === true, `status=${res.status}`);
+  check('��� ��� � Telegram', sentMessages.length === 1 && sentMessages[0].url.includes('sendMessage'));
+  check('���?�������� �?���� ?�\'� � ⥫�䮭',
+    sentMessages[0]?.body.text.includes('?��� ���७��') && sentMessages[0]?.body.text.includes('+380501234567'));
 }
 
-// 3. Валідація телефону
+// 3. ���?���?� ⥫�䮭�
 {
   const bad = [
-    ['порожнє ім\'я', { ...VALID, name: '' }],
-    ['телефон без +380', { ...VALID, phone: '0501234567' }],
-    ['закороткий телефон', { ...VALID, phone: '+38050123' }],
-    ['телефон з літерами', { ...VALID, phone: '+380abcdefghi' }],
+    ['��஦�� ?�\'�', { ...VALID, name: '' }],
+    ['⥫�䮭 ��� +380', { ...VALID, phone: '0501234567' }],
+    ['�����⪨� ⥫�䮭', { ...VALID, phone: '+38050123' }],
+    ['⥫�䮭 � �?�ࠬ�', { ...VALID, phone: '+380abcdefghi' }],
   ];
   for (const [label, body] of bad) {
     const res = await onRequestPost(ctx(CONFIGURED, { body }));
-    check(`Відхиляє: ${label}`, res.status === 422, `status=${res.status}`);
+    check(`�?�娫��: ${label}`, res.status === 422, `status=${res.status}`);
   }
 }
 
@@ -87,8 +87,8 @@ console.log('Прийом заявок:');
 {
   sentMessages = [];
   const res = await onRequestPost(ctx(CONFIGURED, { body: { ...VALID, hp_gp_2026: 'bot' } }));
-  check('Honeypot повертає 200 (бот не бачить різниці)', res.status === 200);
-  check('Honeypot нічого не надсилає', sentMessages.length === 0);
+  check('Honeypot ������� 200 (��� �� ����� �?����?)', res.status === 200);
+  check('Honeypot �?箣� �� ���ᨫ��', sentMessages.length === 0);
 }
 
 // 5. Rate limiting
@@ -100,28 +100,35 @@ console.log('Прийом заявок:');
     const res = await onRequestPost(ctx(env, { body: VALID, ip: '9.9.9.9' }));
     statuses.push(res.status);
   }
-  check('Ліміт спрацьовує після 5 заявок з однієї IP', statuses.slice(5).every((s) => s === 429), `статуси: ${statuses.join(',')}`);
+  check('�?�?� ���쮢�� �?�� 5 ��� � ���?�� IP', statuses.slice(5).every((s) => s === 429), `�����: ${statuses.join(',')}`);
 
   const other = await onRequestPost(ctx(env, { body: VALID, ip: '8.8.8.8' }));
-  check('Інша IP не заблокована', other.status === 200, `status=${other.status}`);
+  check('?�� IP �� �����������', other.status === 200, `status=${other.status}`);
 }
 
-// 6. Без KV ліміт не ламає форму
+// 6. ��� KV �?�?� �� ����� ���
 {
   sentMessages = [];
   const res = await onRequestPost(ctx(CONFIGURED, { body: VALID }));
-  check('Без прив\'язаного KV форма працює далі', res.status === 200, `status=${res.status}`);
+  check('��� �ਢ\'易���� KV �ଠ ����� ���?', res.status === 200, `status=${res.status}`);
 }
 
-// 7. Помилка Telegram не видається за успіх
+// 7. ������� Telegram �� ��������� �� ��?�
 {
   globalThis.fetch = async () => new Response('Bad Request', { status: 400 });
   const res = await onRequestPost(ctx(CONFIGURED, { body: VALID }));
   const data = await res.json();
-  check('Збій Telegram повертає помилку', res.status === 502 && data.ok === false, `status=${res.status}`);
+  check('��?� Telegram ������� �������', res.status === 502 && data.ok === false, `status=${res.status}`);
+}
+
+// HTTP success alone is insufficient: the delivery service must acknowledge it.
+for (const body of ['{"ok":false}', '{}', 'not JSON']) {
+  globalThis.fetch = async () => new Response(body, { status: 200 });
+  const res = await onRequestPost(ctx(CONFIGURED, { body: VALID }));
+  check('Reject unconfirmed delivery: ' + body, res.status === 502 && (await res.json()).ok === false);
 }
 
 globalThis.fetch = realFetch;
 
-console.log(failures ? `\n✗ Провалено перевірок: ${failures}` : '\n✓ Усі перевірки пройдено');
+console.log(failures ? `\n? �஢����� ��ॢ?ப: ${failures}` : '\n? ��? ��ॢ?ન �ன����');
 process.exit(failures ? 1 : 0);
