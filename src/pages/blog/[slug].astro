@@ -111,18 +111,22 @@ const schema = {
             </div>
           );
           if (block.type === 'table') return (
-            <div class="overflow-x-auto rounded-card border border-border">
-              <table class="w-full text-left border-collapse min-w-[480px] text-[0.95rem]">
-                <thead>
+            // На телефоні рядки стають картками: третя колонка («Що входить») не ховається за горизонтальним скролом.
+            <div class="rounded-card border border-border sm:overflow-x-auto">
+              <table class="block sm:table w-full text-left border-collapse sm:min-w-[480px] text-[0.95rem]">
+                <thead class="hidden sm:table-header-group">
                   <tr class="bg-surface text-sm text-muted">
                     {block.headers.map((h) => <th class="py-3 px-4 font-medium">{h}</th>)}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody class="block sm:table-row-group">
                   {block.rows.map((row) => (
-                    <tr class="border-t border-border">
+                    <tr class="block sm:table-row border-t border-border first:border-t-0 sm:first:border-t">
                       {row.map((cell, ci) => (
-                        <td class={'py-3 px-4' + (ci === 0 ? ' text-ink font-medium' : ' text-muted')}>{cell}</td>
+                        <td class={'block sm:table-cell px-4 py-1.5 sm:py-3 first:pt-3 last:pb-3' + (ci === 0 ? ' text-ink font-medium' : ' text-muted')}>
+                          {ci > 0 && <span class="sm:hidden block text-xs text-muted/90 font-medium">{block.headers[ci]}</span>}
+                          {cell}
+                        </td>
                       ))}
                     </tr>
                   ))}

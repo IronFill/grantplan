@@ -37,6 +37,16 @@ for (const file of htmlFiles(DIST)) {
   const html = fs.readFileSync(file, 'utf8');
   const rel = path.relative(DIST, file);
 
+  // Форма з особистими полями не повинна мати GET за замовчуванням: без JS браузер
+  // додав би ім'я, e-mail чи телефон в адресу сторінки (історія, логи, Referer).
+  for (const [open, body] of html.matchAll(/(<form\b[^>]*>)([\s\S]*?)<\/form>/g).map(m => [m[1], m[2]])) {
+    const personal = /(?:name|type)="(?:name|email|phone|tel)"/.test(body);
+    if (personal && !/\bmethod="post"/i.test(open)) {
+      console.error(`✗ ${rel}: форма з особистими полями без method="post": ${open.slice(0, 80)}`);
+      failures++;
+    }
+  }
+
   // Основна форма запису (LeadForm): ім'я та ідея
   const hasLead = html.includes('id="lf-name"');
   if (hasLead) {
