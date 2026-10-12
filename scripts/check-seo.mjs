@@ -7,6 +7,7 @@ const dist = process.argv[2] || fileURLToPath(new URL('../dist/', import.meta.ur
 const origin = 'https://grantplan.com.ua';
 const errors = [];
 const titles = new Map();
+const descriptionsSeen = new Map();
 const routes = new Map();
 const sitemapUrls = new Set();
 const decode = value => value.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
@@ -48,10 +49,28 @@ for (const file of files(dist)) {
   if ([...html.matchAll(/<h1\b/g)].length !== 1) fail('expected exactly one H1');
   const descriptions = metas.filter(a => a.name === 'description');
   if (descriptions.length !== 1 || !descriptions[0].content?.trim()) fail('expected one non-empty description');
+  const description = descriptions[0]?.content?.trim() || '';
+  if (title.length > 120) fail(`title is ${title.length} characters; this is far beyond what search results can show`);
+  if (description && (description.length < 30 || description.length > 320)) fail(`description is ${description.length} characters; expected a real summary between 30 and 320`);
+  if (!noindex && description) {
+    if (descriptionsSeen.has(description)) fail(`duplicate description also used by ${descriptionsSeen.get(description)}`);
+    descriptionsSeen.set(description, relative);
+  }
+  if (!noindex) {
+    for (const property of ['og:title', 'og:description', 'og:image']) {
+      if (!metas.some(a => a.property === property && a.content?.trim())) fail(`missing ${property}`);
+    }
+  }
   const expected = new URL((route || '/') + (route && !route.endsWith('/') ? '/' : ''), origin).href;
   if (canonicalTags.length !== 1 || canonical !== expected) fail(`canonical must be ${expected}`);
   for (const m of html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>(.*?)<\/script>/gs)) {
-    try { JSON.parse(m[1]); } catch { fail('invalid JSON-LD'); }
+    let data;
+    try { data = JSON.parse(m[1]); } catch { fail('invalid JSON-LD'); continue; }
+    for (const item of [].concat(data)) {
+      if (item?.['@type'] !== 'BreadcrumbList') continue;
+      const list = item.itemListElement;
+      if (!Array.isArray(list) || list.length < 2 || list.some(entry => !entry?.name || !entry?.item)) fail('BreadcrumbList needs at least two items with name and item');
+    }
   }
   for (const meta of metas.filter(a => a.property === 'og:image')) {
     try {
@@ -74,12 +93,35 @@ for (const [route, page] of routes) {
     try { id = decodeURIComponent(url.hash.slice(1)); } catch { errors.push(`${label}: malformed fragment ${m[1]}`); continue; }
     if (!id) continue;
     const ids = [...target.html.matchAll(/\bid="([^"]+)"/g)].map(match => decode(match[1]));
-    if (!ids.includes(id)) errors.push(`${label}: missing fragment target ${m[1]}`);
+    if (!ids.includes(id)) { errors.push(`${label}: missing fragment target ${m[1]}`); continue; }
+    // A fixed header hides targets that have no scroll margin. #main is the skip-link target.
+    const tag = [...target.html.matchAll(/<\w+\b[^>]*>/g)].map(t => t[0]).find(t => attrs(t).id === id);
+    if (id !== 'main' && !/\bscroll-mt-/.test(attrs(tag || '').class || '')) errors.push(`${label}: fragment target ${m[1]} needs a scroll-mt-* class`);
   }
 }
 for (const url of sitemapUrls) {
   const page = [...routes.values()].find(p => p.canonical === url);
   if (!page) errors.push(`sitemap: URL has no built page: ${url}`);
+}
+const robotsFile = path.join(dist, 'robots.txt');
+if (!fs.existsSync(robotsFile)) errors.push('robots.txt is missing');
+else {
+  const robots = fs.readFileSync(robotsFile, 'utf8');
+  if (/^\s*Disallow:\s*\/\s*$/im.test(robots)) errors.push('robots.txt blocks the whole site');
+  const robotsSitemaps = [...robots.matchAll(/^\s*Sitemap:\s*(\S+)/gim)].map(m => m[1]);
+  for (const url of robotsSitemaps) {
+    let parsed;
+    try { parsed = new URL(url); } catch { errors.push(`robots.txt: invalid Sitemap URL ${url}`); continue; }
+    if (parsed.origin !== origin) errors.push(`robots.txt: Sitemap must use ${origin}: ${url}`);
+    else if (!fs.existsSync(path.join(dist, decodeURIComponent(parsed.pathname)))) errors.push(`robots.txt: Sitemap file is missing from the build: ${url}`);
+  }
+}
+for (const file of files(dist)) {
+  if (!/(^|[\\/])sitemap-index\.xml$/.test(file)) continue;
+  for (const m of fs.readFileSync(file, 'utf8').matchAll(/<loc>(.*?)<\/loc>/g)) {
+    const url = new URL(decode(m[1]));
+    if (!fs.existsSync(path.join(dist, decodeURIComponent(url.pathname)))) errors.push(`sitemap-index: referenced file is missing: ${url.href}`);
+  }
 }
 if (errors.length) {
   console.error(errors.join('\n'));
