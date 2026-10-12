@@ -52,11 +52,14 @@ const baseSchema = {
   priceRange: `${tiers.plan.min}–${tiers.turnkey.max} UAH`,
 };
 
+const isBlogArticle = normalizedPath.startsWith('/blog/') && normalizedPath !== '/blog/';
+const breadcrumbItems = [
+  { '@type': 'ListItem', position: 1, name: 'ГрантПлан', item: new URL('/', site.url).href },
+  ...(isBlogArticle ? [{ '@type': 'ListItem', position: 2, name: 'Блог', item: new URL('/blog/', site.url).href }] : []),
+  { '@type': 'ListItem', position: isBlogArticle ? 3 : 2, name: title.split('|')[0].trim(), item: canonical },
+];
 const breadcrumb = normalizedPath !== '/' ? {
-  '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'ГрантПлан', item: site.url },
-    { '@type': 'ListItem', position: 2, name: title.split('|')[0].trim(), item: canonical },
-  ],
+  '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: breadcrumbItems,
 } : null;
 const allSchema = [baseSchema, ...(breadcrumb ? [breadcrumb] : []), ...schema];
 ---
