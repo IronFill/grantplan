@@ -7,6 +7,7 @@ import LeadForm from '../../components/LeadForm.astro';
 import ChecklistCta from '../../components/ChecklistCta.astro';
 import Icon from '../../components/Icon.astro';
 import ArticleAside from '../../components/ArticleAside.astro';
+import PracticalGuides from '../../components/PracticalGuides.astro';
 import { blogPosts } from '../../data/blog';
 import { site } from '../../data/site';
 
@@ -42,7 +43,15 @@ const schema = {
   {/* Hero */}
   <section class="relative pt-28 md:pt-36 pb-8 md:pb-12 border-b border-border/70">
     <div class="container-site container-text">
-      <a href="/blog" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm py-2 -mt-2 mb-4">← Усі статті</a>
+      <nav aria-label="Шлях до статті" class="text-sm text-muted mb-4">
+        <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <li><a href="/" class="inline-block py-2 hover:text-ink">ГрантПлан</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/blog/" class="inline-block py-2 hover:text-ink">Блог</a></li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" class="min-w-0">{p.title}</li>
+        </ol>
+      </nav>
       <span class={'inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ' + (p.category === 'news' ? 'bg-accent/10 text-accent' : 'bg-success/10 text-success')}>
         {p.categoryLabel}
       </span>
@@ -145,6 +154,8 @@ const schema = {
       />
     </div>
   </section>
+
+  <section class="container-site pb-10"><PracticalGuides excludeSlug={p.slug} title="Читайте також: підготовка бізнес-плану" level={2} /></section>
 
   <ChecklistCta />
   <LeadForm />
