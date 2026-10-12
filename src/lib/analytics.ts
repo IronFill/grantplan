@@ -101,13 +101,16 @@ const META_STANDARD: Record<string, string> = {
 
 /** Єдина точка для подій — летить у Plausible завжди, у GA4/Meta лише якщо вони активні. */
 export function trackEvent(name: string, props?: Record<string, unknown>) {
-  window.plausible?.(name, props ? { props } : undefined);
+  // Canonical is authored by the site: never include query strings, form fields or visitor URLs.
+  const canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href;
+  const eventProps = { ...(canonical ? { page_path: new URL(canonical).pathname } : {}), ...props };
+  window.plausible?.(name, { props: eventProps });
 
-  window.gtag?.('event', name, props ?? {});
+  window.gtag?.('event', name, eventProps);
   const ga4Recommended = GA4_RECOMMENDED[name];
-  if (ga4Recommended) window.gtag?.('event', ga4Recommended, props ?? {});
+  if (ga4Recommended) window.gtag?.('event', ga4Recommended, eventProps);
 
-  window.fbq?.('trackCustom', name, props ?? {});
+  window.fbq?.('trackCustom', name, eventProps);
   const metaStandard = META_STANDARD[name];
-  if (metaStandard) window.fbq?.('track', metaStandard, props ?? {});
+  if (metaStandard) window.fbq?.('track', metaStandard, eventProps);
 }
