@@ -43,7 +43,7 @@ const {
   <div class="mt-8 rounded-card border border-border bg-surface p-5">
     <h3 class="font-display font-semibold">{ctaTitle}</h3>
     <p class="mt-2 text-sm text-muted leading-relaxed">{ctaText}</p>
-    <a href={ctaHref} class="btn btn-primary w-full mt-4 !min-h-[42px] !py-0 text-sm">
+    <a href={ctaHref} data-analytics={ctaHref.endsWith("#lead") ? "start_audit" : undefined} data-analytics-location="article_aside" class="btn btn-primary w-full mt-4 !min-h-[42px] !py-0 text-sm">
       {ctaLabel} <Icon name="arrow-right" size={16} />
     </a>
   </div>

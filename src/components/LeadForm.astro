@@ -395,7 +395,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         if (summaryEl && selected) summaryEl.textContent = `${fmtLong(selected)}, ${timeInput.value}`;
         formWrap.classList.add('hidden');
         success?.classList.remove('hidden');
-        trackEvent('submit_form');
+        trackEvent('submit_form', { form_type: 'audit' });
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;

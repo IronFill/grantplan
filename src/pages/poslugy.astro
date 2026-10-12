@@ -80,14 +80,14 @@ const preparationGuides = blogPosts.slice(0, 3);
         <li>Готуємо документи, звіряємо цифри між файлами й опрацьовуємо погоджені правки.</li>
       </ol>
       <p class="mt-5 text-muted">Для прикладу структури та розрахунків перегляньте <a href="/case-sto" class="text-accent underline underline-offset-4">план майстерні</a>. Остаточне рішення щодо гранту приймає уповноважений орган; підготовка документів не гарантує фінансування.</p>
-      <a href="#lead" class="btn btn-primary mt-6">Обговорити свій бізнес-план на аудиті</a>
+      <a href="#lead" data-analytics="start_audit" data-analytics-location="service_result" class="btn btn-primary mt-6">Обговорити свій бізнес-план на аудиті</a>
     </div>
   </section>
   <section class="py-12 md:py-16" aria-labelledby="service-guides">
     <div class="container-site">
       <h2 id="service-guides" class="text-2xl sm:text-3xl">Перед замовленням: ціна, підготовка та доопрацювання</h2>
       <div class="mt-6 grid md:grid-cols-3 gap-5">
-        {preparationGuides.map(post => <article class="rounded-card border border-border bg-surface p-6"><h3 class="text-lg"><a href={`/blog/${post.slug}/`} class="text-accent underline underline-offset-4">{post.title}</a></h3><p class="mt-3 text-muted">{post.excerpt}</p></article>)}
+        {preparationGuides.map(post => <article class="rounded-card border border-border bg-surface p-6"><h3 class="text-lg"><a data-analytics="open_guide" data-analytics-location="service_guides" data-analytics-guide={post.slug} href={`/blog/${post.slug}/`} class="text-accent underline underline-offset-4">{post.title}</a></h3><p class="mt-3 text-muted">{post.excerpt}</p></article>)}
       </div>
     </div>
   </section>
