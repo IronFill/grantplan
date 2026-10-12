@@ -1,13 +1,13 @@
 // Prove that the publication guard rejects regressions, using temporary HTML only.
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'grantplan-seo-'));
 const checker = fileURLToPath(new URL('./check-seo.mjs', import.meta.url));
+const tempRoot = path.dirname(checker);
+const dir = fs.mkdtempSync(path.join(tempRoot, '.grantplan-seo-'));
 const valid = '<html lang="uk"><head><title>Example</title><meta name="description" content="A real description"><link rel="canonical" href="https://grantplan.com.ua/"><script type="application/ld+json">{"name":"Example"}</script></head><body><h1>Example</h1><a href="#lead">Audit</a><section id="lead"></section></body></html>';
 const sitemap = '<urlset><url><loc>https://grantplan.com.ua/</loc></url></urlset>';
 function run(html, xml = sitemap) {
@@ -36,7 +36,7 @@ try {
   console.log('SEO guard: valid fixture and seven regression cases passed.');
 } finally {
   // Remove only the exact directory created by mkdtemp above.
-  assert.equal(path.dirname(path.resolve(dir)), path.resolve(os.tmpdir()));
-  assert.ok(path.basename(dir).startsWith('grantplan-seo-'));
+  assert.equal(path.dirname(path.resolve(dir)), path.resolve(tempRoot));
+  assert.ok(path.basename(dir).startsWith('.grantplan-seo-'));
   fs.rmSync(dir, { recursive: true, force: true });
 }
