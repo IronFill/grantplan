@@ -190,9 +190,15 @@ const allSchema = [baseSchema, ...(breadcrumb ? [breadcrumb] : []), ...schema];
     <script>
       import { trackEvent } from '../lib/analytics';
       document.addEventListener('click', (e) => {
-        const el = (e.target as HTMLElement)?.closest<HTMLElement>('[data-analytics]');
+        const el = e.target instanceof Element ? e.target.closest<HTMLElement>('[data-analytics]') : null;
         const ev = el?.getAttribute('data-analytics');
-        if (ev) trackEvent(ev);
+        if (ev && el) {
+          // Only explicitly authored, non-personal labels; never copy text, href or form values.
+          const props: Record<string, string> = {};
+          if (el.dataset.analyticsLocation) props.location = el.dataset.analyticsLocation;
+          if (el.dataset.analyticsGuide) props.guide_slug = el.dataset.analyticsGuide;
+          trackEvent(ev, props);
+        }
       });
     </script>
     {/* рік для футера, якщо потрібен через JS */}
