@@ -1,0 +1,19 @@
+---
+import { blogPosts } from '../data/blog';
+interface Props { excludeSlug?: string; title?: string; level?: 2 | 3 }
+const { excludeSlug, title = 'Ціна, підготовка та наступні кроки', level = 3 } = Astro.props;
+const selectedSlugs = ['biznes-plan-dlya-grantu-tsina', 'dokumenty-dlya-konsultatsii', 'vidmova-u-granti-povtorna-zayavka'];
+const guides = blogPosts.filter(post => selectedSlugs.includes(post.slug) && post.slug !== excludeSlug);
+const Heading = level === 2 ? 'h2' : 'h3';
+---
+{guides.length > 0 && (
+  <nav aria-label="Практичні матеріали про бізнес-план" class="mt-8 border-t border-border pt-6">
+    <Heading class="text-xl sm:text-2xl font-display font-semibold">{title}</Heading>
+    <ul class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      {guides.map(post => (
+        <li><a href={`/blog/${post.slug}/`} class="block rounded-card border border-border bg-surface px-4 py-4 font-medium leading-snug hover:border-accent hover:text-accent transition-colors">{post.title}</a></li>
+      ))}
+    </ul>
+    <a href="/blog/" class="inline-block mt-3 py-2 text-accent underline underline-offset-4">Усі статті та поради</a>
+  </nav>
+)}
