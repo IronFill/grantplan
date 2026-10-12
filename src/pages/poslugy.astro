@@ -10,6 +10,8 @@ import Services from '../components/Services.astro';
 import PlanContents from '../components/PlanContents.astro';
 import Pricing from '../components/Pricing.astro';
 import LeadForm from '../components/LeadForm.astro';
+import { blogPosts } from '../data/blog';
+const preparationGuides = blogPosts.slice(0, 3);
 ---
 <Layout
   title="Бізнес-план для гранту: послуги та ціни | ГрантПлан"
@@ -65,6 +67,28 @@ import LeadForm from '../components/LeadForm.astro';
         </ul>
       </nav>
       <p class="mt-5 text-muted">Маєте відмову? <a href="/prychyny-vidmov" class="text-accent underline underline-offset-4">Перегляньте можливі причини</a> та обговоріть доопрацювання на аудиті. Перед поданням звіряємо <a href="/umovy-prohramy" class="text-accent underline underline-offset-4">умови програми з офіційними джерелами</a>.</p>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-16 border-b border-border/70" aria-labelledby="service-result">
+    <div class="container-site max-w-3xl">
+      <h2 id="service-result" class="text-2xl sm:text-3xl">Що ви отримаєте після підготовки бізнес-плану</h2>
+      <p class="mt-4 text-muted">У пакеті «Бізнес-план» — опис проєкту у Word та розрахунки у XLS: кошторис, фінансова модель і пояснення вихідних припущень. Перед початком погоджуємо конкретний склад файлів і завдання. Презентація, супровід подання та репетиція співбесіди входять до пакета «Під ключ».</p>
+      <ol class="mt-5 list-decimal pl-6 space-y-3 text-muted">
+        <li>На аудиті уточнюємо ідею, наявні ресурси та відкриті питання.</li>
+        <li>Погоджуємо обсяг роботи, ціну, строки та перелік вихідних даних.</li>
+        <li>Готуємо документи, звіряємо цифри між файлами й опрацьовуємо погоджені правки.</li>
+      </ol>
+      <p class="mt-5 text-muted">Для прикладу структури та розрахунків перегляньте <a href="/case-sto" class="text-accent underline underline-offset-4">план майстерні</a>. Остаточне рішення щодо гранту приймає уповноважений орган; підготовка документів не гарантує фінансування.</p>
+      <a href="#lead" class="btn btn-primary mt-6">Обговорити свій бізнес-план на аудиті</a>
+    </div>
+  </section>
+  <section class="py-12 md:py-16" aria-labelledby="service-guides">
+    <div class="container-site">
+      <h2 id="service-guides" class="text-2xl sm:text-3xl">Перед замовленням: ціна, підготовка та доопрацювання</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-5">
+        {preparationGuides.map(post => <article class="rounded-card border border-border bg-surface p-6"><h3 class="text-lg"><a href={`/blog/${post.slug}/`} class="text-accent underline underline-offset-4">{post.title}</a></h3><p class="mt-3 text-muted">{post.excerpt}</p></article>)}
+      </div>
     </div>
   </section>
 
