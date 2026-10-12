@@ -89,6 +89,13 @@ const schema = {
               ))}
             </ul>
           );
+          if (block.type === 'links') return (
+            <nav aria-label="Корисні посилання до статті" class="rounded-card border border-border p-5">
+              <ul class="space-y-3">
+                {block.items.map(item => <li><a href={item.href} class="inline-block py-2 text-accent underline underline-offset-4" {...(item.href.startsWith('https://') ? { target: '_blank', rel: 'noopener' } : {})}>{item.label}</a></li>)}
+              </ul>
+            </nav>
+          );
           if (block.type === 'callout') return (
             <div class="rounded-card border border-accent/70 bg-raised p-5 text-muted">
               <span class="text-ink font-medium">Чесно: </span>{block.text}
