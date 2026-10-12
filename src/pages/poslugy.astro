@@ -11,7 +11,16 @@ import PlanContents from '../components/PlanContents.astro';
 import Pricing from '../components/Pricing.astro';
 import LeadForm from '../components/LeadForm.astro';
 import { blogPosts } from '../data/blog';
+import { tiers } from '../data/pricing';
 const preparationGuides = blogPosts.slice(0, 3);
+const serviceQuestions = [
+  { question: 'Скільки коштує підготовка бізнес-плану для гранту?', answer: `Пакет «Бізнес-план» — ${tiers.plan.label}, «Під ключ» — ${tiers.turnkey.label}. Перший аудит — безкоштовний, ${tiers.audit.term}. Остаточну ціну та обсяг роботи погоджуємо до початку підготовки.`, href: '#pricing', label: 'Порівняти пакети' },
+  { question: 'За який час буде готовий бізнес-план?', answer: `Орієнтир для пакета «Бізнес-план» — ${tiers.plan.term}, для «Під ключ» — ${tiers.turnkey.term}. Для бізнес-плану відлік починається після отримання заповненої анкети та авансу. Якщо бракує вихідних даних або змінюється завдання, строк уточнюємо.`, href: '/umovy-spivpratsi-biznes-plan', label: 'Строки та умови співпраці' },
+  { question: 'Чи можна замовити бізнес-план з іншого міста?', answer: 'Так, працюємо онлайн з клієнтами по всій Україні. На першій розмові уточнюємо вашу ідею, бюджет та потрібний склад роботи. Для початку не потрібно приїжджати до Харкова.', href: '#lead', label: 'Записатися на аудит' },
+  { question: 'Що підготувати до першої консультації?', answer: 'Коротко опишіть ідею, клієнтів, основні покупки та ресурси, які вже маєте. Орієнтовних цифр достатньо для першої розмови. Якщо є попередня заявка або відмова — повідомте про це; не надсилайте паспорт, податковий номер чи банківські дані через форму.', href: '/blog/dokumenty-dlya-konsultatsii/', label: 'Перелік для підготовки до розмови' },
+  { question: 'Чи входять правки та подання заявки у вартість?', answer: 'У пакет «Бізнес-план» входить до двох раундів правок у межах погодженого завдання; готові документи клієнт подає самостійно. У пакеті «Під ключ» передбачені також супровід подання та підготовка до співбесіди. Обсяг додаткових робіт погоджуємо окремо.', href: '/umovy-spivpratsi-pid-kluch', label: 'Умови пакета «Під ключ»' },
+  { question: 'Чи гарантує готовий бізнес-план отримання гранту?', answer: 'Ні. Оплачується підготовка документів, а рішення щодо фінансування ухвалює уповноважений орган. На аудиті обговорюємо вихідні дані та ризики, щоб ви могли вирішити, чи продовжувати підготовку.', href: '/poslugy/#service-result', label: 'Що входить у результат роботи' },
+];
 ---
 <Layout
   title="Бізнес-план для гранту: послуги та ціни | ГрантПлан"
@@ -30,6 +39,12 @@ const preparationGuides = blogPosts.slice(0, 3);
       <p class="mt-5 text-muted text-lg leading-relaxed">
         Готуємо бізнес-плани для грантових заявок по всій Україні. Нижче — склад пакета за формою Дії, додаткові послуги, ціни та строки. Оберіть потрібний пакет і залиште заявку для уточнення деталей.
       </p>
+      <nav aria-label="Швидкий перехід по послугах" class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+        <a href="#service-result" class="inline-block py-2 text-accent underline underline-offset-4">Результат роботи</a>
+        <a href="#pricing" class="inline-block py-2 text-accent underline underline-offset-4">Ціни та пакети</a>
+        <a href="#service-questions" class="inline-block py-2 text-accent underline underline-offset-4">Питання перед замовленням</a>
+        <a href="#lead" class="inline-block py-2 text-accent underline underline-offset-4" data-analytics="start_audit" data-analytics-location="service_navigation">Запис на аудит</a>
+      </nav>
     </div>
   </section>
 
@@ -95,6 +110,21 @@ const preparationGuides = blogPosts.slice(0, 3);
   <PlanContents />
   <Services />
   <Pricing />
+  <section class="py-12 md:py-16 border-t border-border/70 scroll-mt-24" id="service-questions" aria-labelledby="service-questions-title">
+    <div class="container-site max-w-3xl">
+      <h2 id="service-questions-title" class="text-2xl sm:text-3xl">Питання перед замовленням бізнес-плану</h2>
+      <p class="mt-4 text-muted">Коротко про вартість, строки та порядок роботи. Деталі конкретного проєкту погоджуємо на консультації.</p>
+      <div class="mt-6 space-y-3">
+        {serviceQuestions.map(item => (
+          <details class="rounded-card border border-border bg-surface p-5">
+            <summary class="cursor-pointer font-semibold leading-relaxed focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4">{item.question}</summary>
+            <p class="mt-3 text-muted leading-relaxed">{item.answer}</p>
+            <a href={item.href} class="inline-block mt-2 py-2 text-accent underline underline-offset-4" data-analytics={item.href === '#lead' ? 'start_audit' : undefined} data-analytics-location="service_questions">{item.label}</a>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
   <LeadForm />
 
   <SiteFooter slot="footer" />
