@@ -37,3 +37,6 @@ jobs:
 
       - name: Межі полів форм у зібраних сторінках
         run: node scripts/check-built-forms.mjs
+
+      - name: SEO metadata, sitemap and fragment targets
+        run: npm run check:seo
