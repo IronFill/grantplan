@@ -670,7 +670,7 @@ const checks = [
         if (!res.ok || result?.ok !== true) throw new Error();
         qform.classList.add('hidden');
         resultBox.querySelector('[data-quiz-thanks]')?.classList.remove('hidden');
-        trackEvent('submit_form');
+        trackEvent('submit_form', { form_type: 'quiz' });
       } catch {
         submit.disabled = false;
         submit.textContent = 'Отримати розрахунок';
