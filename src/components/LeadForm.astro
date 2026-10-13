@@ -9,7 +9,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     <div class="reveal max-w-2xl">
       <h2 class="text-3xl sm:text-4xl">Запишіться на безкоштовний аудит ідеї</h2>
       <p class="mt-4 text-muted text-lg">
-        До 20 хвилин: чесно скажемо, чи проходить ваша ідея під умови програми, — ще до оплати. Оберіть бажані дату й час за Києвом. Ми узгодимо їх у Telegram або телефоном. Або напишіть напряму:
+        Залиште ім’я та телефон — зв’яжемося з вами й узгодимо безкоштовний аудит до 20 хвилин. Якщо зручніше, оберіть дату й час. Або напишіть напряму:
       </p>
 
       {/* Прямі кнопки-месенджери */}
@@ -30,9 +30,13 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     </div>
 
     <div class="reveal mt-8 rounded-card-lg bg-surface border border-border p-5 md:p-8">
-      <div id="lf-form-wrap" class="grid lg:grid-cols-2 gap-8 lg:gap-12">
+      <div class="flex flex-wrap gap-3 mb-6" role="group" aria-label="Як зв’язатися з вами">
+        <button type="button" class="btn btn-primary" data-lf-mode="callback" aria-pressed="true">Зв’яжіться зі мною</button>
+        <button type="button" class="btn btn-ghost" data-lf-mode="scheduled" aria-pressed="false">Обрати дату й час</button>
+      </div>
+      <div id="lf-form-wrap" class="grid gap-8 lg:gap-12">
         {/* Календар */}
-        <div>
+        <div data-lf-calendar hidden>
           <div class="flex items-center justify-between mb-4">
             <button type="button" data-lf-prev aria-label="Попередній місяць"
               class="inline-grid place-items-center w-11 h-11 rounded-xl border border-border text-muted hover:text-ink hover:border-accent transition-colors disabled:opacity-30 disabled:pointer-events-none">
@@ -54,8 +58,8 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         </div>
 
         {/* Час + контакти */}
-        <div class="lg:border-l lg:border-border/70 lg:pl-12">
-          <div data-lf-time-empty class="text-muted text-sm py-4">
+        <div>
+          <div data-lf-time-empty class="text-muted text-sm py-4" hidden>
             Оберіть день у календарі, потім бажаний час.
           </div>
 
@@ -67,7 +71,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
             <div data-lf-slots class="grid grid-cols-3 sm:grid-cols-4 gap-2 mb-6"></div>
           </div>
 
-          <form id="lead-form" method="post" novalidate hidden>
+          <form id="lead-form" method="post" novalidate>
             {/* Honeypot (приховане поле від спаму) */}
             <div class="hidden" aria-hidden="true">
               <label>Не заповнюйте це поле<input type="text" name="hp_gp_2026" tabindex="-1" autocomplete="off" /></label>
@@ -128,7 +132,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
               </label>
 
               <button type="submit" class="btn btn-primary w-full" data-submit>
-                Надіслати заявку
+                Зв’яжіться зі мною
               </button>
               <p class="text-sm text-accent-hover text-center hidden" role="alert" data-lead-error data-tg={site.telegram}></p>
             </div>
@@ -142,7 +146,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
           <Icon name="check-circle" size={32} />
         </span>
         <h3 class="mt-5 text-2xl font-display font-semibold">Заявку надіслано ✓</h3>
-        <p class="mt-2 text-muted">Бажаний час: <span data-lf-summary class="text-ink font-medium">—</span>. Зв’яжемося з вами у Telegram або телефоном для підтвердження.</p>
+        <p class="mt-2 text-muted" data-lf-summary>Зв’яжемося з вами у Telegram або телефоном, щоб узгодити безкоштовний аудит.</p>
       </div>
     </div>
   </div>
@@ -205,6 +209,33 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     let viewYear = today.getUTCFullYear();
     let viewMonth = today.getUTCMonth();
     let selected: Date | null = null;
+    let scheduled = false;
+    const calendar = root.querySelector('[data-lf-calendar]') as HTMLElement;
+    const modeButtons = root.querySelectorAll<HTMLButtonElement>('[data-lf-mode]');
+    const submitLabel = () => scheduled ? 'Надіслати заявку' : 'Зв’яжіться зі мною';
+    modeButtons.forEach((button) => button.addEventListener('click', () => {
+      if (submitBtn.disabled) return;
+      scheduled = button.dataset.lfMode === 'scheduled';
+      calendar.hidden = !scheduled;
+      formWrap.classList.toggle('lg:grid-cols-2', scheduled);
+      selected = null;
+      dateInput.value = '';
+      timeInput.value = '';
+      const requestId = form.querySelector<HTMLInputElement>('[data-request-id]');
+      if (requestId) requestId.value = '';
+      timeWrap.hidden = true;
+      timeEmpty.hidden = !scheduled;
+      form.hidden = scheduled;
+      submitBtn.textContent = submitLabel();
+      modeButtons.forEach((b) => {
+        const active = b === button;
+        b.setAttribute('aria-pressed', String(active));
+        b.classList.toggle('btn-primary', active);
+        b.classList.toggle('btn-ghost', !active);
+      });
+      hideError();
+      renderCalendar();
+    }));
 
     const fmtLong = (d: Date) => `${WEEKDAYS[d.getUTCDay()]}, ${d.getUTCDate()} ${MONTHS_GEN[d.getUTCMonth()]}`;
 
@@ -330,7 +361,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
       hideError();
 
-      if (!dateInput.value || !timeInput.value) {
+      if (scheduled && (!dateInput.value || !timeInput.value)) {
         showError('Оберіть дату й час у календарі вище.');
         return;
       }
@@ -378,7 +409,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         if (res.status === 422 && result?.ok === false) {
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.textContent = 'Надіслати заявку';
+            submitBtn.textContent = submitLabel();
           }
           showError(rejectionMessage(result));
           const target = result.field === 'idea' ? ideaInput : result.field === 'phone' ? phoneInput : (form.elements.namedItem('name') as HTMLInputElement | null);
@@ -387,19 +418,22 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         }
         if (result?.saved && !result.ok) {
           showError('Заявку збережено, але доставку не підтверджено. Зв’яжіться з нами у Telegram або телефоном, щоб узгодити звернення.');
-          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Надіслати заявку'; }
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = submitLabel(); }
           return;
         }
         if (!res.ok) throw new Error('bad response');
         if (result?.ok !== true) throw new Error('delivery not confirmed');
-        if (summaryEl && selected) summaryEl.textContent = `${fmtLong(selected)}, ${timeInput.value}`;
+        if (summaryEl) summaryEl.textContent = scheduled && selected
+          ? `Бажаний час: ${fmtLong(selected)}, ${timeInput.value}. Зв’яжемося з вами для підтвердження.`
+          : 'Зв’яжемося з вами у Telegram або телефоном, щоб узгодити безкоштовний аудит.';
+        modeButtons.forEach((b) => b.hidden = true);
         formWrap.classList.add('hidden');
         success?.classList.remove('hidden');
         trackEvent('submit_form', { form_type: 'audit' });
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Надіслати заявку';
+          submitBtn.textContent = submitLabel();
         }
         const tg = leadError?.dataset.tg || '';
         if (leadError) {
@@ -417,3 +451,4 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     renderCalendar();
   }
 </script>
+
