@@ -6,6 +6,12 @@
 // Запуск: node scripts/test-lead-limits.mjs
 
 import fs from 'node:fs';
+import { kyivClock, minimumBookingDate } from '../src/lib/booking-clock.js';
+const today = kyivClock();
+const todayBooking = `${String(today.getUTCDate()).padStart(2,'0')}.${String(today.getUTCMonth()+1).padStart(2,'0')}.${today.getUTCFullYear()}`;
+const nextDay = minimumBookingDate();
+if (nextDay.getUTCDay() === 0) nextDay.setUTCDate(nextDay.getUTCDate() + 1);
+const futureBooking = `${String(nextDay.getUTCDate()).padStart(2,'0')}.${String(nextDay.getUTCMonth()+1).padStart(2,'0')}.${nextDay.getUTCFullYear()}`;
 import { onRequestPost } from '../functions/submit.js';
 import { handler as netlifyHandler } from '../netlify/functions/submit.mjs';
 import { LEAD_LIMITS, TELEGRAM_TEXT_LIMIT, charLength, telegramVisibleLength, validateLead, validateTelegramText } from '../src/lib/lead-validation.js';
@@ -102,7 +108,7 @@ for (const [runnerName, send] of Object.entries(runners)) {
   // 3. Усі поля на межі разом — вкладається в Telegram
   {
     telegram = [];
-    const all = { requestId: VALID.requestId, consent: 'on', name: 'І'.repeat(100), phone: VALID.phone, messenger: 'я'.repeat(40), idea: 'я'.repeat(1000), source: 'я'.repeat(40), quiz: 'я'.repeat(1500), date: '12.10.2026 (понеділок)', time: '10:00' };
+    const all = { requestId: VALID.requestId, consent: 'on', name: 'І'.repeat(100), phone: VALID.phone, messenger: 'я'.repeat(40), idea: 'я'.repeat(1000), source: 'я'.repeat(40), quiz: 'я'.repeat(1500), date: futureBooking, time: '10:00' };
     const res = await send(all);
     check('усі поля на межі одночасно: приймається', res.status === 200, `status=${res.status}`);
     check(`видима довжина повідомлення ≤ ${TELEGRAM_TEXT_LIMIT}`, telegramVisibleLength(lastText()) <= TELEGRAM_TEXT_LIMIT, `довжина=${telegramVisibleLength(lastText())}`);
@@ -122,7 +128,7 @@ for (const [runnerName, send] of Object.entries(runners)) {
   // 4.1. Усі поля з емодзі на межах одночасно (у UTF-16) вкладаються в Telegram
   {
     telegram = [];
-    const emojiAll = { ...VALID, name: '😀'.repeat(50), messenger: '😀'.repeat(20), idea: '😀'.repeat(500), source: '😀'.repeat(20), quiz: '😀'.repeat(750), date: '12.10.2026 (понеділок)', time: '10:00' };
+    const emojiAll = { ...VALID, name: '😀'.repeat(50), messenger: '😀'.repeat(20), idea: '😀'.repeat(500), source: '😀'.repeat(20), quiz: '😀'.repeat(750), date: futureBooking, time: '10:00' };
     const res = await send(emojiAll);
     check('усі поля з емодзі на межах разом приймаються', res.status === 200 && telegramVisibleLength(lastText()) <= TELEGRAM_TEXT_LIMIT, `status=${res.status} довжина=${telegramVisibleLength(lastText())}`);
     check('Telegram отримує parse_mode=HTML', telegram.at(-1)?.body.parse_mode === 'HTML');
@@ -134,6 +140,7 @@ for (const [runnerName, send] of Object.entries(runners)) {
       ['без requestId', { ...VALID, requestId: undefined }, 'requestId'],
       ['неправильна дата без requestId', { ...VALID, requestId: undefined, date: '99.99.9999', time: '03:00' }, 'date'],
       ['неправильна дата з requestId', { ...VALID, date: '99.99.9999', time: '03:00' }, 'date'],
+      ['запис на сьогодні', { ...VALID, date: todayBooking, time: '17:00' }, 'date'],
       ['коректна дата з неправильним часом', { ...VALID, date: '12.10.2026', time: '03:00' }, 'date'],
       ['name — об’єкт', { ...VALID, name: {} }, 'name'],
       ['idea — число', { ...VALID, idea: 123 }, 'idea'],
