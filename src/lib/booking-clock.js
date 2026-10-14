@@ -8,12 +8,19 @@ export function kyivClock(instant = new Date()) {
     Number(parts.hour), Number(parts.minute), Number(parts.second)));
 }
 
-export function validBooking(date, time) {
+export function minimumBookingDate(instant = new Date()) {
+  const date = kyivClock(instant);
+  date.setUTCHours(0, 0, 0, 0);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date;
+}
+
+export function validBooking(date, time, instant = new Date()) {
   if (!date && !time) return true;
   const match = /^(\d{2})\.(\d{2})\.(\d{4})(?: \([^()]+\))?$/.exec(date);
   if (!match || !/^(1[0-7]):00$/.test(time)) return false;
   const [, day, month, year] = match.map(Number);
   const civil = new Date(Date.UTC(year, month - 1, day));
   return year >= 2026 && civil.getUTCFullYear() === year && civil.getUTCMonth() === month - 1 &&
-    civil.getUTCDate() === day && civil.getUTCDay() !== 0;
+    civil.getUTCDate() === day && civil.getUTCDay() !== 0 && civil >= minimumBookingDate(instant);
 }

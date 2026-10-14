@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { deliverLead, leadMessage } from '../src/lib/lead-delivery.js';
-import { kyivClock, validBooking } from '../src/lib/booking-clock.js';
+import { kyivClock, minimumBookingDate, validBooking } from '../src/lib/booking-clock.js';
 import { validateLead } from '../src/lib/lead-validation.js';
 import { pruneLeads } from '../src/lib/lead-retention.js';
 
@@ -54,7 +54,21 @@ try {
     assert.equal(rejected.field, 'date', 'Calendar validation cannot depend on request identity');
   }
   assert.equal(validBooking('31.02.2026', '10:00'), false);
-  assert.equal(validBooking('12.10.2026 (понеділок)', '10:00'), true);
+  const noon = new Date('2026-10-14T09:00:00Z');
+  assert.equal(validBooking('14.10.2026', '17:00', noon), false, 'Same-day booking rejected even before slot');
+  assert.equal(validBooking('13.10.2026', '10:00', noon), false, 'Past date rejected');
+  assert.equal(validBooking('15.10.2026', '10:00', noon), true, 'Tomorrow available');
+  assert.equal(validBooking('', '', noon), true, 'Undated callback preserved');
+  assert.equal(validBooking('18.10.2026', '10:00', noon), false, 'Sunday remains unavailable');
+  assert.equal(minimumBookingDate(new Date('2026-10-31T12:00:00Z')).toISOString(), '2026-11-01T00:00:00.000Z');
+  assert.equal(minimumBookingDate(new Date('2026-12-31T12:00:00Z')).toISOString(), '2027-01-01T00:00:00.000Z');
+  const afterKyivMidnight = new Date('2026-07-15T21:05:00Z');
+  assert.equal(validBooking('16.07.2026', '17:00', afterKyivMidnight), false, 'Kyiv day16 is already today while UTC day15');
+  assert.equal(validBooking('17.07.2026', '10:00', afterKyivMidnight), true);
+  const beforeMidnight = new Date('2026-07-15T20:59:00Z');
+  assert.equal(validBooking('16.07.2026', '10:00', beforeMidnight), true);
+  assert.equal(validBooking('16.07.2026', '10:00', afterKyivMidnight), false, 'Open form becomes stale at midnight');
+  assert.equal(validBooking('12.10.2026 (понеділок)', '10:00', new Date('2026-10-11T09:00:00Z')), true);
   assert.equal(validBooking('12.10.2026', '18:00'), false);
   assert.equal(kyivClock(new Date('2026-01-15T08:00:00Z')).getUTCHours(), 10);
   assert.equal(kyivClock(new Date('2026-07-15T07:00:00Z')).getUTCHours(), 10);
