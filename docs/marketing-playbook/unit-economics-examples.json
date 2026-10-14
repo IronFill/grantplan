@@ -1,0 +1,22 @@
+{
+  "kind": "synthetic_teaching_examples_not_actual_grantplan_results",
+  "currency": "UAH",
+  "paid_campaign_authorized": false,
+  "examples": [
+    {
+      "id":"service_base",
+      "clicks":1000,"ad_spend":8000,"leads":40,"qualified_leads":20,"paid_customers":5,
+      "revenue_per_order":6000,"variable_cost_per_order":2500,
+      "expected":{"contribution_per_order":3500,"cpc":8,"cpl":200,"cost_per_qualified_lead":400,"ad_cac":1600,"roas":3.75,"contribution_after_ads":9500,"break_even_cpl":437.5,"break_even_cpc":17.5,"target_ad_cac_at_60_percent":2100,"target_cpl_at_60_percent":262.5,"target_cpc_at_60_percent":10.5}
+    },
+    {
+      "id":"service_conservative",
+      "clicks":1000,"ad_spend":8000,"leads":20,"qualified_leads":8,"paid_customers":2,
+      "revenue_per_order":6000,"variable_cost_per_order":2500,
+      "expected":{"contribution_per_order":3500,"cpc":8,"cpl":400,"cost_per_qualified_lead":1000,"ad_cac":4000,"roas":1.5,"contribution_after_ads":-1000,"break_even_cpl":350,"break_even_cpc":7,"target_ad_cac_at_60_percent":2100,"target_cpl_at_60_percent":210,"target_cpc_at_60_percent":4.2}
+    }
+  ],
+  "affiliate_example":{"payout_per_accepted_lead":500,"lead_rate_per_click":0.04,"acceptance_rate":0.6,"cpc":8,"expected_revenue_per_click":12,"expected_contribution_before_other_costs":4},
+  "zero_lead_probability_example":{"independent_trials":100,"observed_leads":0,"alpha":0.05,"formula":"1 - alpha ** (1 / independent_trials)","expected_upper_bound_percent_rounded":2.95},
+  "cashflow_article_example":{"sales":8000,"receipts":6000,"recognized_costs_in_simplified_model":5000,"current_cash_payments":5000,"equipment_cash_payment":2000,"expected_model_result":3000,"expected_cash_change":-1000,"opening_cash_balance":"not_provided","ending_cash_balance":"not_computable_from_given_inputs"}
+}

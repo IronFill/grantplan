@@ -1,0 +1,38 @@
+{
+  "checked_at_utc": "2026-10-14T07:00:51.084786+00:00",
+  "scope": "Documentation, data syntax and synthetic arithmetic; not a traffic or sales experiment",
+  "passed": true,
+  "errors": [],
+  "text_files_checked_excluding_this_report": 17,
+  "local_markdown_links_checked": 25,
+  "external_https_urls_syntax_checked": 20,
+  "external_reachability_bulk_probe_performed": false,
+  "primary_sources": 18,
+  "source_methods": {
+    "web_document": 17,
+    "official_search_text": 1
+  },
+  "source_claim_review": "Manually matched against retrieved primary text; no full articles copied",
+  "csv_rows": {
+    "content-calendar.csv": 8,
+    "experiments.csv": 5,
+    "utm-links.csv": 3
+  },
+  "synthetic_service_metrics_recomputed": 24,
+  "affiliate_and_confidence_and_cashflow_checks": "passed",
+  "sensitive_pattern_scan": "No key-, email- or Ukrainian-phone-shaped values in this package; best-effort scan, not a certification",
+  "independent_paid_reviews_this_task": 0,
+  "website_runtime_changed": false,
+  "new_videos_created_or_published": false,
+  "ads_launched": false,
+  "repository_verification": {
+    "command": "npm run verify",
+    "exit_code": 0,
+    "astro_files_checked": 86,
+    "errors": 0,
+    "warnings": 0,
+    "pages_built_and_link_checked": 31,
+    "sitemap_urls_checked": 28,
+    "backend_and_seo_regressions": "passed"
+  }
+}
