@@ -1,5 +1,5 @@
 asset,platform,status,published_at_kyiv,post_url,utm_content,impressions,clicks,site_sessions,confirmed_leads,qualified_leads,orders,notes
-three_numbers_carousel,facebook,ready_not_published,,,carousel,,,,,,,Browser policy request failed; account not inspected
+three_numbers_carousel,facebook,published_verified,2026-10-15T21:53+03:00,https://www.facebook.com/permalink.php?story_fbid=pfbid0Vu8uzizDk97CAsfwBa4vPKnwqRpmttCUjN8EJ183LzBqgnFPqDW3zfffrRYj33P2l&id=61595482468095,carousel,,,,,,,"Verified live Page post and three photo links; metrics not yet collected. Timestamp is observation-time approximation, not server publish-time."
 three_numbers_carousel,instagram,ready_not_published,,,profile_carousel,,,,,,,Profile link not confirmed
-approved_27s_video,facebook,ready_not_published,,,napkin_reel,,,,,,,No upload attempted in this pass
+approved_27s_video,facebook,published_notification_verified,,,reel27,,,,,,,Facebook Page notification confirms Reel published; clean public permalink and updated grid pending. AI label on; boost off. No duplicate upload.
 approved_27s_video,instagram,ready_not_published,,,napkin_reel,,,,,,,No upload attempted in this pass
