@@ -1,0 +1,62 @@
+import assert from 'node:assert/strict';
+import { CAMPAIGNS, campaignFromUrl, campaignUrl, getCampaign } from '../src/lib/campaigns.js';
+import { validateLead, validateTelegramText } from '../src/lib/lead-validation.js';
+import { leadMessage } from '../src/lib/lead-delivery.js';
+import { onRequestPost } from '../functions/submit.js';
+import { handler } from '../netlify/functions/submit.mjs';
+
+const valid = { requestId: '12345678-1234-4123-8123-123456789abc', consent: true, name: 'TEST', phone: '+380501234567' };
+for (const campaign of CAMPAIGNS) {
+  const url = campaignUrl(campaign.id, '/#lead');
+  assert.equal(campaignFromUrl(url), campaign.id);
+  const extra = new URL(url); extra.searchParams.set('unused', 'private@example.com');
+  assert.equal(campaignFromUrl(extra.href), campaign.id);
+  const checked = validateLead({ ...valid, campaignId: campaign.id });
+  assert.equal(checked.values.campaignId, campaign.id);
+  assert.ok(leadMessage(checked.values).includes(campaign.id));
+  assert.ok(validateTelegramText(leadMessage(checked.values)).ok);
+}
+const known = campaignUrl('youtube-budget-guide');
+assert.equal(campaignFromUrl(known + '&utm_content=other'), '', 'Ambiguous duplicate parameters are not attributed');
+assert.equal(campaignFromUrl('https://grantplan.com.ua/?utm_source=private@example.com'), '');
+assert.equal(campaignFromUrl('not a URL'), '');
+assert.equal(getCampaign('__proto__'), undefined);
+assert.throws(() => campaignUrl('youtube-budget-guide', 'https://example.com/'));
+for (const campaignId of ['unknown', '<script>secret</script>', 'x'.repeat(10000), {}, null]) {
+  const checked = validateLead({ ...valid, campaignId });
+  assert.equal(checked.ok, true, 'Unrecognised attribution must not block a real lead');
+  assert.equal(checked.values.campaignId, undefined);
+}
+
+const originalFetch = globalThis.fetch;
+const oldToken = process.env.TG_BOT_TOKEN, oldChat = process.env.TG_CHAT_ID;
+let messages = [];
+try {
+  globalThis.fetch = async (url, init) => {
+    assert.ok(String(url).startsWith('https://api.telegram.org/botTEST/'));
+    messages.push(JSON.parse(init.body));
+    return Response.json({ ok: true });
+  };
+  process.env.TG_BOT_TOKEN = 'TEST'; process.env.TG_CHAT_ID = 'TEST';
+  const payload = { ...valid, campaignId: 'youtube-budget-guide', utm_source: 'private@example.com', gclid: 'PRIVATE_CLICK_ID', referrer: 'https://private.example/path' };
+  const records = new Map();
+  const res = await onRequestPost({ request: new Request('https://test/submit', { method: 'POST', body: JSON.stringify(payload) }), env: {
+    TG_BOT_TOKEN: 'TEST', TG_CHAT_ID: 'TEST', LEADS_KV: { get: async k => records.get(k), put: async (k,v) => records.set(k,v) },
+  } });
+  assert.equal(res.status, 200);
+  const stored = records.get('lead:' + valid.requestId);
+  assert.ok(stored.includes('youtube-budget-guide'));
+  assert.ok(!stored.includes('private@example.com') && !stored.includes('PRIVATE_CLICK_ID') && !stored.includes('private.example'));
+  const other = await handler({ httpMethod: 'POST', body: JSON.stringify(payload) });
+  assert.equal(other.statusCode, 200);
+  assert.equal(messages.length, 2);
+  for (const message of messages) {
+    assert.ok(message.text.includes('youtube-budget-guide'));
+    assert.ok(!message.text.includes('private@example.com') && !message.text.includes('PRIVATE_CLICK_ID') && !message.text.includes('private.example'));
+  }
+} finally {
+  globalThis.fetch = originalFetch;
+  if (oldToken === undefined) delete process.env.TG_BOT_TOKEN; else process.env.TG_BOT_TOKEN = oldToken;
+  if (oldChat === undefined) delete process.env.TG_CHAT_ID; else process.env.TG_CHAT_ID = oldChat;
+}
+console.log('Campaign attribution: known links, ambiguous input, privacy filtering, both handlers and outbox passed; no network calls.');

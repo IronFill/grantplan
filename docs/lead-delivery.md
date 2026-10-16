@@ -42,6 +42,18 @@ Rate limits are also best effort. Do not claim exactly-once delivery.
 
 ## Deployment checks
 
+Known public placement codes are resolved from an exact UTM tuple at submission
+time (see `src/lib/campaigns.js`). Both form types send only the registry ID;
+the server independently resolves it. Unknown IDs and arbitrary extra fields
+are discarded. No full URL, free-text UTM, referrer or advertising click ID is
+stored by this feature. It uses no browser persistence and does not carry a
+campaign across an untagged navigation. A code is untrusted attribution, not
+proof of a real customer or the first touch. A missing code means unknown.
+
+The existing success/uncertain rules still apply. Unit tests mock all Telegram
+calls, including the new campaign tests; they cannot confirm production inbox
+receipt or outbox bindings.
+
 - Confirm the existing Telegram secrets without printing their values.
 - Confirm the private KV binding on Cloudflare, or Blobs access on Netlify.
 - On Netlify, verify that lead-cleanup appears as Scheduled and run it once

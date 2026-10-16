@@ -14,7 +14,7 @@
     "check:links": "node scripts/check-links.mjs",
     "check:forms": "node scripts/check-built-forms.mjs",
     "check:seo": "node scripts/check-seo.mjs",
-    "test": "node scripts/test-submit.mjs && node scripts/test-lead-limits.mjs && node scripts/test-comments.mjs && node scripts/test-lead-delivery.mjs && node scripts/test-seo.mjs",
+    "test": "node scripts/test-submit.mjs && node scripts/test-lead-limits.mjs && node scripts/test-comments.mjs && node scripts/test-lead-delivery.mjs && node scripts/test-seo.mjs && node scripts/test-campaigns.mjs",
     "verify": "npm run check && npm run test && npm run build && npm run check:links && npm run check:forms && npm run check:seo",
     "astro": "astro"
   },

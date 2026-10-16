@@ -107,9 +107,9 @@ const schema = {
           );
           if (block.type === 'download') return (
             <div class="rounded-card border border-accent/50 bg-raised p-5 sm:p-6">
-              <h2 class="text-xl font-display font-semibold">Анкета для першої розмови</h2>
+              <h2 class="text-xl font-display font-semibold">{block.title ?? 'Анкета для першої розмови'}</h2>
               <p class="mt-3 text-muted">{block.text}</p>
-              <a href={block.href} download class="btn btn-primary mt-5 w-full sm:w-auto text-center" data-analytics="download_audit_worksheet" data-analytics-location="article" data-analytics-guide={p.slug}>
+              <a href={block.href} download class="btn btn-primary mt-5 w-full sm:w-auto text-center" data-analytics={block.analytics ?? 'download_audit_worksheet'} data-analytics-location="article" data-analytics-guide={p.slug}>
                 <Icon name="file-text" size={18} class="shrink-0" /> {block.label}
               </a>
               <p class="mt-3 text-sm text-muted">Це підготовка до консультації, а не форма заявки на грант. Для запису достатньо <a href="#lead" class="text-accent underline underline-offset-4">залишити контакт і короткий опис ідеї</a>.</p>
