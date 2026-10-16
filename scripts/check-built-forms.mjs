@@ -49,6 +49,21 @@ for (const file of htmlFiles(DIST)) {
 
   // Основна форма запису (LeadForm): ім'я та ідея
   const hasLead = html.includes('id="lf-name"');
+  // Article CTAs must reach their own form, keeping the landing-page UTM
+  // parameters instead of navigating to the homepage and losing attribution.
+  if (rel.startsWith(`blog${path.sep}`) && rel !== path.join('blog', 'index.html') && hasLead) {
+    if (html.includes('href="/#lead"')) {
+      console.error(`✗ ${rel}: посилання на аудит втрачає параметри статті`);
+      failures++;
+    }
+    for (const marker of ['data-analytics="click_cta_sticky"', 'data-analytics-location="article_aside"']) {
+      const anchors = tagWith(html, 'a', marker);
+      if (anchors.length !== 1 || !/\bhref="#lead"/.test(anchors[0])) {
+        console.error(`✗ ${rel}: ${marker} має вести на #lead цієї статті`);
+        failures++;
+      }
+    }
+  }
   if (hasLead) {
     formPages++;
     for (const [marker, tag, limit] of [['id="lf-name"', 'input', LEAD_LIMITS.name], ['id="lf-idea"', 'textarea', LEAD_LIMITS.idea]]) {

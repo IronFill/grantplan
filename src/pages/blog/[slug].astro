@@ -16,6 +16,7 @@ export function getStaticPaths() {
 }
 
 const { p } = Astro.props;
+const localLeadHref = (href: string) => ['/#lead', '/poslugy/#lead'].includes(href) ? '#lead' : href;
 
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -38,7 +39,7 @@ const schema = {
 };
 ---
 <Layout title={p.metaTitle} description={p.metaDescription} path={`/blog/${p.slug}`} schema={[schema]}>
-  <SiteHeader slot="header" />
+  <SiteHeader slot="header" leadHref="#lead" />
 
   {/* Hero */}
   <section class="relative pt-28 md:pt-36 pb-8 md:pb-12 border-b border-border/70">
@@ -101,7 +102,7 @@ const schema = {
           if (block.type === 'links') return (
             <nav aria-label="Корисні посилання до статті" class="rounded-card border border-border p-5">
               <ul class="space-y-3">
-                {block.items.map(item => <li><a href={item.href} class="inline-block py-2 text-accent underline underline-offset-4" {...(item.href.startsWith('https://') ? { target: '_blank', rel: 'noopener' } : {})}>{item.label}</a></li>)}
+                {block.items.map(item => <li><a href={localLeadHref(item.href)} class="inline-block py-2 text-accent underline underline-offset-4" {...(item.href.startsWith('https://') ? { target: '_blank', rel: 'noopener' } : {})}>{item.label}</a></li>)}
               </ul>
             </nav>
           );
@@ -149,7 +150,7 @@ const schema = {
       </div>
 
       {p.relatedHref && (
-        <a href={p.relatedHref} class="reveal mt-8 flex items-center justify-between gap-3 rounded-card bg-surface border border-border p-5 hover:border-accent transition-colors">
+        <a href={localLeadHref(p.relatedHref)} class="reveal mt-8 flex items-center justify-between gap-3 rounded-card bg-surface border border-border p-5 hover:border-accent transition-colors">
           <span>
             <span class="block text-xs text-muted">Дивіться також</span>
             <span class="font-medium">{p.relatedLabel}</span>
@@ -164,6 +165,7 @@ const schema = {
           .map((b, i) => (b.type === 'h2' ? { href: `#rozdil-${i}`, label: b.text } : null))
           .filter((x): x is { href: string; label: string } => x !== null)}
         ctaTitle="Питання по вашій ситуації?"
+        ctaHref="#lead"
         ctaText="Стаття загальна, ваш випадок — ні. На безкоштовному аудиті розберемо конкретно вашу ідею."
       />
     </div>
@@ -175,5 +177,5 @@ const schema = {
   <LeadForm />
 
   <SiteFooter slot="footer" />
-  <MobileCta />
+  <MobileCta leadHref="#lead" />
 </Layout>

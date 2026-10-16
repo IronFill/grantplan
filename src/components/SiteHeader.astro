@@ -1,6 +1,10 @@
 ---
 import Icon from './Icon.astro';
 import { site, nav, navSecondary } from '../data/site';
+interface Props {
+  leadHref?: string;
+}
+const { leadHref = '/#lead' } = Astro.props;
 
 // Поточний розділ підсвічуємо в мобільному меню, щоб було видно, де ти є.
 // Порівнюємо лише шлях без якоря: пункти на кшталт /#pricing ведуть у секцію
@@ -35,7 +39,7 @@ const isCurrent = (href: string) => !href.includes('#') && href.replace(/\/$/, '
       >
         <Icon name="phone" size={20} />
       </a>
-      <a href="/#lead" class="hidden md:inline-flex btn btn-primary !min-h-[44px] !py-2.5 !px-5 text-[0.95rem] whitespace-nowrap">
+      <a href={leadHref} class="hidden md:inline-flex btn btn-primary !min-h-[44px] !py-2.5 !px-5 text-[0.95rem] whitespace-nowrap">
         Безкоштовний аудит
       </a>
 
@@ -149,7 +153,7 @@ const isCurrent = (href: string) => !href.includes('#') && href.replace(/\/$/, '
     </div>
   </nav>
   <div class="container-site mt-6 pb-8 flex flex-col gap-3">
-    <a href="/#lead" class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
+    <a href={leadHref} class="btn btn-primary w-full" data-menu-link>Безкоштовний аудит</a>
     <a
       href={site.telegram}
       target="_blank"
