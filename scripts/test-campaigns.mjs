@@ -17,6 +17,21 @@ for (const campaign of CAMPAIGNS) {
   assert.ok(validateTelegramText(leadMessage(checked.values)).ok);
 }
 const known = campaignUrl('youtube-budget-guide');
+const scheduledPosts = [
+  ['facebook-budget-cards-oct18', '/blog/yak-pereviryty-koshtorys/#lead'],
+  ['facebook-plan-scope-oct20', '/poslugy/#lead'],
+  ['facebook-audit-prep-oct22', '/#lead'],
+];
+assert.equal(new Set(scheduledPosts.map(([id, path]) => campaignUrl(id, path))).size, 3);
+for (const [id, path] of scheduledPosts) {
+  const link = campaignUrl(id, path);
+  assert.equal(campaignFromUrl(link), id);
+  assert.equal(new URL(link).pathname, path.split('#')[0]);
+  assert.equal(new URL(link).hash, '#lead');
+  const checked = validateLead({ ...valid, campaignId: campaignFromUrl(link) });
+  assert.ok(checked.ok);
+  assert.ok(leadMessage(checked.values).includes(id));
+}
 assert.equal(campaignFromUrl(known + '&utm_content=other'), '', 'Ambiguous duplicate parameters are not attributed');
 assert.equal(campaignFromUrl('https://grantplan.com.ua/?utm_source=private@example.com'), '');
 assert.equal(campaignFromUrl('not a URL'), '');
