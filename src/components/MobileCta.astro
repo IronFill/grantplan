@@ -1,6 +1,10 @@
 ---
 import Icon from './Icon.astro';
 import { site } from '../data/site';
+interface Props {
+  leadHref?: string;
+}
+const { leadHref = '/#lead' } = Astro.props;
 ---
 {/* Нижня sticky-панель CTA (тільки мобільні, з урахуванням safe-area).
      Висота ≈ 74px (py-3 + кнопка 48px + рамка): від неї залежить відступ
@@ -11,7 +15,7 @@ import { site } from '../data/site';
   style="padding-bottom: env(safe-area-inset-bottom);"
 >
   <div class="flex items-center gap-3 px-4 py-3">
-    <a href="/#lead" class="btn btn-primary flex-1 !min-h-[48px]" data-analytics="click_cta_sticky">
+    <a href={leadHref} class="btn btn-primary flex-1 !min-h-[48px]" data-analytics="click_cta_sticky">
       Безкоштовний аудит
     </a>
     <a
