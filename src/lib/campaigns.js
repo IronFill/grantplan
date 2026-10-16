@@ -14,6 +14,9 @@ const placements = [
   ['youtube-budget-guide', 'youtube', 'video', 'budget_202610', 'guide'],
   ['facebook-budget-guide', 'facebook', 'social', 'budget_202610', 'post'],
   ['telegram-budget-guide', 'telegram', 'social', 'budget_202610', 'post'],
+  ['facebook-budget-cards-oct18', 'facebook', 'organic_social', 'organic_cycle_202610', 'budget_cards_20261018'],
+  ['facebook-plan-scope-oct20', 'facebook', 'organic_social', 'organic_cycle_202610', 'plan_scope_20261020'],
+  ['facebook-audit-prep-oct22', 'facebook', 'organic_social', 'organic_cycle_202610', 'audit_prep_20261022'],
 ];
 
 export const CAMPAIGNS = Object.freeze(placements.map(([id, source, medium, campaign, content]) =>
