@@ -348,6 +348,7 @@ const checks = [
 
 <script>
   import { trackEvent } from '../lib/analytics';
+  import { campaignFromUrl } from '../lib/campaigns.js';
   import { maxServicePrice } from '../data/pricing';
 
   const root = document.querySelector<HTMLElement>('[data-quiz]');
@@ -644,7 +645,8 @@ const checks = [
       const requestId = qform.querySelector<HTMLInputElement>('[data-request-id]')!;
       if (!requestId.value) requestId.value = crypto.randomUUID();
       const data = Object.fromEntries(new FormData(qform).entries());
-      const payload = { ...data, source: 'quiz', quiz: JSON.stringify({ ...answers, result: resultPayload }) };
+      const campaignId = campaignFromUrl(window.location.href);
+      const payload = { ...data, campaignId, source: 'quiz', quiz: JSON.stringify({ ...answers, result: resultPayload }) };
       try {
         const res = await fetch('/submit', {
           method: 'POST',
@@ -670,7 +672,7 @@ const checks = [
         if (!res.ok || result?.ok !== true) throw new Error();
         qform.classList.add('hidden');
         resultBox.querySelector('[data-quiz-thanks]')?.classList.remove('hidden');
-        trackEvent('submit_form', { form_type: 'quiz' });
+        trackEvent('submit_form', { form_type: 'quiz', ...(campaignId ? { campaign_id: campaignId } : {}) });
       } catch {
         submit.disabled = false;
         submit.textContent = 'Отримати розрахунок';

@@ -1,8 +1,11 @@
+import { getCampaign } from './campaigns.js';
+
 // A private outbox prevents silent loss. KV is eventually consistent: this is
 // best-effort deduplication, not a transactional exactly-once guarantee.
 const TTL = 30 * 24 * 3600;
 const escape = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 export function leadMessage(v) {
+  const campaign = getCampaign(v.campaignId);
   return [
     v.date && v.time ? '🗓️ <b>Запит на консультацію — ГрантПлан</b>' : '🟠 <b>Нова заявка — ГрантПлан</b>',
     v.date ? `📅 <b>Бажана дата:</b> ${escape(v.date)}` : '',
@@ -10,7 +13,8 @@ export function leadMessage(v) {
     `👤 <b>Ім’я:</b> ${escape(v.name)}`, `📞 <b>Телефон:</b> ${escape(v.phone)}`,
     v.messenger ? `💬 <b>Месенджер:</b> ${escape(v.messenger)}` : '',
     v.idea ? `💡 <b>Ідея:</b> ${escape(v.idea)}` : '',
-    v.quiz ? `🧮 <b>Квіз:</b> ${escape(v.quiz)}` : '', `🔖 <b>Джерело:</b> ${escape(v.source)}`,
+    v.quiz ? `🧮 <b>Квіз:</b> ${escape(v.quiz)}` : '', `🔖 <b>Форма:</b> ${escape(v.source)}`,
+    campaign ? `📍 <b>Розміщення:</b> ${escape(campaign.id)} (${escape(campaign.source)} / ${escape(campaign.medium)})` : '',
   ].filter(Boolean).join('\n');
 }
 

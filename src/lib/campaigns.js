@@ -1,0 +1,44 @@
+// Public placement codes only. Never retain a URL, search term, referrer,
+// click ID or arbitrary UTM value in a contact record or analytics event.
+// Attribution describes the submitted page, not a verified first touch.
+const placements = [
+  ['facebook-page-profile', 'facebook', 'organic_social', 'page_profile', 'website'],
+  ['facebook-business-faces', 'facebook', 'organic_social', 'business_faces_202610', 'photo_gallery'],
+  ['instagram-reel-napkin27', 'instagram', 'social', 'napkin27_202610', 'reel_napkin27'],
+  ['instagram-profile-napkin27', 'instagram', 'social', 'napkin27_202610', 'profile_napkin27'],
+  ['facebook-reel-napkin27', 'facebook', 'social', 'napkin27_202610', 'reel_napkin27'],
+  ['facebook-group-napkin27', 'facebook', 'social', 'napkin27_202610', 'group_employer_draft'],
+  ['telegram-post-napkin27', 'telegram', 'social', 'napkin27_202610', 'post_napkin27'],
+  ['tiktok-profile-napkin27', 'tiktok', 'social', 'napkin27_202610', 'profile_napkin27'],
+  ['partner-education-napkin27', 'partner', 'referral', 'napkin27_202610', 'educational_collab_draft'],
+  ['youtube-budget-guide', 'youtube', 'video', 'budget_202610', 'guide'],
+  ['facebook-budget-guide', 'facebook', 'social', 'budget_202610', 'post'],
+  ['telegram-budget-guide', 'telegram', 'social', 'budget_202610', 'post'],
+];
+
+export const CAMPAIGNS = Object.freeze(placements.map(([id, source, medium, campaign, content]) =>
+  Object.freeze({ id, source, medium, campaign, content })));
+
+export function getCampaign(id) {
+  return typeof id === 'string' && id.length <= 64
+    ? CAMPAIGNS.find(c => c.id === id) : undefined;
+}
+
+export function campaignFromUrl(url) {
+  try {
+    const params = new URL(url).searchParams;
+    const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
+    if (keys.some(key => params.getAll(key).length !== 1)) return '';
+    return CAMPAIGNS.find(c => [c.source, c.medium, c.campaign, c.content]
+      .every((value, i) => params.get(keys[i]) === value))?.id || '';
+  } catch { return ''; }
+}
+
+export function campaignUrl(id, path = '/') {
+  const campaign = getCampaign(id);
+  if (!campaign) throw new Error('Unknown public campaign code');
+  const url = new URL(path, 'https://grantplan.com.ua');
+  if (url.origin !== 'https://grantplan.com.ua') throw new Error('Campaign links must use the site origin');
+  for (const key of ['source', 'medium', 'campaign', 'content']) url.searchParams.set(`utm_${key}`, campaign[key]);
+  return url.href;
+}

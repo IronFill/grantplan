@@ -1,4 +1,5 @@
 import { validBooking } from './booking-clock.js';
+import { getCampaign } from './campaigns.js';
 // Єдина серверна валідація заявки з форм (основна форма запису й квіз).
 //
 // Один модуль для обох обробників (functions/submit.js — Cloudflare Pages,
@@ -102,6 +103,10 @@ export function validateLead(data) {
   if (typeof data.requestId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(data.requestId)) {
     return { ok: false, status: 422, error: 'invalid', field: 'requestId', message: 'Оновіть сторінку та спробуйте ще раз.' };
   }
+  // Unknown attribution must not block a genuine enquiry or reach the inbox.
+  // Only a public registry ID is retained; raw UTM data is never accepted.
+  const campaign = getCampaign(data.campaignId);
+  if (campaign) values.campaignId = campaign.id;
   return { ok: true, values };
 }
 

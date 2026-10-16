@@ -155,6 +155,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
 
 <script>
   import { trackEvent } from '../lib/analytics';
+  import { campaignFromUrl } from '../lib/campaigns.js';
   import { minimumBookingDate, validBooking } from '../lib/booking-clock.js';
   import { LEAD_LIMITS, LEAD_FIELD_LABELS } from '../lib/lead-validation.js';
 
@@ -399,12 +400,13 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
       const requestId = form.querySelector<HTMLInputElement>('[data-request-id]')!;
       if (!requestId.value) requestId.value = crypto.randomUUID();
       const data = Object.fromEntries(new FormData(form).entries());
+      const campaignId = campaignFromUrl(window.location.href);
 
       try {
         const res = await fetch('/submit', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
+          body: JSON.stringify({ ...data, campaignId }),
         });
         let result: (Rejection & { ok?: boolean; saved?: boolean }) | null = null;
         try { result = await res.json(); } catch { /* відповідь не JSON — розбереться перевірка нижче */ }
@@ -431,7 +433,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         modeButtons.forEach((b) => b.hidden = true);
         formWrap.classList.add('hidden');
         success?.classList.remove('hidden');
-        trackEvent('submit_form', { form_type: 'audit' });
+        trackEvent('submit_form', { form_type: 'audit', ...(campaignId ? { campaign_id: campaignId } : {}) });
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;
