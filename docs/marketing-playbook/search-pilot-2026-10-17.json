@@ -1,0 +1,654 @@
+{
+  "schema_version": "1.0",
+  "prepared_on": "2026-10-17",
+  "public_research_checked_on": "2026-10-16",
+  "document_language": "uk",
+  "status": {
+    "draft_only": true,
+    "uploaded_to_google_ads": false,
+    "campaign_created": false,
+    "launch_authorized": false,
+    "start_scheduled": false,
+    "contains_client_data": false
+  },
+  "objective": "Перевірити надходження кваліфікованих звернень на підготовку бізнес-плану та супровід заявки в межах погоджених витрат.",
+  "campaign": {
+    "proposed_name": "GrantPlan Search pilot 202610",
+    "structure": "one_search_campaign_with_two_initially_enabled_ad_groups_and_one_reserved_paused_ad_group",
+    "actual_google_campaign_id": null,
+    "network": "Google Search",
+    "search_partners_enabled": false,
+    "display_expansion_enabled": false,
+    "location": "Ukraine",
+    "location_option": "Presence",
+    "ad_language": "uk",
+    "keyword_expansion": "exact_and_phrase_only",
+    "broad_match_enabled": false,
+    "ai_max_enabled": false,
+    "automatic_budget_or_targeting_expansion": false,
+    "landing_page": "https://grantplan.com.ua/poslugy/",
+    "bidding_proposal": "Manual CPC або Maximize clicks із погодженим CPC cap та без підвищувальних коригувань.",
+    "max_cpc_uah": null,
+    "market_cpc_estimate": null,
+    "predicted_sales": null
+  },
+  "schedule": {
+    "duration_days": 14,
+    "T0": null,
+    "start_date": null,
+    "end_date": null,
+    "start_condition": "Лише після проходження передумов і погодження T0; дні 1–14 від T0.",
+    "planning_timezone": "Europe/Kiev",
+    "account_timezone_verified": false
+  },
+  "budget": {
+    "currency": "UAH",
+    "all_in_cap": 3000,
+    "provisional_media_cap": 2500,
+    "fees_and_taxes_reserve": 500,
+    "reserve_is_tax_estimate": false,
+    "reserve_available_for_extra_media": false,
+    "approval_status": "proposed_not_approved",
+    "scope": "Загальна межа всього пілота; групи A/C використовують один медіабюджет. B не має окремого активного бюджету.",
+    "billing_rule": "Перевірити фактичні застосовні збори/податки до запуску. Якщо 500 UAH недостатньо, зменшити медіаліміт; загальна межа залишається 3 000 UAH.",
+    "preferred": {
+      "type": "campaign_total_budget",
+      "amount_uah": 2500,
+      "duration_days": 14,
+      "daily_spending_cap": false,
+      "conditions": "Перевірити доступність у новій Search-кампанії. Суму зменшити, якщо цього вимагає фактичний білінг. Не змінювати бюджет/дати без перегляду плану."
+    },
+    "fallback": {
+      "type": "average_daily_budget",
+      "formula": "D <= actual_media_cap / (2 * 14)",
+      "example_for_media_cap_2500": {
+        "daily_budget_uah": 89.28,
+        "maximum_daily_billed_media_uah": 178.56,
+        "conservative_14_day_media_bound_uah": 2499.84
+      },
+      "conditions": "Одна кампанія, незмінний D, встановлені 14 календарних днів у часовому поясі акаунта; перевірити застосовність стандартної добової межі 2 × D. Формула не включає податки/збори.",
+      "standard_daily_multiplier": 2,
+      "standard_monthly_multiplier": 30.4,
+      "warning": "2500 / 14 як середній добовий бюджет не гарантує загальної межі 2500 за 14 днів."
+    }
+  },
+  "attribution": {
+    "registry_file": "src/lib/campaigns.js",
+    "site_registry_accepts_proposed_ids": false,
+    "ids_are": "Публічні коди розміщення сайту, не числові resource IDs Google Ads і не три окремі рекламні бюджети.",
+    "semantics": "Мітка описує посилання сторінки подання; не доводить перший контакт, унікальність людини або причинність продажу.",
+    "unknown_source": "Невідомий UTM-набір зараз не отримує campaign_id; невідоме джерело залишати невідомим.",
+    "raw_click_ids_stored_by_this_proposal": false,
+    "source_registry_contains_proposed_ids": true,
+    "deployment_verified": false
+  },
+  "ad_groups": [
+    {
+      "key": "A",
+      "name_uk": "Замовити бізнес-план",
+      "proposal_status": "enabled_at_approved_T0",
+      "actual_google_ad_group_id": null,
+      "attribution": {
+        "proposed_campaign_id": "google-search-plan-pilot",
+        "registered_on_site": false,
+        "utm_source": "google",
+        "utm_medium": "cpc",
+        "utm_campaign": "search_pilot_202610",
+        "utm_content": "plan",
+        "proposed_final_url": "https://grantplan.com.ua/poslugy/?utm_source=google&utm_medium=cpc&utm_campaign=search_pilot_202610&utm_content=plan",
+        "registered_in_source": true
+      },
+      "keywords": [
+        {
+          "text": "замовити бізнес план для гранту",
+          "match_type": "EXACT",
+          "editor_notation": "[замовити бізнес план для гранту]"
+        },
+        {
+          "text": "написання бізнес плану для гранту",
+          "match_type": "EXACT",
+          "editor_notation": "[написання бізнес плану для гранту]"
+        },
+        {
+          "text": "вартість бізнес плану для гранту",
+          "match_type": "EXACT",
+          "editor_notation": "[вартість бізнес плану для гранту]"
+        },
+        {
+          "text": "розробка бізнес плану для гранту",
+          "match_type": "PHRASE",
+          "editor_notation": "\"розробка бізнес плану для гранту\""
+        },
+        {
+          "text": "замовити бізнес план на грант",
+          "match_type": "PHRASE",
+          "editor_notation": "\"замовити бізнес план на грант\""
+        }
+      ],
+      "rsa": {
+        "proposal_only": true,
+        "headline_ids": [
+          "h01",
+          "h02",
+          "h03",
+          "h04",
+          "h05",
+          "h06",
+          "h07",
+          "h08",
+          "h09"
+        ],
+        "description_ids": [
+          "d1",
+          "d2",
+          "d3"
+        ]
+      }
+    },
+    {
+      "key": "C",
+      "name_uk": "Супровід заявки",
+      "proposal_status": "enabled_at_approved_T0",
+      "actual_google_ad_group_id": null,
+      "attribution": {
+        "proposed_campaign_id": "google-search-support-pilot",
+        "registered_on_site": false,
+        "utm_source": "google",
+        "utm_medium": "cpc",
+        "utm_campaign": "search_pilot_202610",
+        "utm_content": "support",
+        "proposed_final_url": "https://grantplan.com.ua/poslugy/?utm_source=google&utm_medium=cpc&utm_campaign=search_pilot_202610&utm_content=support",
+        "registered_in_source": true
+      },
+      "keywords": [
+        {
+          "text": "супровід заявки на грант",
+          "match_type": "EXACT",
+          "editor_notation": "[супровід заявки на грант]"
+        },
+        {
+          "text": "послуги оформлення гранту",
+          "match_type": "EXACT",
+          "editor_notation": "[послуги оформлення гранту]"
+        },
+        {
+          "text": "бізнес план грант під ключ",
+          "match_type": "EXACT",
+          "editor_notation": "[бізнес план грант під ключ]"
+        },
+        {
+          "text": "супровід подання на грант",
+          "match_type": "PHRASE",
+          "editor_notation": "\"супровід подання на грант\""
+        },
+        {
+          "text": "підготовка грантової заявки для бізнесу",
+          "match_type": "PHRASE",
+          "editor_notation": "\"підготовка грантової заявки для бізнесу\""
+        }
+      ],
+      "rsa": {
+        "proposal_only": true,
+        "headline_ids": [
+          "h01",
+          "h02",
+          "h03",
+          "h04",
+          "h05",
+          "h06",
+          "h13",
+          "h14",
+          "h15"
+        ],
+        "description_ids": [
+          "d1",
+          "d2",
+          "d3",
+          "d4"
+        ]
+      }
+    },
+    {
+      "key": "B",
+      "name_uk": "Власна справа",
+      "proposal_status": "reserved_paused",
+      "actual_google_ad_group_id": null,
+      "attribution": {
+        "proposed_campaign_id": "google-search-vlasna-pilot",
+        "registered_on_site": false,
+        "utm_source": "google",
+        "utm_medium": "cpc",
+        "utm_campaign": "search_pilot_202610",
+        "utm_content": "vlasna",
+        "proposed_final_url": "https://grantplan.com.ua/poslugy/?utm_source=google&utm_medium=cpc&utm_campaign=search_pilot_202610&utm_content=vlasna",
+        "registered_in_source": true
+      },
+      "keywords": [
+        {
+          "text": "бізнес план власна справа",
+          "match_type": "EXACT",
+          "editor_notation": "[бізнес план власна справа]"
+        },
+        {
+          "text": "бізнес план єробота замовити",
+          "match_type": "EXACT",
+          "editor_notation": "[бізнес план єробота замовити]"
+        },
+        {
+          "text": "бізнес план для гранту дія",
+          "match_type": "EXACT",
+          "editor_notation": "[бізнес план для гранту дія]"
+        },
+        {
+          "text": "бізнес план для власної справи",
+          "match_type": "PHRASE",
+          "editor_notation": "\"бізнес план для власної справи\""
+        },
+        {
+          "text": "замовити бізнес план єробота",
+          "match_type": "PHRASE",
+          "editor_notation": "\"замовити бізнес план єробота\""
+        }
+      ],
+      "rsa": {
+        "proposal_only": true,
+        "headline_ids": [
+          "h01",
+          "h02",
+          "h03",
+          "h04",
+          "h05",
+          "h06",
+          "h10",
+          "h11",
+          "h12"
+        ],
+        "description_ids": [
+          "d1",
+          "d2",
+          "d3"
+        ]
+      }
+    }
+  ],
+  "assets": {
+    "character_count_method": "Unicode code points via [...text].length; spaces and punctuation included",
+    "headlines": [
+      {
+        "id": "h01",
+        "group": "shared",
+        "text": "ГрантПлан — бізнес-плани",
+        "characters": 24,
+        "limit": 30
+      },
+      {
+        "id": "h02",
+        "group": "shared",
+        "text": "Працюємо по всій Україні",
+        "characters": 24,
+        "limit": 30
+      },
+      {
+        "id": "h03",
+        "group": "shared",
+        "text": "Безкоштовний аудит ідеї",
+        "characters": 23,
+        "limit": 30
+      },
+      {
+        "id": "h04",
+        "group": "shared",
+        "text": "Обговоріть свій проєкт",
+        "characters": 22,
+        "limit": 30
+      },
+      {
+        "id": "h05",
+        "group": "shared",
+        "text": "Фінансова модель і кошторис",
+        "characters": 27,
+        "limit": 30
+      },
+      {
+        "id": "h06",
+        "group": "shared",
+        "text": "Документи у XLS та Word",
+        "characters": 23,
+        "limit": 30
+      },
+      {
+        "id": "h07",
+        "group": "A",
+        "text": "Бізнес-план для гранту",
+        "characters": 22,
+        "limit": 30
+      },
+      {
+        "id": "h08",
+        "group": "A",
+        "text": "Замовити бізнес-план",
+        "characters": 20,
+        "limit": 30
+      },
+      {
+        "id": "h09",
+        "group": "A",
+        "text": "План під вашу бізнес-ідею",
+        "characters": 25,
+        "limit": 30
+      },
+      {
+        "id": "h10",
+        "group": "B",
+        "text": "План для «Власної справи»",
+        "characters": 25,
+        "limit": 30
+      },
+      {
+        "id": "h11",
+        "group": "B",
+        "text": "Бізнес-план за формою Дії",
+        "characters": 25,
+        "limit": 30
+      },
+      {
+        "id": "h12",
+        "group": "B",
+        "text": "Розрахунки для заявки",
+        "characters": 21,
+        "limit": 30
+      },
+      {
+        "id": "h13",
+        "group": "C",
+        "text": "Супровід грантової заявки",
+        "characters": 25,
+        "limit": 30
+      },
+      {
+        "id": "h14",
+        "group": "C",
+        "text": "Підготовка до співбесіди",
+        "characters": 24,
+        "limit": 30
+      },
+      {
+        "id": "h15",
+        "group": "C",
+        "text": "Пакет «Під ключ»",
+        "characters": 16,
+        "limit": 30
+      }
+    ],
+    "descriptions": [
+      {
+        "id": "d1",
+        "group": "shared",
+        "text": "Готуємо бізнес-план для гранту: опис проєкту, кошторис і фінансову модель.",
+        "characters": 74,
+        "limit": 90
+      },
+      {
+        "id": "d2",
+        "group": "shared",
+        "text": "Працюємо онлайн по всій Україні. Запишіться на безкоштовний аудит ідеї до 20 хв.",
+        "characters": 80,
+        "limit": 90
+      },
+      {
+        "id": "d3",
+        "group": "shared",
+        "text": "Узгоджуємо обсяг, ціну та строки до початку роботи. Документи у XLS та Word.",
+        "characters": 76,
+        "limit": 90
+      },
+      {
+        "id": "d4",
+        "group": "C",
+        "text": "Пакет «Під ключ»: бізнес-план, супровід подання та підготовка до співбесіди.",
+        "characters": 76,
+        "limit": 90
+      }
+    ]
+  },
+  "negative_keywords": {
+    "scope": "this_pilot_campaign_only",
+    "items": [
+      {
+        "text": "курсова робота",
+        "match_type": "PHRASE",
+        "editor_notation": "\"курсова робота\""
+      },
+      {
+        "text": "курсовий проєкт",
+        "match_type": "PHRASE",
+        "editor_notation": "\"курсовий проєкт\""
+      },
+      {
+        "text": "дипломна робота",
+        "match_type": "PHRASE",
+        "editor_notation": "\"дипломна робота\""
+      },
+      {
+        "text": "вакансія грантрайтер",
+        "match_type": "PHRASE",
+        "editor_notation": "\"вакансія грантрайтер\""
+      },
+      {
+        "text": "робота грантрайтером",
+        "match_type": "PHRASE",
+        "editor_notation": "\"робота грантрайтером\""
+      },
+      {
+        "text": "курси грантрайтингу",
+        "match_type": "PHRASE",
+        "editor_notation": "\"курси грантрайтингу\""
+      },
+      {
+        "text": "бізнес план для гранту скачати безкоштовно",
+        "match_type": "EXACT",
+        "editor_notation": "[бізнес план для гранту скачати безкоштовно]"
+      },
+      {
+        "text": "шаблон бізнес плану для гранту",
+        "match_type": "EXACT",
+        "editor_notation": "[шаблон бізнес плану для гранту]"
+      },
+      {
+        "text": "готовий бізнес план безкоштовно",
+        "match_type": "EXACT",
+        "editor_notation": "[готовий бізнес план безкоштовно]"
+      }
+    ],
+    "avoid_global_negatives": [
+      "безкоштовно",
+      "робота",
+      "приклад",
+      "зразок",
+      "Дія",
+      "єРобота"
+    ],
+    "notes": "Не відсікати безкоштовний аудит і перегляд прикладу. Додавати нові мінуси за явно нерелевантними фактичними запитами. Синоніми й граматичні варіанти контролювати окремо."
+  },
+  "measurement": {
+    "funnel": [
+      "ad_click",
+      "delivered_form",
+      "unique_real_contact",
+      "qualified_lead",
+      "paid_order"
+    ],
+    "primary_pilot_action": "Підтверджена доставка форми; це первинне звернення, а не автоматично кваліфікований лід.",
+    "secondary_actions": [
+      "phone_link_click",
+      "messenger_link_click",
+      "page_view",
+      "scroll"
+    ],
+    "count_setting": "One",
+    "deduplication": "Count = One не замінює дедуплікацію людей між формами/каналами. Не імпортувати ту саму заявку двічі через Ads і GA4.",
+    "qualified_lead_definition": "Контакт підтверджений; потрібна послуга відповідає сфері GrantPlan; людина розуміє платність підготовки й погодила наступний крок.",
+    "qualification_tracking": "Приватний журнал/CRM; імпорт qualified leads не створений і потребує окремого налаштування та перевірки.",
+    "optimization_rule": "У майбутньому використовувати одну узгоджену стадію для оптимізації після перевірки її вимірювання; кліки й скрол не є цілями якості.",
+    "metrics": [
+      "media_spend",
+      "all_in_spend",
+      "ad_clicks",
+      "delivered_forms",
+      "unique_real_contacts",
+      "qualified_leads",
+      "paid_orders",
+      "media_cost_per_qualified_lead",
+      "all_in_cost_per_qualified_lead"
+    ],
+    "zero_denominator": "Вартість звернення без звернень не визначена, не дорівнює нулю.",
+    "limitations": [
+      "Attribution is not proof of first touch or causality.",
+      "Search terms report omits some low-volume terms for privacy.",
+      "Late inquiries and sales can occur after spending stops.",
+      "Small samples do not establish profitability or justify automatic scaling."
+    ]
+  },
+  "stop_rules": [
+    {
+      "id": "delivery_or_measurement_failure",
+      "action": "Негайна пауза при непрацюючій формі, втраті доставки чи дублюванні конверсій."
+    },
+    {
+      "id": "half_media_without_qualified",
+      "threshold_formula": "0.5 * actual_media_cap",
+      "provisional_threshold_uah": 1250,
+      "action": "Якщо витрачено половину медіаліміту і немає кваліфікованих звернень — пауза, обробка відкритих звернень і розбір. Поновлення лише після рішення; це бюджетне правило, не статистичний висновок."
+    },
+    {
+      "id": "hard_end",
+      "action": "Зупинити при досягненні фактичного медіаліміту, загальної межі 3000 UAH або завершенні дня 14 — що настане раніше. Не продовжувати автоматично."
+    },
+    {
+      "id": "billing_change",
+      "action": "Якщо фактичні збори загрожують загальній межі, призупинити й зменшити решту медіабюджету."
+    },
+    {
+      "id": "query_review",
+      "action": "Щодня перевіряти витрати та видимі запити; відсікати явно нерелевантний трафік. Не трактувати відсутність запиту у звіті як відсутність витрат."
+    }
+  ],
+  "launch_prerequisites": [
+    {
+      "id": "account_access",
+      "complete": false,
+      "text": "Підтверджений доступ до потрібного Google Ads акаунта, його валюта, часовий пояс і платіжні умови."
+    },
+    {
+      "id": "final_budget_approval",
+      "complete": false,
+      "text": "Остаточно погоджено загальну межу 3 000 UAH, фактичний медіаліміт, CPC cap, період і дозволений T0."
+    },
+    {
+      "id": "billing_check",
+      "complete": false,
+      "text": "Перевірено застосовні податки й збори; якщо резерву 500 UAH недостатньо, медіаліміт зменшено до запуску."
+    },
+    {
+      "id": "registry_add_and_test",
+      "complete": false,
+      "text": "Три запропоновані коди додано до src/lib/campaigns.js, відповідність UTM протестовано й зміни розгорнуто; зараз реєстр їх не приймає."
+    },
+    {
+      "id": "real_form_delivery",
+      "complete": false,
+      "text": "Підтверджено фактичну доставку контрольної заявки з мобільної сторінки та правильну мітку; синтетичний тест виключено зі статистики клієнтів."
+    },
+    {
+      "id": "measurement_validation",
+      "complete": false,
+      "text": "Перевірено подію тільки після підтвердженої доставки, Count = One, відсутність подвійного імпорту тієї самої форми, secondary для кліків контактів."
+    },
+    {
+      "id": "lead_followup",
+      "complete": false,
+      "text": "Визначено відповідального за звернення, приватний журнал статусів, дедуплікацію та час обробки до оцінки результату."
+    }
+  ],
+  "sources": [
+    {
+      "id": "grantplan_services",
+      "title": "GrantPlan: послуги та ціни",
+      "url": "https://grantplan.com.ua/poslugy/",
+      "supports": "Склад бізнес-плану, аудит до 20 хв, онлайн по Україні, пакет супроводу; підготовка не гарантує грант."
+    },
+    {
+      "id": "google_rsa",
+      "title": "Google: About responsive search ads",
+      "url": "https://support.google.com/google-ads/answer/7684791?hl=en",
+      "supports": "Межі 30/90 символів, до 15 заголовків і 4 описів, мінімум 3/2."
+    },
+    {
+      "id": "google_matching",
+      "title": "Google: About keyword matching options",
+      "url": "https://support.google.com/google-ads/answer/7478529?hl=en",
+      "supports": "Exact/phrase зіставляються також за змістом; межі груп не є гарантією розподілу запитів."
+    },
+    {
+      "id": "google_negatives",
+      "title": "Google: About negative keywords",
+      "url": "https://support.google.com/google-ads/answer/2453972?hl=en",
+      "supports": "Відмінності мінус-слів; синоніми та число не розширюються автоматично, регістр і помилки враховуються."
+    },
+    {
+      "id": "google_geo",
+      "title": "Google: About advanced location options",
+      "url": "https://support.google.com/google-ads/answer/1722038?hl=en",
+      "supports": "Налаштування Presence для географії."
+    },
+    {
+      "id": "google_total_budget",
+      "title": "Google: About campaign total budgets",
+      "url": "https://support.google.com/google-ads/answer/10486938?hl=en",
+      "supports": "Нові Search-кампанії, 3–90 днів, загальна межа списання, без добової межі; тип бюджету не перемикається."
+    },
+    {
+      "id": "google_daily_budget",
+      "title": "Google: Budgets overview",
+      "url": "https://support.google.com/google-ads/answer/10486536?hl=en",
+      "supports": "Для більшості кампаній добова межа 2 × D, місячна 30,4 × D за незмінного бюджету."
+    },
+    {
+      "id": "google_budget_changes",
+      "title": "Google: How budget changes take effect",
+      "url": "https://support.google.com/google-ads/answer/10487143?hl=en",
+      "supports": "Зміни суми або дат впливають на розподіл витрат і межі бюджету."
+    },
+    {
+      "id": "google_click_bidding",
+      "title": "Google: About Maximize clicks bidding",
+      "url": "https://support.google.com/google-ads/answer/6268626?hl=en",
+      "supports": "Оптимізує кліки; є CPC cap; підвищувальні коригування можуть застосовуватись понад нього."
+    },
+    {
+      "id": "google_primary_secondary",
+      "title": "Google: About primary and secondary conversion actions",
+      "url": "https://support.google.com/google-ads/answer/11461796?hl=en",
+      "supports": "Primary використовується в Conversions/оптимізації за відповідної цілі; secondary для спостереження."
+    },
+    {
+      "id": "google_counting",
+      "title": "Google: Understand your conversion tracking data",
+      "url": "https://support.google.com/google-ads/answer/6270625?hl=en",
+      "supports": "Count = One для звернень, окрема увага дублюванню та затримкам."
+    },
+    {
+      "id": "google_qualified",
+      "title": "Google: About qualified leads and converted leads",
+      "url": "https://support.google.com/google-ads/answer/11459091?hl=en",
+      "supports": "Кваліфіковані та закриті звернення є окремими офлайн стадіями."
+    },
+    {
+      "id": "google_search_terms",
+      "title": "Google: About the search terms report",
+      "url": "https://support.google.com/google-ads/answer/2472708?hl=en",
+      "supports": "Звіт фактичних запитів і неповнота через пороги приватності."
+    }
+  ],
+  "source_registry_updated_on": "2026-10-18"
+}

@@ -17,6 +17,18 @@ const placements = [
   ['facebook-budget-cards-oct18', 'facebook', 'organic_social', 'organic_cycle_202610', 'budget_cards_20261018'],
   ['facebook-plan-scope-oct20', 'facebook', 'organic_social', 'organic_cycle_202610', 'plan_scope_20261020'],
   ['facebook-audit-prep-oct22', 'facebook', 'organic_social', 'organic_cycle_202610', 'audit_prep_20261022'],
+  // Registration prepares attribution only; it never enables advertising or posting.
+  ['google-search-plan-pilot', 'google', 'cpc', 'search_pilot_202610', 'plan'],
+  ['google-search-support-pilot', 'google', 'cpc', 'search_pilot_202610', 'support'],
+  ['google-search-vlasna-pilot', 'google', 'cpc', 'search_pilot_202610', 'vlasna'],
+  ['youtube-halloween-202610', 'youtube', 'organic_video', 'halloween_202610', 'short'],
+  ['facebook-halloween-202610', 'facebook', 'organic_video', 'halloween_202610', 'reel'],
+  ['instagram-halloween-202610', 'instagram', 'organic_video', 'halloween_202610', 'profile'],
+  ['telegram-halloween-202610', 'telegram', 'organic_social', 'halloween_202610', 'post'],
+  ['youtube-flatlay-202610', 'youtube', 'organic_video', 'flatlay_202610', 'short'],
+  ['facebook-flatlay-202610', 'facebook', 'organic_video', 'flatlay_202610', 'reel'],
+  ['instagram-flatlay-202610', 'instagram', 'organic_video', 'flatlay_202610', 'profile'],
+  ['telegram-flatlay-202610', 'telegram', 'organic_social', 'flatlay_202610', 'post'],
 ];
 
 export const CAMPAIGNS = Object.freeze(placements.map(([id, source, medium, campaign, content]) =>
