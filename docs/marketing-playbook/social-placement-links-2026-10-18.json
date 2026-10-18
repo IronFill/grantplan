@@ -1,0 +1,55 @@
+{
+  "prepared_on": "2026-10-18",
+  "contains_personal_data": false,
+  "publishes_content": false,
+  "links": [
+    {
+      "placement_id": "youtube-halloween-202610",
+      "url": "https://grantplan.com.ua/?utm_source=youtube&utm_medium=organic_video&utm_campaign=halloween_202610&utm_content=short#lead",
+      "purpose": "post/video description",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "facebook-halloween-202610",
+      "url": "https://grantplan.com.ua/?utm_source=facebook&utm_medium=organic_video&utm_campaign=halloween_202610&utm_content=reel#lead",
+      "purpose": "post/video description",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "instagram-halloween-202610",
+      "url": "https://grantplan.com.ua/?utm_source=instagram&utm_medium=organic_video&utm_campaign=halloween_202610&utm_content=profile#lead",
+      "purpose": "Instagram profile website link",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "telegram-halloween-202610",
+      "url": "https://grantplan.com.ua/?utm_source=telegram&utm_medium=organic_social&utm_campaign=halloween_202610&utm_content=post#lead",
+      "purpose": "post/video description",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "youtube-flatlay-202610",
+      "url": "https://grantplan.com.ua/?utm_source=youtube&utm_medium=organic_video&utm_campaign=flatlay_202610&utm_content=short#lead",
+      "purpose": "post/video description",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "facebook-flatlay-202610",
+      "url": "https://grantplan.com.ua/?utm_source=facebook&utm_medium=organic_video&utm_campaign=flatlay_202610&utm_content=reel#lead",
+      "purpose": "post/video description",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "instagram-flatlay-202610",
+      "url": "https://grantplan.com.ua/?utm_source=instagram&utm_medium=organic_video&utm_campaign=flatlay_202610&utm_content=profile#lead",
+      "purpose": "Instagram profile website link",
+      "status": "prepared; production deployment and placement not yet verified"
+    },
+    {
+      "placement_id": "telegram-flatlay-202610",
+      "url": "https://grantplan.com.ua/?utm_source=telegram&utm_medium=organic_social&utm_campaign=flatlay_202610&utm_content=post#lead",
+      "purpose": "post/video description",
+      "status": "prepared; production deployment and placement not yet verified"
+    }
+  ]
+}
