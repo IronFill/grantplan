@@ -14,6 +14,7 @@
 6. [Экономика трафика и арбитраж](04-traffic-economics.md).
 7. [Измерение и эксперименты](05-measurement-and-experiments.md).
 8. [Обновление знаний и работа оркестра](06-learning-and-orchestration.md).
+9. [Проверка готовности пилота Google Search на 18 октября](search-pilot-readiness-2026-10-18.md).
 
 ## Новая рекламная версия
 
