@@ -29,6 +29,23 @@ for (const campaign of CAMPAIGNS) {
   assert.ok(validateTelegramText(leadMessage(checked.values)).ok);
 }
 const known = campaignUrl('youtube-budget-guide');
+// Public links currently published in the YouTube channel profile must survive
+// the landing page -> validated lead -> inbox path without storing raw URLs.
+for (const [id, path, content] of [
+  ['youtube-channel-profile', '/', 'channel_profile'],
+  ['youtube-channel-worksheet', '/blog/dokumenty-dlya-konsultatsii/', 'channel_worksheet'],
+]) {
+  const published = new URL(path, 'https://grantplan.com.ua');
+  published.search = new URLSearchParams({
+    utm_source: 'youtube', utm_medium: 'organic_video',
+    utm_campaign: 'grantplan_shorts_launch_202610', utm_content: content,
+  }).toString();
+  published.hash = 'lead';
+  assert.equal(campaignFromUrl(published.href), id, 'Published YouTube profile link must be recognized');
+  const checked = validateLead({ ...valid, campaignId: campaignFromUrl(published.href) });
+  assert.equal(checked.values.campaignId, id);
+  assert.ok(leadMessage(checked.values).includes(id));
+}
 const scheduledPosts = [
   ['facebook-budget-cards-oct18', '/blog/yak-pereviryty-koshtorys/#lead'],
   ['facebook-plan-scope-oct20', '/poslugy/#lead'],
