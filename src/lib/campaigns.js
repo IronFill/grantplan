@@ -2,6 +2,8 @@
 // click ID or arbitrary UTM value in a contact record or analytics event.
 // Attribution describes the submitted page, not a verified first touch.
 const placements = [
+  ['youtube-channel-profile', 'youtube', 'organic_video', 'grantplan_shorts_launch_202610', 'channel_profile'],
+  ['youtube-channel-worksheet', 'youtube', 'organic_video', 'grantplan_shorts_launch_202610', 'channel_worksheet'],
   ['youtube-heist-202610', 'youtube', 'organic_video', 'heist_202610', 'short'],
   ['facebook-heist-202610', 'facebook', 'organic_video', 'heist_202610', 'reel'],
   ['facebook-page-profile', 'facebook', 'organic_social', 'page_profile', 'website'],
