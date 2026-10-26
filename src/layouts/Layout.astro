@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { site } from '../data/site';
 import { tiers } from '../data/pricing';
 import CookieConsent from '../components/CookieConsent.astro';
+import ContactFab from '../components/ContactFab.astro';
 
 interface Props {
   title?: string;
@@ -150,6 +151,7 @@ const allSchema = [baseSchema, ...(breadcrumb ? [breadcrumb] : []), ...schema];
     </main>
     <slot name="footer" />
     <CookieConsent />
+    <ContactFab />
 
     {/* Глобальний fade-up при скролі (IntersectionObserver, один раз) */}
     <script>
