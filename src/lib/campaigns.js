@@ -6,6 +6,8 @@ const placements = [
   ['youtube-channel-worksheet', 'youtube', 'organic_video', 'grantplan_shorts_launch_202610', 'channel_worksheet'],
   ['youtube-heist-202610', 'youtube', 'organic_video', 'heist_202610', 'short'],
   ['facebook-heist-202610', 'facebook', 'organic_video', 'heist_202610', 'reel'],
+  ['youtube-interview-202610', 'youtube', 'organic_video', 'interview_202610', 'short'],
+  ['facebook-interview-202610', 'facebook', 'organic_video', 'interview_202610', 'reel'],
   ['facebook-page-profile', 'facebook', 'organic_social', 'page_profile', 'website'],
   ['facebook-business-faces', 'facebook', 'organic_social', 'business_faces_202610', 'photo_gallery'],
   ['instagram-reel-napkin27', 'instagram', 'social', 'napkin27_202610', 'reel_napkin27'],
