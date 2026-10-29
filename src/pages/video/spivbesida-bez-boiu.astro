@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import LeadForm from '../../components/LeadForm.astro';
+---
+<Layout
+  title="Співбесіда на грант: очікування та реальність | ГрантПлан"
+  description="32-секундна комедійна історія про підготовку до співбесіди на грант. Дивіться ролик ГрантПлан і переходьте до типових питань комісії та підготовки бізнес-плану."
+  path="/video/spivbesida-bez-boiu/"
+  ogImage="/videos/grantplan-interview-poster-v2.jpg"
+>
+  <SiteHeader slot="header" />
+  <section class="pt-28 md:pt-36 pb-12">
+    <div class="container-site max-w-4xl">
+      <a href="/" class="text-sm text-muted hover:text-ink">← На головну</a>
+      <p class="mt-6 text-sm text-accent">GrantPlan · 32 секунди · Українською</p>
+      <h1 class="mt-3 text-3xl sm:text-5xl">Співбесіда на грант: очікування та реальність</h1>
+      <p class="mt-5 text-lg text-muted">Готувалися до співбесіди, наче до вирішального бою? Трохи гумору про кошторис, запитання комісії та впевненість, яку дає підготовка.</p>
+      <div class="mt-8 mx-auto max-w-sm overflow-hidden rounded-2xl border border-border bg-black">
+        <video controls playsinline preload="none" width="720" height="1280" poster="/videos/grantplan-interview-poster-v2.jpg" aria-label="Співбесіда на грант — рекламний ролик ГрантПлан українською">
+          <source src="/videos/grantplan-interview-orange-carbon-v2.mp4" type="video/mp4" />
+          <track kind="captions" src="/videos/grantplan-interview-v2.uk.vtt" srclang="uk" label="Українська" />
+          Ваш браузер не підтримує відео. <a href="/videos/grantplan-interview-orange-carbon-v2.mp4">Завантажити ролик</a>.
+        </video>
+      </div>
+      <p class="mt-6 text-muted">Вигадана комедійна сцена, створена з ШІ. Схвалення в сюжеті не є гарантією отримання гранту. ГрантПлан допомагає підготувати бізнес-план, кошторис і аргументацію для співбесіди. Умови та сума залежать від програми; рішення ухвалює грантодавець.</p>
+      <p class="mt-5"><a class="text-accent underline" href="/spivbesida/">Типові питання комісії та підготовка</a> · <a class="text-accent underline" href="/poslugy/">Що входить у наші послуги</a></p>
+      <a class="mt-6 inline-flex rounded-xl bg-accent px-6 py-3 font-semibold text-black" href="#lead">Обговорити свою ідею</a>
+      <p class="mt-6 font-semibold">Від ідеї до плану. Розвиваймо українське!</p>
+    </div>
+  </section>
+  <LeadForm />
+  <SiteFooter slot="footer" />
+</Layout>
