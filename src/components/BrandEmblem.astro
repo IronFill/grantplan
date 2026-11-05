@@ -1,0 +1,50 @@
+<div class="brand-emblem" data-brand-emblem>
+  <a href="/" aria-label="ГрантПлан — на головну" class="brand-emblem-link">
+    <img src="/images/grantplan-halo-still.webp" data-brand-image
+      alt="GrantPlan — логотип GP з помаранчевим сяючим ореолом"
+      width="414" height="414" loading="lazy" decoding="async" />
+  </a>
+  <button type="button" data-brand-toggle hidden aria-pressed="false">
+    Увімкнути анімацію
+  </button>
+</div>
+
+<style>
+  .brand-emblem { width: 144px; margin-bottom: 1rem; }
+  .brand-emblem-link { display: block; border-radius: 50%; }
+  .brand-emblem img { display: block; width: 100%; height: auto; border-radius: 50%; }
+  .brand-emblem button { width: 100%; margin-top: .5rem; padding: .35rem .1rem; font-size: .7rem; color: var(--color-muted); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .brand-emblem button:hover { color: var(--color-accent); }
+  .brand-emblem-link:focus-visible, .brand-emblem button:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 4px; }
+  @media (min-width: 768px) { .brand-emblem { width: 176px; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-brand-emblem]').forEach((emblem) => {
+    const image = emblem.querySelector<HTMLImageElement>('[data-brand-image]');
+    const toggle = emblem.querySelector<HTMLButtonElement>('[data-brand-toggle]');
+    if (!image || !toggle) return;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let playing = false;
+    let manuallyPaused = false;
+    let visible = false;
+    const update = (play: boolean) => {
+      if (playing === play) return;
+      playing = play;
+      image.src = play ? '/images/grantplan-halo.gif' : '/images/grantplan-halo-still.webp';
+      toggle.textContent = play ? 'Зупинити анімацію' : 'Увімкнути анімацію';
+      toggle.setAttribute('aria-pressed', String(play));
+    };
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => {
+      manuallyPaused = playing;
+      update(!playing);
+    });
+    motion.addEventListener('change', () => update(visible && !motion.matches && !manuallyPaused));
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      update(visible && !motion.matches && !manuallyPaused);
+    }, { threshold: 0.1 });
+    observer.observe(emblem);
+  });
+</script>

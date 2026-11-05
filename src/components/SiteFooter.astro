@@ -1,10 +1,11 @@
 ---
 import Icon from './Icon.astro';
+import BrandEmblem from './BrandEmblem.astro';
 import { site, legalEntity, hasLegalEntity } from '../data/site';
 import { audiences } from '../data/audiences';
 const year = new Date().getFullYear();
 ---
-<footer class="border-t border-border/70 pt-14 pb-28 md:pb-14">
+<footer id="site-footer" class="border-t border-border/70 pt-14 pb-28 md:pb-14">
   <div class="container-site">
     {/* Чотири колонки, чотири дочірні елементи: контакти живуть у колонці
          бренду, інакше вони переносяться в новий ряд і під рештою колонок
@@ -12,10 +13,7 @@ const year = new Date().getFullYear();
          йдуть у дві колонки — так футер не розтягується на 1400px. */}
     <div class="grid gap-x-8 gap-y-10 grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
       <div class="col-span-2 md:col-span-1">
-        <span class="inline-flex items-center gap-2.5 font-display font-extrabold text-xl">
-          <img src="/images/logo.png" alt="" width="32" height="32" class="h-8 w-8 shrink-0" />
-          <span>ГрантПлан<span class="text-accent">.</span></span>
-        </span>
+        <BrandEmblem />
         <p class="mt-3 text-muted max-w-xs">
           Бізнес-плани під грант «Власна справа» за формою Дії. Працюємо по всій Україні.
         </p>
