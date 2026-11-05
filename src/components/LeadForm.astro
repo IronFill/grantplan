@@ -34,7 +34,31 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         <button type="button" class="btn btn-primary" data-lf-mode="callback" aria-pressed="true">Зв’яжіться зі мною</button>
         <button type="button" class="btn btn-ghost" data-lf-mode="scheduled" aria-pressed="false">Обрати дату й час</button>
       </div>
-      <div id="lf-form-wrap" class="grid gap-8 lg:gap-12">
+      <div id="lf-form-wrap" class="grid gap-8 lg:gap-12 lg:grid-cols-2">
+        {/* Що буде на аудиті: ліва колонка в режимі «Зв’яжіться зі мною», на мобільному під формою */}
+        <div data-lf-info class="order-2 lg:order-none rounded-card bg-raised border border-border p-5 md:p-7 self-start">
+          <h3 class="font-display font-semibold text-xl">Що буде на аудиті</h3>
+          <ul class="mt-5 space-y-4">
+            {[
+              ['shield-check', 'Перевіримо, чи проходить ваша ідея під умови програми'],
+              ['calculator', 'Порахуємо, на яку суму гранту можна розраховувати з надбавками'],
+              ['file-text', 'Скажемо, яких документів бракує і з чого почати'],
+            ].map(([icon, text]) => (
+              <li class="flex items-start gap-3">
+                <span class="inline-grid place-items-center w-9 h-9 rounded-xl bg-accent/10 text-accent shrink-0">
+                  <Icon name={icon} size={18} />
+                </span>
+                <span class="pt-1.5">{text}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-6 pt-5 border-t border-border grid grid-cols-3 gap-3 text-center">
+            <div><div class="font-display font-semibold text-lg">до 20 хв</div><div class="text-xs text-muted mt-0.5">тривалість</div></div>
+            <div><div class="font-display font-semibold text-lg">0 ₴</div><div class="text-xs text-muted mt-0.5">безкоштовно</div></div>
+            <div><div class="font-display font-semibold text-lg">дзвінок</div><div class="text-xs text-muted mt-0.5">або месенджер</div></div>
+          </div>
+        </div>
+
         {/* Календар */}
         <div data-lf-calendar hidden>
           <div class="flex items-center justify-between mb-4">
@@ -59,7 +83,7 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
         </div>
 
         {/* Час + контакти */}
-        <div>
+        <div class="order-1 lg:order-none">
           <div data-lf-time-empty class="text-muted text-sm py-4" hidden>
             Оберіть день у календарі, потім бажаний час.
           </div>
@@ -213,13 +237,14 @@ import { LEAD_LIMITS } from '../lib/lead-validation.js';
     let selected: Date | null = null;
     let scheduled = false;
     const calendar = root.querySelector('[data-lf-calendar]') as HTMLElement;
+    const info = root.querySelector('[data-lf-info]') as HTMLElement;
     const modeButtons = root.querySelectorAll<HTMLButtonElement>('[data-lf-mode]');
     const submitLabel = () => scheduled ? 'Надіслати заявку' : 'Зв’яжіться зі мною';
     modeButtons.forEach((button) => button.addEventListener('click', () => {
       if (submitBtn.disabled) return;
       scheduled = button.dataset.lfMode === 'scheduled';
       calendar.hidden = !scheduled;
-      formWrap.classList.toggle('lg:grid-cols-2', scheduled);
+      info.hidden = scheduled;
       selected = null;
       dateInput.value = '';
       timeInput.value = '';
