@@ -35,6 +35,18 @@ const placements = [
   ['facebook-flatlay-202610', 'facebook', 'organic_video', 'flatlay_202610', 'reel'],
   ['instagram-flatlay-202610', 'instagram', 'organic_video', 'flatlay_202610', 'profile'],
   ['telegram-flatlay-202610', 'telegram', 'organic_social', 'flatlay_202610', 'post'],
+  // Exact links in the November content plan. Empty content is intentional for
+  // the documented Instagram profile URL, which contains three UTMs.
+  ['instagram-profile-organic', 'instagram', 'organic_social', 'profile', ''],
+  ['facebook-interview-checklist-nov8', 'facebook', 'organic_social', 'interview_checklist_202611', 'page_post'],
+  ['facebook-equipment-check-nov10', 'facebook', 'organic_social', 'equipment_check_202611', 'card'],
+  ['facebook-sales-check-nov14', 'facebook', 'organic_social', 'sales_check_202611', 'photo'],
+  ['facebook-cash-gap-nov18', 'facebook', 'organic_social', 'cash_gap_202611', 'card'],
+  ['telegram-equipment-check-nov10', 'telegram', 'organic_social', 'equipment_check_202611', 'channel_post'],
+  ['telegram-sales-check-nov14', 'telegram', 'organic_social', 'sales_check_202611', 'channel_post'],
+  ['telegram-cash-gap-nov18', 'telegram', 'organic_social', 'cash_gap_202611', 'channel_post'],
+  ['facebook-equipment-stories-nov', 'facebook', 'organic_social', 'equipment_stories_202611', 'story_03'],
+  ['instagram-equipment-stories-nov', 'instagram', 'organic_social', 'equipment_stories_202611', 'story_03'],
 ];
 
 export const CAMPAIGNS = Object.freeze(placements.map(([id, source, medium, campaign, content]) =>
@@ -49,9 +61,12 @@ export function campaignFromUrl(url) {
   try {
     const params = new URL(url).searchParams;
     const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content'];
-    if (keys.some(key => params.getAll(key).length !== 1)) return '';
+    if (keys.slice(0, 3).some(key => params.getAll(key).length !== 1)) return '';
+    if (params.getAll('utm_content').length > 1) return '';
     return CAMPAIGNS.find(c => [c.source, c.medium, c.campaign, c.content]
-      .every((value, i) => params.get(keys[i]) === value))?.id || '';
+      // Missing content is allowed only when this exact registered placement
+      // has empty content; it is not a wildcard for a known campaign's posts.
+      .every((value, i) => (params.get(keys[i]) ?? '') === value))?.id || '';
   } catch { return ''; }
 }
 
