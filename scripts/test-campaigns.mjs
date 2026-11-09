@@ -29,6 +29,44 @@ for (const campaign of CAMPAIGNS) {
   assert.ok(validateTelegramText(leadMessage(checked.values)).ok);
 }
 const known = campaignUrl('youtube-budget-guide');
+// These published/approved links are independent fixtures from the content
+// plan, not generated from the registry. A missing registry entry loses the
+// campaign in the lead record even if GA4 can still read the page's UTM URL.
+// Literal fixtures keep this regression test runnable in a clean checkout,
+// without requiring the local, untracked publishing-queue documents.
+const novemberTelegramLinks = [
+  ['telegram-equipment-check-nov10', 'https://grantplan.com.ua/?utm_source=telegram&utm_medium=organic_social&utm_campaign=equipment_check_202611&utm_content=channel_post#lead'],
+  ['telegram-sales-check-nov14', 'https://grantplan.com.ua/?utm_source=telegram&utm_medium=organic_social&utm_campaign=sales_check_202611&utm_content=channel_post#lead'],
+  ['telegram-cash-gap-nov18', 'https://grantplan.com.ua/?utm_source=telegram&utm_medium=organic_social&utm_campaign=cash_gap_202611&utm_content=channel_post#lead'],
+];
+for (const [id, link] of novemberTelegramLinks) {
+  assert.equal(campaignFromUrl(link), id, `${id} must retain attribution at form submission`);
+  const checked = validateLead({ ...valid, campaignId: campaignFromUrl(link) });
+  assert.ok(checked.ok);
+  assert.ok(leadMessage(checked.values).includes(id));
+}
+const profileLink = 'https://grantplan.com.ua/?utm_source=instagram&utm_medium=organic_social&utm_campaign=profile#lead';
+assert.equal(campaignFromUrl(profileLink), 'instagram-profile-organic');
+assert.equal(campaignFromUrl(profileLink.replace('#lead', '&utm_content=#lead')), 'instagram-profile-organic');
+assert.equal(campaignFromUrl(profileLink.replace('#lead', '&utm_content=unregistered#lead')), '');
+assert.equal(campaignFromUrl(profileLink.replace('#lead', '&utm_content=&utm_content=#lead')), '');
+assert.equal(campaignFromUrl(profileLink.replace('#lead', '&utm_source=instagram#lead')), '');
+assert.equal(campaignFromUrl(known.replace(/&utm_content=[^&#]*/, '')), '', 'Omitted content must not match a registered post');
+assert.equal(campaignFromUrl(known.replace(/&utm_content=[^&#]*/, '&utm_content=')), '', 'Empty content must not match a registered post');
+const novemberSocialLinks = [
+  ['facebook-interview-checklist-nov8', 'https://grantplan.com.ua/?utm_source=facebook&utm_medium=organic_social&utm_campaign=interview_checklist_202611&utm_content=page_post#lead'],
+  ['facebook-equipment-check-nov10', 'https://grantplan.com.ua/?utm_source=facebook&utm_medium=organic_social&utm_campaign=equipment_check_202611&utm_content=card#lead'],
+  ['facebook-sales-check-nov14', 'https://grantplan.com.ua/?utm_source=facebook&utm_medium=organic_social&utm_campaign=sales_check_202611&utm_content=photo#lead'],
+  ['facebook-cash-gap-nov18', 'https://grantplan.com.ua/?utm_source=facebook&utm_medium=organic_social&utm_campaign=cash_gap_202611&utm_content=card#lead'],
+  ['facebook-equipment-stories-nov', 'https://grantplan.com.ua/blog/yak-pereviryty-koshtorys/?utm_source=facebook&utm_medium=organic_social&utm_campaign=equipment_stories_202611&utm_content=story_03'],
+  ['instagram-equipment-stories-nov', 'https://grantplan.com.ua/blog/yak-pereviryty-koshtorys/?utm_source=instagram&utm_medium=organic_social&utm_campaign=equipment_stories_202611&utm_content=story_03'],
+];
+for (const [id, link] of novemberSocialLinks) {
+  assert.equal(campaignFromUrl(link), id);
+  const checked = validateLead({ ...valid, campaignId: campaignFromUrl(link) });
+  assert.ok(checked.ok);
+  assert.ok(leadMessage(checked.values).includes(id));
+}
 // Public links currently published in the YouTube channel profile must survive
 // the landing page -> validated lead -> inbox path without storing raw URLs.
 for (const [id, path, content] of [
