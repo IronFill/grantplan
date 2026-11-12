@@ -2,6 +2,11 @@
 // click ID or arbitrary UTM value in a contact record or analytics event.
 // Attribution describes the submitted page, not a verified first touch.
 const placements = [
+  ['telegram-coffee-budget-nov12', 'telegram', 'organic_social', 'coffee_budget_202611', 'photo_checklist'],
+  ['facebook-coffee-budget-nov12', 'facebook', 'organic_social', 'coffee_budget_202611', 'photo_checklist'],
+  ['telegram-cashflow-launch', 'telegram', 'organic_social', 'cashflow_202611', 'launch_card'],
+  ['facebook-cashflow-launch', 'facebook', 'organic_social', 'cashflow_202611', 'launch_card'],
+  ['instagram-cashflow-profile', 'instagram', 'organic_social', 'cashflow_202611', 'profile'],
   ['youtube-channel-profile', 'youtube', 'organic_video', 'grantplan_shorts_launch_202610', 'channel_profile'],
   ['youtube-channel-worksheet', 'youtube', 'organic_video', 'grantplan_shorts_launch_202610', 'channel_worksheet'],
   ['youtube-heist-202610', 'youtube', 'organic_video', 'heist_202610', 'short'],

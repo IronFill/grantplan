@@ -1,0 +1,166 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import LeadForm from '../components/LeadForm.astro';
+const fields = [
+  { name: 'cash', label: 'Доступні гроші на старті, грн', help: 'Сума, якою вже можете скористатися. Очікуваний грант сюди не додавайте.', value: 200000, max: 100000000 },
+  { name: 'setup', label: 'Разові витрати до відкриття, грн', help: 'Обладнання, ремонт, доставка та інші стартові платежі.', value: 140000, max: 100000000 },
+  { name: 'fixed', label: 'Постійні виплати щомісяця, грн', help: 'Оренда, зарплата, податки та інші регулярні виплати, зокрема до відкриття.', value: 40000, max: 100000000 },
+  { name: 'sales', label: 'Надходження за місяць роботи, грн', help: 'Очікувані оплати від клієнтів, що надійдуть у цьому ж місяці.', value: 80000, max: 100000000 },
+  { name: 'variable', label: 'Змінні виплати від надходжень, %', help: 'Сировина, витратні матеріали й комісії. Кожну витрату враховуйте один раз.', value: 40, max: 100 },
+  { name: 'delay', label: 'Місяців до перших продажів', help: '0 — продажі з першого місяця. 2 — перші два місяці без надходжень.', value: 0, max: 6 },
+  { name: 'stress', label: 'Падіння продажів для перевірки, %', help: 'Порівняємо ваш план зі сценарієм нижчих надходжень.', value: 20, max: 100 },
+];
+---
+<Layout title="Чи вистачить грошей на запуск? Калькулятор | ГрантПлан" description="Перевірте залишок грошей на шість місяців: витрати на старт, затримка відкриття та падіння продажів. Три навчальні приклади й таблиця для завантаження." path="/cashflow">
+  <SiteHeader slot="header" />
+    <section class="container-site py-12 md:py-20">
+      <a href="/poslugy/" class="text-muted underline underline-offset-4">Послуги ГрантПлан</a>
+      <h1 class="mt-5 max-w-4xl text-4xl md:text-6xl leading-tight">Обладнання купили.<br /><span class="text-accent">На запуск вистачить?</span></h1>
+      <p class="mt-5 max-w-2xl text-lg text-muted">Перевірте гроші на наступні шість місяців. Змініть дату відкриття або прогноз продажів і подивіться, коли може знадобитися додатковий резерв.</p>
+      <div class="mt-8 flex flex-wrap gap-3" role="group" aria-label="Навчальні приклади">
+        <button type="button" class="btn btn-ghost" data-example="cafe">Кав’ярня</button>
+        <button type="button" class="btn btn-ghost" data-example="salon">Салон</button>
+        <button type="button" class="btn btn-ghost" data-example="workshop">Майстерня</button>
+      </div>
+      <p id="example-note" class="mt-3 text-sm text-muted">Навчальний приклад «Кав’ярня». Замініть умовні суми власними даними.</p>
+      <div class="mt-7 grid lg:grid-cols-2 gap-8 items-start">
+        <form id="cashflow-form" class="rounded-card-lg bg-surface border border-border p-5 md:p-7">
+          <div class="grid sm:grid-cols-2 gap-5">
+            {fields.map(field => (
+              <div>
+                <label for={field.name} class="block font-semibold text-sm">{field.label}</label>
+                <input id={field.name} name={field.name} type="number" min="0" max={field.max} step={field.name === 'delay' ? '1' : '0.01'} value={field.value} required aria-describedby={`${field.name}-help`} class="mt-2 w-full rounded-btn border border-border bg-bg p-3 text-ink" />
+                <p id={`${field.name}-help`} class="mt-2 text-xs leading-relaxed text-muted">{field.help}</p>
+              </div>
+            ))}
+          </div>
+          <button class="btn btn-primary mt-6 w-full" type="submit">Перевірити залишок грошей</button>
+          <p id="input-error" class="mt-3 text-accent" role="alert"></p>
+          <p class="mt-3 text-xs text-muted">Розрахунок відбувається у вашому браузері. Суми не передаються в аналітику.</p>
+        </form>
+        <div class="rounded-card-lg border border-border bg-surface p-5 md:p-7">
+          <h2 class="text-2xl">Результат перевірки</h2>
+          <p id="result-status" class="mt-4 text-muted" aria-live="polite">Введіть свої дані або оберіть навчальний приклад і натисніть кнопку перевірки.</p>
+          <div id="cashflow-result" hidden>
+            <div class="mt-6 grid sm:grid-cols-2 gap-5">
+              <div><p class="text-sm text-muted">Додатково потрібно за вашим планом</p><p id="base-reserve" class="text-2xl font-semibold mt-2"></p></div>
+              <div><p class="text-sm text-muted">При падінні продажів</p><p id="stress-reserve" class="text-2xl font-semibold mt-2 text-accent"></p></div>
+            </div>
+            <p class="mt-4 text-sm text-muted">Резерв — сума, яка покрила б найбільший від’ємний залишок за цими припущеннями. Показано залишки на кінець місяця.</p>
+            <div class="mt-6 overflow-x-auto">
+              <table class="w-full text-sm">
+                <caption class="text-left mb-3 font-semibold">Залишок грошей, грн</caption>
+                <thead><tr class="border-b border-border"><th class="p-2 text-left">Місяць</th><th class="p-2 text-right">Ваш план</th><th id="stress-label" class="p-2 text-right">Менші продажі</th></tr></thead>
+                <tbody id="cashflow-rows"></tbody>
+              </table>
+            </div>
+            <button id="download-cashflow" type="button" class="btn btn-ghost mt-5 w-full">Завантажити розрахунок CSV</button>
+            <a href="#lead" class="btn btn-primary mt-3 w-full" data-analytics="start_audit" data-analytics-location="cashflow_result">Обговорити розрахунок на аудиті</a>
+            <p class="mt-3 text-xs text-muted">Збережіть таблицю для розмови. Контакти залишаєте у формі нижче.</p>
+          </div>
+        </div>
+      </div>
+      <details class="mt-8 max-w-3xl rounded-card border border-border p-5">
+        <summary class="font-semibold cursor-pointer">Як рахуємо та що ще варто перевірити</summary>
+        <p class="mt-4 text-muted">До початку першого місяця віднімаємо разові витрати. Далі щомісяця додаємо надходження й віднімаємо постійні та змінні виплати. Під час затримки відкриття надходження й змінні виплати дорівнюють нулю, постійні виплати залишаються.</p>
+        <p class="mt-3 text-muted">Продажі після відкриття сталі. Усі оплати та пов’язані змінні витрати припадають на той самий місяць. Внесіть податки й платежі за позиками до відповідних виплат самостійно. Майбутні гранти, сезонність, відстрочки та касові розриви всередині місяця потребують окремого плану.</p>
+        <p class="mt-3 text-muted">Навчальна модель показує рух грошей. Прибуток, право на грант і рішення комісії вона не визначає. Додатний залишок залежить від ваших припущень.</p>
+      </details>
+      <p class="mt-6"><a class="text-accent underline underline-offset-4" href="/blog/yak-pereviryty-koshtorys/">Як перевірити кількість, ціни та доставку в кошторисі</a></p>
+      <noscript><p class="mt-6">Для розрахунку увімкніть JavaScript. Ви також можете обговорити свій план за контактами нижче.</p></noscript>
+    </section>
+    <LeadForm />
+  <SiteFooter slot="footer" />
+</Layout>
+<script>
+  import { calculateCashflow, cashflowExamples } from '../lib/cashflow.js';
+  import { trackEvent } from '../lib/analytics';
+  const form = document.querySelector<HTMLFormElement>('#cashflow-form')!;
+  const result = document.querySelector<HTMLElement>('#cashflow-result')!;
+  const status = document.querySelector<HTMLElement>('#result-status')!;
+  const rows = document.querySelector<HTMLElement>('#cashflow-rows')!;
+  const number = new Intl.NumberFormat('uk-UA', { maximumFractionDigits: 2 });
+  let report: ReturnType<typeof calculateCashflow> | null = null;
+  let values: Record<string, number> = {};
+  let started = false;
+  function invalidate() {
+    report = null;
+    result.hidden = true;
+    status.textContent = 'Дані змінено. Натисніть кнопку перевірки для нового розрахунку.';
+    document.querySelector('#input-error')!.textContent = '';
+  }
+  form.addEventListener('input', () => {
+    invalidate();
+    document.querySelector('#example-note')!.textContent = 'Ваші дані. Перевірте, чи врахували всі платежі.';
+    if (!started) { trackEvent('cashflow_start'); started = true; }
+  });
+  document.querySelectorAll<HTMLButtonElement>('[data-example]').forEach(button => {
+    button.addEventListener('click', () => {
+      const key = button.dataset.example as keyof typeof cashflowExamples;
+      const example = cashflowExamples[key];
+      for (const name of ['cash', 'setup', 'fixed', 'sales', 'variable', 'delay', 'stress'] as const) {
+        (form.elements.namedItem(name) as HTMLInputElement).value = String(example[name]);
+      }
+      invalidate();
+      document.querySelector('#example-note')!.textContent = `Навчальний приклад «${example.label}». Умовні суми для перевірки моделі.`;
+      trackEvent('cashflow_example', { example: key });
+    });
+  });
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!started) { trackEvent('cashflow_start'); started = true; }
+    values = Object.fromEntries(Array.from(new FormData(form)).map(([key, value]) => [key, Number(value)]));
+    try {
+      report = calculateCashflow(values);
+    } catch (error) {
+      invalidate();
+      document.querySelector('#input-error')!.textContent = error instanceof Error ? error.message : 'Перевірте дані.';
+      return;
+    }
+    const { base, stress } = report;
+    document.querySelector('#base-reserve')!.textContent = `${number.format(base.reserve)} грн`;
+    document.querySelector('#stress-reserve')!.textContent = `${number.format(stress.reserve)} грн`;
+    document.querySelector('#stress-label')!.textContent = `Продажі −${number.format(values.stress)}%`;
+    const month = base.firstShortfall;
+    status.textContent = month === null ? 'За вашим планом від’ємного залишку за шість місяців немає. Перевірте також сценарій нижчих продажів.' : month === 0 ? 'Грошей бракує вже на стартові платежі.' : `Перший від’ємний залишок за вашим планом — місяць ${month}.`;
+    rows.replaceChildren();
+    base.rows.forEach((row, index) => {
+      const tr = document.createElement('tr');
+      tr.className = 'border-b border-border';
+      for (const [column, value] of [row.month === 0 ? 'Старт' : String(row.month), number.format(row.balance), number.format(stress.rows[index].balance)].entries()) {
+        const td = document.createElement(column === 0 ? 'th' : 'td');
+        td.className = column === 0 ? 'p-2 text-left font-normal' : 'p-2 text-right tabular-nums';
+        if (column === 0) td.setAttribute('scope', 'row');
+        td.textContent = value;
+        tr.append(td);
+      }
+      rows.append(tr);
+    });
+    result.hidden = false;
+    trackEvent('cashflow_complete');
+  });
+  document.querySelector('#download-cashflow')!.addEventListener('click', () => {
+    if (!report) return;
+    const lines = [
+      ['ГрантПлан — навчальна модель руху грошей'],
+      ['Дата розрахунку UTC', new Date().toISOString()],
+      ['Доступні гроші', values.cash], ['Стартові виплати', values.setup],
+      ['Постійні виплати на місяць', values.fixed], ['Місячні надходження', values.sales],
+      ['Змінні виплати %', values.variable], ['Місяців без продажів', values.delay], ['Падіння продажів %', values.stress],
+      ['Місяць', 'Надходження план', 'Виплати план', 'Залишок план', 'Надходження стрес', 'Виплати стрес', 'Залишок стрес'],
+      ...report.base.rows.map((r, i) => [r.month, r.receipts, r.payments, r.balance, report!.stress.rows[i].receipts, report!.stress.rows[i].payments, report!.stress.rows[i].balance]),
+      ['Додатковий резерв за планом', report.base.reserve], ['Додатковий резерв при падінні продажів', report.stress.reserve],
+      ['Припущення', 'Сталі місячні надходження після відкриття. Постійні виплати з першого місяця. Змінні виплати пропорційні надходженням. Стартові виплати до першого місяця.'],
+      ['Обмеження', 'Без майбутнього гранту, сезонності, відстрочок та розривів усередині місяця. Податки й позики користувач враховує у виплатах.'],
+      ['Джерело', 'https://grantplan.com.ua/cashflow/'],
+    ];
+    const csv = '\uFEFF' + lines.map(line => line.map(value => '"' + String(value).replaceAll('"', '""') + '"').join(';')).join('\r\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = 'grantplan-cashflow.csv'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    trackEvent('cashflow_download');
+  });
+</script>
