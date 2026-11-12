@@ -61,9 +61,8 @@ def frame(t):
     return image
 
 
-def soundtrack(path):
+def soundtrack(path, cues):
     rate = 24000
-    cues = (0, 1, 3, 4.35, 5.7, 9)
     samples = bytearray()
     for i in range(rate * DURATION):
         t = i / rate
@@ -79,18 +78,21 @@ def soundtrack(path):
         audio.writeframes(samples)
 
 
-if __name__ == "__main__":
+def render(draw_frame, filename, cues):
     with tempfile.TemporaryDirectory() as scratch:
         audio = Path(scratch) / "sound.wav"
-        soundtrack(audio)
-        output = ROOT / "GrantPlan-cashflow-cafe-12s.mp4"
+        soundtrack(audio, cues)
+        output = ROOT / filename
         command = [get_ffmpeg_exe(), "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
                    "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-i", str(audio), "-c:v", "libx264",
                    "-pix_fmt", "yuv420p", "-crf", "19", "-c:a", "aac", "-movflags", "+faststart", str(output)]
         with subprocess.Popen(command, stdin=subprocess.PIPE) as encoder:
             for index in range(FPS * DURATION):
-                encoder.stdin.write(frame(index / FPS).tobytes())
+                encoder.stdin.write(draw_frame(index / FPS).tobytes())
             encoder.stdin.close()
             if encoder.wait() != 0:
                 raise RuntimeError("Video encoding failed")
-        frame(7).save(ROOT / "cashflow-cafe-video-preview.png")
+
+
+if __name__ == "__main__":
+    render(frame, "GrantPlan-cashflow-cafe-12s.mp4", (0, 1, 3, 4.35, 5.7, 9))
