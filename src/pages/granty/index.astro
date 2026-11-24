@@ -1,0 +1,191 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileCta from '../../components/MobileCta.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import GrantCard from '../../components/GrantCard.astro';
+import Icon from '../../components/Icon.astro';
+import { sortedGrants, grantCounts, grantsGeneratedAt, todayIso } from '../../data/granty';
+import { ENTITY_FILTER, CATEGORY_GROUPS, KIND, formatDate } from '../../lib/granty.js';
+
+const today = todayIso();
+const programs = sortedGrants(today);
+const counts = grantCounts(today);
+---
+<Layout
+  title="Гранти й державна підтримка бізнесу в Україні: каталог 2026 | ГрантПлан"
+  description="Каталог грантів, пільгових кредитів і компенсацій для бізнесу: фільтр за статусом, типом заявника й сумою. Кожну програму перевіряємо за першоджерелом."
+  path="/granty"
+>
+  <SiteHeader slot="header" />
+
+  <section class="relative pt-28 md:pt-36 pb-10 md:pb-14 border-b border-border/70">
+    <div class="container-site container-text">
+      <a href="/" class="flex w-fit items-center gap-2 text-muted hover:text-ink text-sm py-2 -mt-2 mb-4">← На головну</a>
+      <span class="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 text-xs text-muted">
+        <Icon name="check-circle" size={14} class="text-accent" /> Оновлено {formatDate(grantsGeneratedAt)}
+      </span>
+      <h1 class="mt-4 text-3xl sm:text-5xl">Гранти й державна підтримка бізнесу</h1>
+      <p class="mt-5 text-muted text-lg">
+        Усі програми, які ми відстежуємо: державні, фондів і міжнародних донорів. Для кожної вказуємо суму, строки й для кого вона,
+        а дату останньої перевірки показуємо на сторінці програми. Зараз у каталозі {counts.total} програм, з них {counts.open} приймають заявки.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-10 md:py-14 scroll-mt-20" id="catalog">
+    <div class="container-site">
+      {/* Фільтри з'являються лише з JS: без нього каталог — просто список усіх карток. */}
+      <form class="grid gap-4 md:grid-cols-4 rounded-card-lg bg-surface border border-border p-5 md:p-6" data-grant-filters hidden aria-label="Фільтри каталогу" method="get" action="/granty">
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-muted">Хто ви</span>
+          <select name="who" class="rounded-btn bg-raised border border-border px-3 py-3 text-ink">
+            <option value="">Будь-хто</option>
+            {Object.entries(ENTITY_FILTER).map(([key, v]) => <option value={key}>{v.label}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-muted">Ваш статус</span>
+          <select name="cat" class="rounded-btn bg-raised border border-border px-3 py-3 text-ink">
+            <option value="">Будь-який</option>
+            {Object.entries(CATEGORY_GROUPS).map(([key, v]) => <option value={key}>{v.label}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-muted">Що шукаєте</span>
+          <select name="kind" class="rounded-btn bg-raised border border-border px-3 py-3 text-ink">
+            <option value="">Усе</option>
+            {Object.entries(KIND).map(([key, v]) => <option value={key}>{v.filter}</option>)}
+          </select>
+        </label>
+        <label class="grid gap-1.5 text-sm">
+          <span class="text-muted">Пошук за словом</span>
+          <input type="search" name="q" autocomplete="off" maxlength="60" placeholder="наприклад, ветеран або теплиця" class="rounded-btn bg-raised border border-border px-3 py-3 text-ink" />
+        </label>
+        <label class="md:col-span-4 inline-flex items-center gap-3 text-sm py-1">
+          <input type="checkbox" name="closed" value="1" class="h-5 w-5 accent-[var(--color-accent)]" />
+          <span>Показати й закриті програми ({counts.closed})</span>
+        </label>
+      </form>
+
+      <p class="mt-6 text-muted" role="status" aria-live="polite" data-grant-count></p>
+
+      <div class="mt-4 grid md:grid-cols-2 gap-4" data-grant-list>
+        {programs.map((p) => <GrantCard p={p} today={today} />)}
+      </div>
+
+      <div class="mt-8 rounded-card-lg bg-raised border border-border p-6 md:p-8" data-grant-empty hidden>
+        <h2 class="text-xl font-display font-semibold">Під ці умови нічого не знайшлося</h2>
+        <p class="mt-2 text-muted">
+          Каталог не охоплює всього: частина програм відкривається на кілька тижнів і зникає. Опишіть свою ситуацію, і ми підкажемо, що може підійти.
+        </p>
+        <a href="#lead" class="mt-5 btn btn-primary" data-analytics="click_cta_granty_empty">Запитати безкоштовно</a>
+      </div>
+
+      <p class="mt-10 max-w-3xl text-sm text-muted leading-relaxed">
+        Це довідкова інформація, а не юридична консультація й не гарантія отримання коштів. Умови програм змінюються, тому перед поданням
+        звіряйте їх з офіційним джерелом. Кінцеве рішення про фінансування ухвалює оператор програми.
+      </p>
+    </div>
+  </section>
+
+  <LeadForm />
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>
+
+<script>
+  import { matches, effectiveStatus, STATUS } from '../../lib/granty.js';
+
+  const form = document.querySelector<HTMLFormElement>('[data-grant-filters]');
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-grant-card]')];
+  const countEl = document.querySelector<HTMLElement>('[data-grant-count]');
+  const empty = document.querySelector<HTMLElement>('[data-grant-empty]');
+  const today = new Date().toISOString().slice(0, 10);
+
+  const TONE: Record<string, string[]> = {
+    success: ['bg-success/10', 'text-success'],
+    accent: ['bg-accent/10', 'text-accent'],
+    muted: ['border', 'border-border', 'text-muted'],
+  };
+
+  // Статус перераховуємо за сьогоднішньою датою користувача: сторінка зібрана раніше,
+  // і програма з минулим дедлайном не повинна виглядати відкритою.
+  for (const card of cards) {
+    const closes = card.dataset.closes || null;
+    const status = effectiveStatus({ status: card.dataset.status, period: { closes } }, today);
+    card.dataset.effective = status;
+    if (status !== card.dataset.status) {
+      const badge = card.querySelector<HTMLElement>('[data-status-badge]');
+      const info = (STATUS as Record<string, { label: string; tone: string }>)[status];
+      if (badge && info) {
+        badge.className = 'inline-flex items-center rounded-full px-2.5 py-1 font-medium ' + TONE[info.tone].join(' ');
+        badge.textContent = info.label;
+      }
+    }
+  }
+
+  const plural = (n: number) => (n % 10 === 1 && n % 100 !== 11 ? 'програма' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'програми' : 'програм');
+
+  function read() {
+    const data = new FormData(form!);
+    return {
+      who: String(data.get('who') ?? ''),
+      cat: String(data.get('cat') ?? ''),
+      kind: String(data.get('kind') ?? ''),
+      q: String(data.get('q') ?? ''),
+      showClosed: data.get('closed') === '1',
+    };
+  }
+
+  function apply() {
+    const f = read();
+    let shown = 0;
+    for (const card of cards) {
+      const p = {
+        title: '', short: '', operator: { name: '' },
+        status: card.dataset.status,
+        period: { closes: card.dataset.closes || null },
+        entities: (card.dataset.entities ?? '').split(' ').filter(Boolean),
+        categories: ['any'],
+        kind: card.dataset.kind,
+      };
+      // Категорії: у data-cats вже розгорнуті групи фільтра, тож перевіряємо їх напряму.
+      const groups = (card.dataset.cats ?? '').split(' ').filter(Boolean);
+      const ok =
+        matches({ ...p, categories: ['any'] }, { ...f, cat: '', q: '' }, today) &&
+        (!f.cat || groups.includes(f.cat)) &&
+        (!f.q || f.q.trim().toLowerCase().split(/\s+/).every((w) => (card.dataset.text ?? '').includes(w)));
+      card.hidden = !ok;
+      if (ok) shown++;
+    }
+    if (countEl) countEl.textContent = `Знайдено: ${shown} ${plural(shown)}`;
+    if (empty) empty.hidden = shown > 0;
+
+    const params = new URLSearchParams();
+    if (f.who) params.set('who', f.who);
+    if (f.cat) params.set('cat', f.cat);
+    if (f.kind) params.set('kind', f.kind);
+    if (f.q.trim()) params.set('q', f.q.trim());
+    if (f.showClosed) params.set('closed', '1');
+    const qs = params.toString();
+    history.replaceState(null, '', location.pathname + (qs ? `?${qs}` : ''));
+  }
+
+  if (form) {
+    form.hidden = false;
+    const params = new URLSearchParams(location.search);
+    for (const name of ['who', 'cat', 'kind', 'q']) {
+      const el = form.elements.namedItem(name) as HTMLInputElement | HTMLSelectElement | null;
+      if (el && params.has(name)) el.value = (params.get(name) ?? '').slice(0, 60);
+    }
+    const closed = form.elements.namedItem('closed') as HTMLInputElement | null;
+    if (closed) closed.checked = params.get('closed') === '1';
+    form.addEventListener('input', apply);
+    form.addEventListener('change', apply);
+    form.addEventListener('submit', (e) => { e.preventDefault(); apply(); });
+    apply();
+  }
+</script>
