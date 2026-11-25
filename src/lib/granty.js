@@ -23,6 +23,7 @@ export const KIND = {
 
 export const ENTITY = {
   individual: 'Фізична особа, яка ще планує бізнес',
+  individual_14_35: 'Фізичні особи 14–35 років із відповідних малих громад',
   fop: 'ФОП',
   llc: 'ТОВ та інші юрособи',
   self_employed: 'Самозайнятий',
@@ -47,7 +48,7 @@ export const CATEGORY = {
 export const CATEGORY_GROUPS = {
   veteran: { label: 'Ветеран або член родини', members: ['veteran', 'veteran_family', 'veteran_friendly', 'combatant'] },
   vpo: { label: 'ВПО', members: ['vpo'] },
-  youth: { label: 'Молодь до 25 років', members: ['youth', 'youth_18_25'] },
+  youth: { label: 'Молодь (вік за умовами програми)', members: ['youth', 'youth_18_25'] },
   women: { label: 'Жінка-підприємиця', members: ['women'] },
   disability: { label: 'Людина з інвалідністю', members: ['disability'] },
 };
@@ -55,12 +56,21 @@ export const CATEGORY_GROUPS = {
 export const ENTITY_FILTER = {
   fop: { label: 'ФОП', members: ['fop', 'self_employed'] },
   llc: { label: 'ТОВ або інша юрособа', members: ['llc'] },
-  individual: { label: 'Ще без бізнесу, фізособа', members: ['individual'] },
+  individual: { label: 'Фізична особа', members: ['individual', 'individual_14_35'] },
   farm: { label: 'Фермерське господарство', members: ['farm'] },
 };
 
 const MONTHS = ['січня', 'лютого', 'березня', 'квітня', 'травня', 'червня', 'липня', 'серпня', 'вересня', 'жовтня', 'листопада', 'грудня'];
 const CURRENCY = { UAH: 'грн', EUR: 'євро', USD: 'дол. США' };
+
+/** Календарна дата в Україні незалежно від часового поясу сервера чи читача. */
+export function kyivDate(now = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Kyiv', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(now);
+  const part = (name) => parts.find((p) => p.type === name).value;
+  return `${part('year')}-${part('month')}-${part('day')}`;
+}
 
 /** Статус на задану дату: відкрита програма з минулим дедлайном вважається закритою. */
 export function effectiveStatus(p, today) {
@@ -96,7 +106,7 @@ export function formatPeriod(p, today) {
   const { opens, closes } = p.period ?? {};
   const status = effectiveStatus(p, today);
   if (status === 'closed') return closes ? `Прийом завершено ${formatDate(closes)}` : 'Прийом завершено';
-  if (closes) return `Приймають до ${formatDate(closes)}`;
+  if (closes) return opens ? `Прийом з ${formatDate(opens)} до ${formatDate(closes)}` : `Приймають до ${formatDate(closes)}`;
   if (opens) return `Прийом з ${formatDate(opens)}`;
   return null;
 }

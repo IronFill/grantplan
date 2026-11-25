@@ -47,12 +47,14 @@ const locked = [
 <Layout title={`${p.title} | Гранти ГрантПлан`} description={description} path={`/granty/${p.id}`}>
   <SiteHeader slot="header" />
 
+  <div data-grant-status data-status={p.status} data-opens={p.period.opens ?? ''} data-closes={p.period.closes ?? ''}>
+
   <section class="relative pt-28 md:pt-36 pb-10 md:pb-14 border-b border-border/70">
     <div class="container-site container-text">
       <a href="/granty" class="inline-flex items-center gap-2 text-muted hover:text-ink text-sm py-2 -mt-2 mb-4">← Усі програми</a>
       <div class="flex flex-wrap items-center gap-2 text-xs">
         <span class="inline-flex items-center rounded-full bg-accent/10 text-accent px-2.5 py-1 font-medium">{KIND[p.kind].label}</span>
-        <span class={'inline-flex items-center rounded-full px-2.5 py-1 font-medium ' + tone[info.tone]}>{info.label}</span>
+        <span data-status-badge class={'inline-flex items-center rounded-full px-2.5 py-1 font-medium ' + tone[info.tone]}>{info.label}</span>
         <span class="text-muted">Перевірено {formatDate(p.last_checked)}</span>
       </div>
       <h1 class="mt-4 text-3xl sm:text-5xl">{p.title}</h1>
@@ -70,7 +72,7 @@ const locked = [
               <div><dt class="text-sm text-muted">Сума</dt><dd class="mt-0.5 font-medium">{amount}</dd></div>
             )}
             {period && (
-              <div><dt class="text-sm text-muted">Строки прийому</dt><dd class="mt-0.5">{period}</dd></div>
+              <div><dt class="text-sm text-muted">Строки прийому</dt><dd data-grant-period class="mt-0.5">{period}</dd></div>
             )}
             {p.operator.name && (
               <div>
@@ -97,8 +99,7 @@ const locked = [
           </dl>
         </div>
 
-        {status === 'closed' && (
-          <div class="rounded-card bg-raised border border-border p-6">
+          <div data-grant-closed hidden={status !== 'closed'} class="rounded-card bg-raised border border-border p-6">
             <h2 class="text-lg font-display font-semibold">Прийом заявок завершено</h2>
             <p class="mt-2 text-muted">
               {replacement
@@ -106,7 +107,6 @@ const locked = [
                 : 'Програми такого типу зазвичай оголошують повторно. Залиште заявку, і ми повідомимо про новий набір, коли він з’явиться.'}
             </p>
           </div>
-        )}
 
         {!p.verified && (
           <div class="rounded-card bg-raised border border-border p-6 flex gap-3">
@@ -146,6 +146,19 @@ const locked = [
       </p>
     </div>
   </section>
+
+  </div>
+
+  <script>
+    import { kyivDate } from '../../lib/granty.js';
+    import { refreshGrantStatuses } from '../../lib/granty-status.js';
+    let today = kyivDate();
+    const refresh = () => { today = kyivDate(); refreshGrantStatuses(document, today); };
+    refresh();
+    window.addEventListener('pageshow', refresh);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(); });
+    window.setInterval(() => { if (kyivDate() !== today) refresh(); }, 60_000);
+  </script>
 
   <LeadForm />
 

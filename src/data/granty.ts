@@ -1,5 +1,5 @@
 import raw from './granty.json';
-import { effectiveStatus, sortPrograms } from '../lib/granty.js';
+import { effectiveStatus, sortPrograms, kyivDate } from '../lib/granty.js';
 
 // Безкоштовна частина каталогу. Джерело — приватна база, див. src/lib/granty.js.
 
@@ -25,7 +25,7 @@ export interface GrantProgram {
 export const grantsGeneratedAt: string = raw.generated;
 export const grantPrograms = raw.programs as GrantProgram[];
 
-export const todayIso = () => new Date().toISOString().slice(0, 10);
+export const todayIso = kyivDate;
 
 export function sortedGrants(today = todayIso()): GrantProgram[] {
   return sortPrograms(grantPrograms, today) as GrantProgram[];
