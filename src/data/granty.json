@@ -1,0 +1,1179 @@
+{
+  "generated": "2026-11-24",
+  "programs": [
+    {
+      "id": "dostupni-kredyty-579",
+      "title": "Доступні кредити 5-7-9%",
+      "short": "Державна програма здешевлення кредитів для малого й середнього бізнесу через 48 банків. Окремі напрями: енергокредити під 0% до 10 млн грн і кредити на відновлення майна під 0,1% перші два роки.",
+      "operator": {
+        "name": "Мінекономіки, Фонд розвитку підприємництва, уповноважені банки",
+        "url": "https://madeinukraine.gov.ua/#investments"
+      },
+      "kind": "loan",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": "2020-02-01",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 150000000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "ebrd-eu-investment-grants",
+      "title": "ЄС і ЄБРР: інвестиційні гранти через банки-партнери",
+      "short": "Грант ЄС покриває від 10 до 30% прийнятних інвестиційних витрат малого бізнесу, який бере кредит у банку-партнері ЄБРР. Щонайменше половина грантів іде пріоритетним бізнесам, серед них ветеранські.",
+      "operator": {
+        "name": "ЄБРР, Європейський Союз (Ukraine Investment Framework)",
+        "url": "https://www.ebrd.com"
+      },
+      "kind": "grant",
+      "source_type": "donor",
+      "status": "unknown",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any",
+        "veteran",
+        "vpo",
+        "disability",
+        "women",
+        "youth"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "ebrd-sme-recovery-star-venture",
+      "title": "ЄБРР і ЄС: Ukraine SME Recovery Programme та Star Venture",
+      "short": "Програма ЄС і ЄБРР: 41 млн євро гарантій для кредитів МСП через банки-партнери й близько 5 млн євро технічної допомоги, зокрема для стартапів у програмі Star Venture.",
+      "operator": {
+        "name": "ЄБРР, Європейський Союз (Ukraine Investment Framework)",
+        "url": "https://www.ebrd.com"
+      },
+      "kind": "support",
+      "source_type": "donor",
+      "status": "unknown",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "llc",
+        "fop"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "eka-strakhuvannia",
+      "title": "Експортно-кредитне агентство: страхування кредитів",
+      "short": "ЕКА страхує інвестиційні кредити, а Нацбанк визнає це страхування прийнятним забезпеченням, тож банк може видати кредит без додаткової застави. З березня 2026 ризики визначає саме агентство.",
+      "operator": {
+        "name": "Експортно-кредитне агентство (ЕКА)",
+        "url": "https://me.gov.ua/News/Detail/063c79eb-c082-4459-8230-f0cd54d3b746?lang=uk-UA"
+      },
+      "kind": "support",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "energokredyty-0",
+      "title": "Кредити під 0% на енергообладнання",
+      "short": "Кредит до 10 млн грн на 3 роки під 0% річних для малого й середнього бізнесу на енергообладнання. Різницю в ставці банкам компенсує держава.",
+      "operator": {
+        "name": "Мінекономіки, Фонд розвитку підприємництва",
+        "url": "https://energycredit.bdf.gov.ua"
+      },
+      "kind": "loan",
+      "source_type": "state",
+      "status": "unknown",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 10000000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "energopidtrymka-fop",
+      "title": "Енергопідтримка для ФОП: допомога від 7,5 до 15 тис. грн",
+      "short": "Одноразова безповоротна допомога ФОП на 2 і 3 групах з найманими працівниками на енергообладнання. Прийом був з 02.02 до 31.03.2026 і закритий.",
+      "operator": {
+        "name": "Мінекономіки",
+        "url": "https://me.gov.ua/News/Print/0dc29ba9-2ad0-434c-abb8-a1ddff78de31?lang=uk-UA"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "closed",
+      "period": {
+        "opens": "2026-02-02",
+        "closes": "2026-03-31"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 7500,
+        "max": 15000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "ewa-grow-agrifood",
+      "title": "EWA GROW: гранти для жінок в agrifood від EIT Food",
+      "short": "Гранти 10 і 5 тис. євро та півроку менторства для жінок із бізнес-ідеєю чи молодим бізнесом у харчовому секторі. Четверту хвилю закрито 26.04.2026.",
+      "operator": {
+        "name": "EIT Food, в Україні Radar Tech",
+        "url": "https://www.eitfood.eu"
+      },
+      "kind": "grant",
+      "source_type": "donor",
+      "status": "closed",
+      "period": {
+        "opens": null,
+        "closes": "2026-04-26"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 10000,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "individual",
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "women"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "agrifood"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "giz-rukh-vpered",
+      "title": "Рух вперед: гранти GIZ для мікробізнесу жінок, ветеранів і ВПО",
+      "short": "Гранти до 8 тис. євро для мікропідприємств, які ведуть жінки, ветерани й ВПО в семи областях. Прийом тривав три тижні з 21.05.2026 і закритий.",
+      "operator": {
+        "name": "GIZ (EMPOWER) за кошти уряду Німеччини, Національна установа розвитку",
+        "url": "https://bdf.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "donor",
+      "status": "closed",
+      "period": {
+        "opens": "2026-05-21",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 8000,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "women",
+        "veteran",
+        "vpo"
+      ],
+      "regions": [
+        "Сумська",
+        "Харківська",
+        "Херсонська",
+        "Запорізька",
+        "Дніпропетровська",
+        "Миколаївська",
+        "Одеська"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "granty-prezydenta-molod",
+      "title": "Гранти Президента для молоді з малих громад",
+      "short": "До 200 тис. грн на молодіжні проєкти в громадах до 10 тис. жителів. Прийом до 2 грудня 2026.",
+      "operator": {
+        "name": "Український молодіжний фонд",
+        "url": "https://uyf.gov.ua/programs/hranty-prezydenta-2027"
+      },
+      "kind": "grant",
+      "source_type": "fund",
+      "status": "open",
+      "period": {
+        "opens": null,
+        "closes": "2026-12-02"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 200000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual"
+      ],
+      "categories": [
+        "youth"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "granty-sady",
+      "title": "Гранти на сади, ягідники й виноградники",
+      "short": "Державний грант на закладання саду, ягідника чи виноградника площею від 1 до 25 га: до 10 млн грн на отримувача й не більше 400 тис. грн на гектар. Заява через Дію, потрібна реєстрація в Державному аграрному реєстрі.",
+      "operator": {
+        "name": "Мінекономіки, Департамент аграрного розвитку",
+        "url": "https://me.gov.ua/Documents/Detail/a6283527-29fc-417b-89ce-c62e9e2f458b"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "unknown",
+      "period": {
+        "opens": "2026-02-02",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 10000000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc",
+        "farm"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "A"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "granty-teplytsi",
+      "title": "Гранти на модульні теплиці",
+      "short": "Державний грант на модульну теплицю площею від 0,4 до 2,4 га: від 2 до 7 млн грн залежно від площі. Заява через Дію, потрібна реєстрація в Державному аграрному реєстрі.",
+      "operator": {
+        "name": "Мінекономіки, Департамент аграрного розвитку",
+        "url": "https://me.gov.ua/Documents/Detail/a6283527-29fc-417b-89ce-c62e9e2f458b"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "unknown",
+      "period": {
+        "opens": "2026-02-02",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 2000000,
+        "max": 7000000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc",
+        "farm"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "A"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "granty-ubd-arkhiv",
+      "title": "Гранти для учасників бойових дій (стара програма)",
+      "short": "Стара державна програма грантів для УБД, осіб з інвалідністю внаслідок війни та їхніх сімей. Закрита для нових заяв з 1 серпня 2026, ветерани тепер подаються у «Власну справу» з надбавкою 20%.",
+      "operator": {
+        "name": "Державний центр зайнятості",
+        "url": "https://diia.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "closed",
+      "period": {
+        "opens": null,
+        "closes": "2026-08-01"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop"
+      ],
+      "categories": [
+        "combatant",
+        "veteran_family"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": "vlasna-sprava-start"
+    },
+    {
+      "id": "kompensatsiia-esv-bezrobitni",
+      "title": "Компенсація роботодавцю: єдиний внесок за безробітних окремих категорій",
+      "short": "Роботодавець отримує компенсацію єдиного внеску за працівника, якого направив центр зайнятості з окремих категорій безробітних. Працевлаштувати треба щонайменше на два роки.",
+      "operator": {
+        "name": "Державна служба зайнятості",
+        "url": "https://www.dcz.gov.ua"
+      },
+      "kind": "compensation",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any",
+        "disability"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "kompensatsiia-molod-ta-pilhovi",
+      "title": "Компенсація роботодавцю: 50% зарплати за молодь і окремі категорії",
+      "short": "Роботодавець отримує компенсацію за працевлаштування за направленням центру зайнятості: половину зарплати за людей перед пенсією, з інвалідністю й УБД, або половину мінімальної зарплати за молодь.",
+      "operator": {
+        "name": "Державна служба зайнятості",
+        "url": "https://www.dcz.gov.ua"
+      },
+      "kind": "compensation",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "youth",
+        "combatant",
+        "disability"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "mentorska-pidtrymka-molod",
+      "title": "Менторська підтримка молодих підприємців 18–25",
+      "short": "Безкоштовне навчання й менторство від центру зайнятості. Сертифікат дає право пропустити співбесіду у «Власній справі».",
+      "operator": {
+        "name": "Державний центр зайнятості",
+        "url": "https://www.dcz.gov.ua"
+      },
+      "kind": "support",
+      "source_type": "state",
+      "status": "unknown",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop"
+      ],
+      "categories": [
+        "youth_18_25"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "mikrogranty-yerobota-arkhiv",
+      "title": "Мікрогранти «єРобота» (стара програма)",
+      "short": "Стара програма мікрогрантів за постановою № 738. Нові заяви не приймаються з 1 серпня 2026, її замінила «Власна справа».",
+      "operator": {
+        "name": "Державний центр зайнятості",
+        "url": "https://diia.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "closed",
+      "period": {
+        "opens": "2022-07-01",
+        "closes": "2026-08-01"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 50000,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": true,
+      "replaced_by": "vlasna-sprava-start"
+    },
+    {
+      "id": "mom-zhyttiezdatnist-plus",
+      "title": "МОМ: гранти до 20 тис. євро для малого бізнесу (проєкт Життєздатність+)",
+      "short": "Гранти до 20 тис. євро в гривневому еквіваленті для малого бізнесу Києва, Чернігівщини й Сумщини, який створює нові робочі місця. Прийом закрито 15.05.2026.",
+      "operator": {
+        "name": "Міжнародна організація з міграції (МОМ), за кошти Німеччини через KfW",
+        "url": "https://ukraine.iom.int"
+      },
+      "kind": "grant",
+      "source_type": "donor",
+      "status": "closed",
+      "period": {
+        "opens": null,
+        "closes": "2026-05-15"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 20000,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "Київ і Київська область",
+        "Чернігів і Чернігівська область",
+        "Суми і Сумська область"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "nur-kryvyi-rih-liuksemburh",
+      "title": "Гранти для бізнесу Криворізького району від НУР і Люксембургу",
+      "short": "Гранти для мікро-, малого й середнього бізнесу Криворіжжя: до 10 тис. євро для мікро, до 50 тис. для малого, до 100 тис. для середнього бізнесу. Прийом закрито 17.08.2026.",
+      "operator": {
+        "name": "Національна установа розвитку, уряд Великого Герцогства Люксембург",
+        "url": "https://bdf.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "donor",
+      "status": "closed",
+      "period": {
+        "opens": null,
+        "closes": "2026-08-17"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 100000,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "Дніпропетровська область, Криворізький район"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "pererobna-promyslovist",
+      "title": "Гранти на переробну промисловість",
+      "short": "Державний грант до 8 млн грн (до 16 млн на відновлення зруйнованого) на обладнання для виробництва за секцією C КВЕД. Потрібне співфінансування від 20 до 50% і щонайменше 5 нових робочих місць.",
+      "operator": {
+        "name": "Мінекономіки, Державний центр зайнятості",
+        "url": "https://diia.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "unknown",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 8000000,
+        "cap": 16000000,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "C"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "pochatok-2",
+      "title": "Початок 2: навчання й бізнес-ваучери для жінок в агросекторі",
+      "short": "Навчальна програма Мінцифри, Дія.Бізнес і UN Women: ваучери по 100 тис. грн для 39 учасниць, головний приз 270 тис. грн. Реєстрація закрита 08.11.2026.",
+      "operator": {
+        "name": "Мінцифри, Дія.Бізнес, UN Women в Україні",
+        "url": "https://www.pochatok2.com"
+      },
+      "kind": "support",
+      "source_type": "state",
+      "status": "closed",
+      "period": {
+        "opens": null,
+        "closes": "2026-11-08"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 100000,
+        "max": 270000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "women",
+        "vpo"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "агросектор",
+        "харчова переробка"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "portfelni-harantii-kredyty",
+      "title": "Державні портфельні гарантії за кредитами малого бізнесу",
+      "short": "Держава частково гарантує кредити, які банки видають мікро-, малому й середньому бізнесу. Правила оновлено в серпні 2026 за результатами п'яти років роботи програми, умови уточнюємо.",
+      "operator": {
+        "name": "Мінфін, банки-партнери",
+        "url": "https://mof.gov.ua"
+      },
+      "kind": "loan",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "rozpodilena-heneratsiia-kredyt",
+      "title": "Кредити на розподілену генерацію для середнього й великого бізнесу",
+      "short": "Експериментальна програма: кредити від 1 до 25 млн євро (в гривневому еквіваленті) під 10% річних на газові та біогазові установки, ВДЕ й накопичувачі енергії.",
+      "operator": {
+        "name": "Національна установа розвитку, уповноважені банки",
+        "url": "https://bdf.gov.ua"
+      },
+      "kind": "loan",
+      "source_type": "state",
+      "status": "unknown",
+      "period": {
+        "opens": "2026-06-01",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 1000000,
+        "max": 25000000,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "traiektoriia",
+      "title": "Траєкторія: гранти на масштабування ветеранського бізнесу",
+      "short": "Освітньо-грантова програма: 10 компаній отримують по 1 млн грн. Для ветеранського бізнесу і бізнесу, де працюють ветерани. Третій сезон закрито 31.08.2026.",
+      "operator": {
+        "name": "Національна освітньо-грантова програма «Траєкторія»",
+        "url": "https://trayektoriya.business/"
+      },
+      "kind": "grant",
+      "source_type": "donor",
+      "status": "closed",
+      "period": {
+        "opens": "2026-08-04",
+        "closes": "2026-08-31"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 1000000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "veteran",
+        "veteran_family",
+        "veteran_friendly"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "tysiachovesna-mynkult",
+      "title": "Тисячовесна: конкурс Мінкульту для креативних індустрій",
+      "short": "Конкурс на понад 3,8 млрд грн для кіно, серіалів, музики, візуального й перформативного мистецтва. Прийом заявок тривав з 03.04 до 28.05.2026 і закритий.",
+      "operator": {
+        "name": "Міністерство культури України",
+        "url": "https://mkip.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "closed",
+      "period": {
+        "opens": "2026-04-03",
+        "closes": "2026-05-28"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": null,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "креативні індустрії"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "ucf-innovative-cultural-products",
+      "title": "Український культурний фонд: Innovative Cultural Products",
+      "short": "Гранти від 10 до 20 тис. євро на інноваційні культурні продукти в партнерстві з організацією з ЄС. Прийом заявок закрито 14.08.2026.",
+      "operator": {
+        "name": "Український культурний фонд, Cultural Vistas",
+        "url": "https://ucf.in.ua/en/m_lots/6a28103240edce53a65bf2c3"
+      },
+      "kind": "grant",
+      "source_type": "fund",
+      "status": "closed",
+      "period": {
+        "opens": null,
+        "closes": "2026-08-14"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 500000,
+        "max": 1000000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "культура",
+        "креативні індустрії"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "usf-startup-edge",
+      "title": "Startup EDGE: гранти Українського фонду стартапів",
+      "short": "Гранти до 20 тис. євро для pre-seed і до 40 тис. євро для seed стартапів у Deep Tech, Green Tech та EdTech. Друга хвиля закрилась 20.03.2026.",
+      "operator": {
+        "name": "Український фонд стартапів (EU4InnovationEast)",
+        "url": "https://usf.com.ua"
+      },
+      "kind": "grant",
+      "source_type": "fund",
+      "status": "closed",
+      "period": {
+        "opens": "2026-02-19",
+        "closes": "2026-03-20"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 40000,
+        "cap": null,
+        "currency": "EUR"
+      },
+      "entities": [
+        "llc",
+        "fop"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "Deep Tech",
+        "Green Tech",
+        "EdTech"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "uvf-varto",
+      "title": "Конкурси ВАРТО Українського ветеранського фонду",
+      "short": "Гранти від 500 тис. до 1,5 млн грн для ветеранського бізнесу. Фонд проводить кілька конкурсів на рік, у 2026 їх було чотири. Зараз прийом закритий.",
+      "operator": {
+        "name": "Український ветеранський фонд, Мінветеранів",
+        "url": "https://veteranfund.com.ua/contests/"
+      },
+      "kind": "grant",
+      "source_type": "fund",
+      "status": "closed",
+      "period": {
+        "opens": "2026-09-07",
+        "closes": "2026-09-29"
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 500000,
+        "max": 1500000,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc",
+        "self_employed"
+      ],
+      "categories": [
+        "veteran"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "vaucher-navchannia",
+      "title": "Ваучер на навчання від служби зайнятості",
+      "short": "Ваучер до 33 280 грн на професійне навчання чи перенавчання для ветеранів, ВПО, людей з інвалідністю й українців від 45 років. З жовтня 2026 потрібен рекомендаційний лист роботодавця.",
+      "operator": {
+        "name": "Державна служба зайнятості",
+        "url": "https://www.dcz.gov.ua"
+      },
+      "kind": "support",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": null,
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": null,
+        "max": 33280,
+        "cap": null,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual"
+      ],
+      "categories": [
+        "veteran",
+        "vpo",
+        "disability"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": false,
+      "replaced_by": null
+    },
+    {
+      "id": "vlasna-sprava-masshtabuvannia",
+      "title": "Власна справа: грант на масштабування",
+      "short": "Державний грант від 500 тис. до 1,5 млн грн для діючого ФОП або компанії, з надбавками до 2,5 млн грн. Обов'язково створити нове робоче місце.",
+      "operator": {
+        "name": "Державний центр зайнятості, Мінекономіки",
+        "url": "https://diia.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": "2026-09-01",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 500000,
+        "max": 1500000,
+        "cap": 2500000,
+        "currency": "UAH"
+      },
+      "entities": [
+        "fop",
+        "llc"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": true,
+      "replaced_by": null
+    },
+    {
+      "id": "vlasna-sprava-start",
+      "title": "Власна справа: грант на започаткування",
+      "short": "Державний грант від 100 до 300 тис. грн на старт бізнесу, з надбавками до 500 тис. грн. Подача через Дію, кошти видає Державний центр зайнятості через банк.",
+      "operator": {
+        "name": "Державний центр зайнятості, Мінекономіки",
+        "url": "https://diia.gov.ua"
+      },
+      "kind": "grant",
+      "source_type": "state",
+      "status": "rolling",
+      "period": {
+        "opens": "2026-09-01",
+        "closes": null
+      },
+      "last_checked": "2026-11-24",
+      "amount": {
+        "min": 100000,
+        "max": 300000,
+        "cap": 500000,
+        "currency": "UAH"
+      },
+      "entities": [
+        "individual",
+        "fop",
+        "llc",
+        "self_employed"
+      ],
+      "categories": [
+        "any"
+      ],
+      "regions": [
+        "all"
+      ],
+      "sectors": [
+        "any"
+      ],
+      "verified": true,
+      "replaced_by": null
+    }
+  ]
+}

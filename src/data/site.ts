@@ -49,6 +49,7 @@ export const nav = [
 
 // Другорядні розділи: у мобільному меню та футері, але не в шапці.
 export const navSecondary = [
+  { label: 'Каталог грантів', href: '/granty', icon: 'landmark' },
   { label: 'Про нас', href: '/pro-nas', icon: 'users' },
   { label: 'Приклад роботи', href: '/case-bpla', icon: 'file-text' },
   { label: 'Блог', href: '/blog', icon: 'message-circle' },
