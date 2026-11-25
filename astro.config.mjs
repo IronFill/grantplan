@@ -11,7 +11,7 @@ export default defineConfig({
   output: 'static',
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/privacy') && !page.includes('/pamyatka'),
+      filter: (page) => !page.includes('/privacy') && !page.includes('/pamyatka') && !page.includes('/granty/kabinet'),
     }),
   ],
   vite: {

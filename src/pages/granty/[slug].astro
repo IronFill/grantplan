@@ -18,6 +18,8 @@ export function getStaticPaths() {
 
 const { p } = Astro.props;
 const today = todayIso();
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const supabaseKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 const status = effectiveStatus(p, today);
 const info = STATUS[status as keyof typeof STATUS];
 const amount = formatAmount(p);
@@ -60,7 +62,7 @@ const locked = [
     </div>
   </section>
 
-  <section class="py-10 md:py-14">
+  <section class="py-10 md:py-14" data-kabinet data-url={supabaseUrl} data-key={supabaseKey} data-id={p.id}>
     <div class="container-site grid lg:grid-cols-[1.1fr_0.9fr] gap-8 lg:gap-10 items-start">
       <div class="grid gap-6">
         <div class="rounded-card bg-surface border border-border p-6 md:p-7">
@@ -119,7 +121,7 @@ const locked = [
         )}
       </div>
 
-      <aside class="rounded-card-lg bg-surface border border-border p-6 md:p-7 lg:sticky lg:top-24">
+      <aside class="rounded-card-lg bg-surface border border-border p-6 md:p-7 lg:sticky lg:top-24" data-locked>
         <span class="inline-flex items-center gap-2 text-xs font-display font-semibold uppercase tracking-wide text-accent">
           <Icon name="shield-check" size={15} /> Повна карточка
         </span>
@@ -136,7 +138,18 @@ const locked = [
           <a href="#lead" class="btn btn-primary" data-analytics="click_cta_granty_card">Перевірити, чи підходить мені</a>
           <a href={site.telegram} target="_blank" rel="noopener" class="btn btn-ghost" data-analytics="click_telegram">Написати в Telegram</a>
         </div>
+        {/* З'являється лише коли платний рівень підключено до сервера. */}
+        <p class="mt-4 text-sm text-muted" data-login-hint hidden>
+          Вже маєте доступ? <a href="/granty/kabinet" class="text-accent underline underline-offset-4">Увійти</a>
+        </p>
+        <p class="mt-3 text-sm text-muted" data-login-note hidden></p>
       </aside>
+    </div>
+
+    {/* Повна карточка: заповнюється в браузері лише для користувача з діючим доступом. */}
+    <div class="container-site mt-10 scroll-mt-24" id="full-card" data-full hidden>
+      <h2 class="text-2xl font-display font-semibold">Повна карточка програми</h2>
+      <div class="mt-5 grid md:grid-cols-2 gap-4" data-full-body></div>
     </div>
 
     <div class="container-site mt-10">
@@ -152,3 +165,41 @@ const locked = [
   <SiteFooter slot="footer" />
   <MobileCta />
 </Layout>
+
+<script>
+  import { readConfig, ensureSession, fetchAccess, accessState, fetchFullCard, describeFull } from '../../lib/kabinet.js';
+  import { renderSections } from '../../lib/kabinet-ui.js';
+
+  const root = document.querySelector<HTMLElement>('[data-kabinet]');
+  const cfg = root ? readConfig(root.dataset.url, root.dataset.key) : null;
+  if (root && cfg) {
+    const hint = root.querySelector<HTMLElement>('[data-login-hint]')!;
+    const note = root.querySelector<HTMLElement>('[data-login-note]')!;
+    hint.hidden = false;
+    (async () => {
+      try {
+        const session = await ensureSession(cfg, localStorage);
+        if (!session) return;
+        const row = await fetchAccess(cfg, session);
+        const state = accessState(row);
+        if (state !== 'active') {
+          hint.hidden = true;
+          note.hidden = false;
+          note.textContent = state === 'expired'
+            ? `Ви увійшли як ${session.email}, але доступ завершився. Напишіть нам, щоб продовжити.`
+            : `Ви увійшли як ${session.email}, але для цієї пошти доступу до повних карточок немає.`;
+          return;
+        }
+        const data = await fetchFullCard(cfg, session, root.dataset.id!);
+        if (!data) return;
+        const sections = describeFull(data);
+        if (!sections.length) return;
+        renderSections(document, root.querySelector<HTMLElement>('[data-full-body]')!, sections);
+        root.querySelector<HTMLElement>('[data-full]')!.hidden = false;
+        root.querySelector<HTMLElement>('[data-locked]')!.hidden = true;
+      } catch {
+        /* без з'єднання лишається безкоштовна частина сторінки */
+      }
+    })();
+  }
+</script>
