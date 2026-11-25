@@ -4,8 +4,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import {
-  effectiveStatus, formatAmount, formatPeriod, formatDate, formatNumber, matches, sortPrograms, visibleCategories, STATUS,
+  effectiveStatus, formatAmount, formatPeriod, formatDate, formatNumber, matches, sortPrograms, visibleCategories, visibleEntities, kyivDate, STATUS,
 } from '../src/lib/granty.js';
+import { refreshGrantStatuses } from '../src/lib/granty-status.js';
 
 const raw = JSON.parse(fs.readFileSync(fileURLToPath(new URL('../src/data/granty.json', import.meta.url)), 'utf8'));
 const programs = raw.programs;
@@ -50,6 +51,51 @@ assert.equal(effectiveStatus(base, '2026-12-03'), 'closed');
 assert.equal(effectiveStatus({ ...base, status: 'rolling' }, '2027-01-01'), 'closed');
 assert.equal(effectiveStatus({ ...base, status: 'unknown' }, '2027-01-01'), 'unknown');
 assert.equal(effectiveStatus({ status: 'rolling', period: { closes: null } }, '2030-01-01'), 'rolling');
+
+// Межа календарного дедлайну визначається в Києві, не за UTC/локаллю читача.
+assert.equal(kyivDate(new Date('2026-12-02T21:59:59Z')), '2026-12-02');
+assert.equal(kyivDate(new Date('2026-12-02T22:00:00Z')), '2026-12-03');
+assert.equal(kyivDate(new Date('2026-12-02T17:00:00-05:00')), '2026-12-03');
+assert.equal(kyivDate(new Date('2026-07-01T21:00:00Z')), '2026-07-02', 'літній час Києва');
+
+// Реальна програма: виправлення лише публічних полів, без вигаданого часу закриття.
+const youth = programs.find((p) => p.id === 'granty-prezydenta-molod');
+assert.ok(youth);
+assert.deepEqual(youth.period, { opens: '2026-11-02', closes: '2026-12-02' });
+assert.equal(youth.amount.min, 50000);
+assert.equal(youth.amount.max, 200000);
+assert.equal(youth.operator.url, 'https://uyf.gov.ua/programs/hranty-prezydenta-2027');
+assert.equal(formatPeriod(youth, '2026-11-25'), 'Прийом з 2 листопада 2026 до 2 грудня 2026');
+assert.match(youth.short, /Суспільно важливі молодіжні проєкти/);
+assert.match(youth.short, /01\.08\.2027/);
+assert.equal(visibleEntities(youth).some((s) => s.includes('планує бізнес')), false);
+assert.match(visibleEntities(youth).join(' '), /14–35/);
+assert.equal(matches(youth, { who: 'individual', cat: 'youth' }, '2026-12-02'), true);
+assert.equal(matches(youth, {}, '2026-12-03'), false, 'після дедлайну прихована у списку');
+assert.equal(matches(youth, { showClosed: true }, '2026-12-03'), true);
+
+// DOM-контракт списку і прямої сторінки: старий HTML оновлює не лише бейдж,
+// а й текст строку/повідомлення. Інша відкрита програма зберігає свій статус.
+function statusCard(status, closes, detail = false) {
+  const elements = new Map(['[data-status-badge]', '[data-grant-period]', '[data-grant-unverified]'].map((s) => [s, { textContent: '', className: '', hidden: false }]));
+  if (detail) elements.set('[data-grant-closed]', { hidden: true });
+  return { dataset: { status, closes }, querySelector: (s) => elements.get(s), elements };
+}
+for (const detail of [false, true]) {
+  const card = statusCard('open', youth.period.closes, detail);
+  const other = statusCard('open', '2027-02-01', detail);
+  const root = { querySelectorAll: () => [card, other] };
+  refreshGrantStatuses(root, kyivDate(new Date('2026-12-02T21:59:59Z')));
+  assert.equal(card.elements.get('[data-status-badge]').textContent, 'Приймають заявки');
+  refreshGrantStatuses(root, kyivDate(new Date('2026-12-02T22:00:00Z')));
+  assert.equal(card.dataset.effective, 'closed');
+  assert.equal(card.elements.get('[data-status-badge]').textContent, 'Закрито');
+  assert.equal(card.elements.get('[data-grant-period]').textContent, 'Прийом завершено 2 грудня 2026');
+  assert.equal(card.elements.get('[data-grant-unverified]').hidden, true);
+  if (detail) assert.equal(card.elements.get('[data-grant-closed]').hidden, false);
+  assert.equal(other.dataset.effective, 'open');
+  assert.equal(other.elements.get('[data-status-badge]').textContent, 'Приймають заявки');
+}
 
 // ---------- 3. Форматування ----------
 const nb = ' ';

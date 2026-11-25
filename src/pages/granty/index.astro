@@ -29,7 +29,7 @@ const counts = grantCounts(today);
       <h1 class="mt-4 text-3xl sm:text-5xl">Гранти й державна підтримка бізнесу</h1>
       <p class="mt-5 text-muted text-lg">
         Усі програми, які ми відстежуємо: державні, фондів і міжнародних донорів. Для кожної вказуємо суму, строки й для кого вона,
-        а дату останньої перевірки показуємо на сторінці програми. Зараз у каталозі {counts.total} програм, з них {counts.open} приймають заявки.
+        а дату останньої перевірки показуємо на сторінці програми. Зараз у каталозі {counts.total} програм, з них <span data-grant-open-count>{counts.open}</span> приймають заявки.
       </p>
     </div>
   </section>
@@ -65,7 +65,7 @@ const counts = grantCounts(today);
         </label>
         <label class="md:col-span-4 inline-flex items-center gap-3 text-sm py-1">
           <input type="checkbox" name="closed" value="1" class="h-5 w-5 accent-[var(--color-accent)]" />
-          <span>Показати й закриті програми ({counts.closed})</span>
+          <span>Показати й закриті програми (<span data-grant-closed-count>{counts.closed}</span>)</span>
         </label>
       </form>
 
@@ -97,35 +97,15 @@ const counts = grantCounts(today);
 </Layout>
 
 <script>
-  import { matches, effectiveStatus, STATUS } from '../../lib/granty.js';
+  import { matches, kyivDate } from '../../lib/granty.js';
+  import { refreshGrantStatuses } from '../../lib/granty-status.js';
 
   const form = document.querySelector<HTMLFormElement>('[data-grant-filters]');
   const cards = [...document.querySelectorAll<HTMLElement>('[data-grant-card]')];
   const countEl = document.querySelector<HTMLElement>('[data-grant-count]');
   const empty = document.querySelector<HTMLElement>('[data-grant-empty]');
-  const today = new Date().toISOString().slice(0, 10);
-
-  const TONE: Record<string, string[]> = {
-    success: ['bg-success/10', 'text-success'],
-    accent: ['bg-accent/10', 'text-accent'],
-    muted: ['border', 'border-border', 'text-muted'],
-  };
-
-  // Статус перераховуємо за сьогоднішньою датою користувача: сторінка зібрана раніше,
-  // і програма з минулим дедлайном не повинна виглядати відкритою.
-  for (const card of cards) {
-    const closes = card.dataset.closes || null;
-    const status = effectiveStatus({ status: card.dataset.status, period: { closes } }, today);
-    card.dataset.effective = status;
-    if (status !== card.dataset.status) {
-      const badge = card.querySelector<HTMLElement>('[data-status-badge]');
-      const info = (STATUS as Record<string, { label: string; tone: string }>)[status];
-      if (badge && info) {
-        badge.className = 'inline-flex items-center rounded-full px-2.5 py-1 font-medium ' + TONE[info.tone].join(' ');
-        badge.textContent = info.label;
-      }
-    }
-  }
+  let today = kyivDate();
+  refreshGrantStatuses(document, today);
 
   const plural = (n: number) => (n % 10 === 1 && n % 100 !== 11 ? 'програма' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'програми' : 'програм');
 
@@ -141,6 +121,14 @@ const counts = grantCounts(today);
   }
 
   function apply() {
+    today = kyivDate();
+    refreshGrantStatuses(document, today);
+    const openCount = cards.filter((c) => ['open', 'rolling'].includes(c.dataset.effective ?? '')).length;
+    const closedCount = cards.filter((c) => c.dataset.effective === 'closed').length;
+    const openEl = document.querySelector('[data-grant-open-count]');
+    const closedEl = document.querySelector('[data-grant-closed-count]');
+    if (openEl) openEl.textContent = String(openCount);
+    if (closedEl) closedEl.textContent = String(closedCount);
     const f = read();
     let shown = 0;
     for (const card of cards) {
@@ -187,5 +175,9 @@ const counts = grantCounts(today);
     form.addEventListener('change', apply);
     form.addEventListener('submit', (e) => { e.preventDefault(); apply(); });
     apply();
+    window.addEventListener('pageshow', apply);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) apply(); });
+    // Відкрита вкладка теж переходить на нову київську дату без перевипуску сайту.
+    window.setInterval(() => { if (kyivDate() !== today) apply(); }, 60_000);
   }
 </script>

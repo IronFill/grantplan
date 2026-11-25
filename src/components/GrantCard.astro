@@ -31,7 +31,9 @@ const tone: Record<string, string> = {
   href={`/granty/${p.id}`}
   class="reveal card-hover block rounded-card bg-surface border border-border p-6"
   data-grant-card
+  data-grant-status
   data-status={p.status}
+  data-opens={p.period.opens ?? ''}
   data-closes={p.period.closes ?? ''}
   data-kind={p.kind}
   data-entities={p.entities.join(' ')}
@@ -42,7 +44,7 @@ const tone: Record<string, string> = {
     <span class="inline-flex items-center rounded-full bg-accent/10 text-accent px-2.5 py-1 font-medium">{KIND[p.kind].label}</span>
     <span data-status-badge class={'inline-flex items-center rounded-full px-2.5 py-1 font-medium ' + tone[info.tone]}>{info.label}</span>
     {!p.verified && status !== 'closed' && (
-      <span class="inline-flex items-center rounded-full border border-border px-2.5 py-1 text-muted">Частину умов звіряємо</span>
+      <span data-grant-unverified class="inline-flex items-center rounded-full border border-border px-2.5 py-1 text-muted">Частину умов звіряємо</span>
     )}
   </div>
   <h2 class="mt-3 text-xl font-display font-semibold">{p.title}</h2>
@@ -52,7 +54,7 @@ const tone: Record<string, string> = {
       <div class="flex gap-2"><dt class="text-muted shrink-0">Сума:</dt><dd class="font-medium">{amount}</dd></div>
     )}
     {period && (
-      <div class="flex gap-2"><dt class="text-muted shrink-0">Строки:</dt><dd>{period}</dd></div>
+      <div class="flex gap-2"><dt class="text-muted shrink-0">Строки:</dt><dd data-grant-period>{period}</dd></div>
     )}
     {cats.length > 0 && (
       <div class="flex gap-2"><dt class="text-muted shrink-0">Для кого:</dt><dd>{cats.join(', ')}</dd></div>
