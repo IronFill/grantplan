@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "LegalMCP": {
+      "type": "stdio",
+      "command": "bash",
+      "args": [
+        "tools/legalmcp/launch.sh"
+      ],
+      "env": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "GEMINI_API_MODE": "interactions",
+        "GEMINI_REVIEW_MODEL": "gemini-3.8-flash",
+        "GEMINI_DEEP_REVIEW_MODEL": "gemini-3.1-pro-preview"
+      },
+      "timeout": 180000
+    }
+  }
+}
