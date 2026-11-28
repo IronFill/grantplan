@@ -1,0 +1,148 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import MobileCta from '../../components/MobileCta.astro';
+import { site } from '../../data/site';
+
+const url = import.meta.env.PUBLIC_SUPABASE_URL ?? '';
+const key = import.meta.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
+---
+<Layout
+  title="Вхід для передплатників каталогу грантів | ГрантПлан"
+  description="Вхід за кодом з листа до повних карточок каталогу грантів: надбавки, ліміти витрат, порядок подання й підводні камені."
+  path="/granty/kabinet"
+  noindex
+>
+  <SiteHeader slot="header" />
+
+  <section class="pt-28 md:pt-36 pb-16 md:pb-24" data-kabinet data-url={url} data-key={key}>
+    <div class="container-site container-text">
+      <a href="/granty" class="flex w-fit items-center gap-2 text-muted hover:text-ink text-sm py-2 -mt-2 mb-4">← Каталог грантів</a>
+      <h1 class="text-3xl sm:text-5xl">Вхід для передплатників</h1>
+      <p class="mt-5 text-muted text-lg">Повні карточки програм: надбавки, ліміти витрат, порядок подання й підводні камені з практики.</p>
+
+      <div class="mt-8 rounded-card-lg bg-surface border border-border p-6 md:p-8 max-w-xl">
+        {/* Платний рівень не підключено до сервера: чесно кажемо, що доступу ще немає. */}
+        <div data-state="off">
+          <h2 class="text-xl font-display font-semibold">Доступ відкриється найближчим часом</h2>
+          <p class="mt-3 text-muted">
+            Ми готуємо платну підписку. Поки що повний розбір програми під вашу ситуацію робимо на безкоштовному аудиті.
+          </p>
+          <a href="/#lead" class="mt-5 btn btn-primary" data-analytics="click_cta_kabinet_off">Записатися на аудит</a>
+        </div>
+
+        <form data-state="email" method="post" action="#" class="grid gap-4" hidden novalidate>
+          <h2 class="text-xl font-display font-semibold">Увійдіть за поштою</h2>
+          <label class="grid gap-1.5 text-sm">
+            <span class="text-muted">Пошта, на яку видано доступ</span>
+            <input type="email" name="email" autocomplete="email" maxlength="254" required class="rounded-btn bg-raised border border-border px-3 py-3 text-ink" />
+          </label>
+          <button type="submit" class="btn btn-primary">Надіслати код</button>
+        </form>
+
+        <form data-state="code" method="post" action="#" class="grid gap-4" hidden novalidate>
+          <h2 class="text-xl font-display font-semibold">Введіть код з листа</h2>
+          <label class="grid gap-1.5 text-sm">
+            <span class="text-muted">Код із листа</span>
+            <input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required class="rounded-btn bg-raised border border-border px-3 py-3 text-ink tracking-widest" />
+          </label>
+          <button type="submit" class="btn btn-primary">Увійти</button>
+          <button type="button" class="btn btn-ghost" data-back>Інша пошта</button>
+        </form>
+
+        <div data-state="account" class="grid gap-4" hidden>
+          <h2 class="text-xl font-display font-semibold">Ваш доступ</h2>
+          <p data-account-line class="text-muted"></p>
+          <a href="/granty" class="btn btn-primary">Відкрити каталог</a>
+          <button type="button" class="btn btn-ghost" data-signout>Вийти</button>
+        </div>
+
+        <p class="mt-4 text-sm min-h-6" role="status" aria-live="polite" data-message></p>
+      </div>
+
+      <p class="mt-6 max-w-xl text-sm text-muted leading-relaxed">
+        Доступ видає власник вручну. Якщо у вас його ще немає, напишіть у <a href={site.telegram} target="_blank" rel="noopener" class="text-accent underline underline-offset-4">Telegram</a>.
+        Пошту ми використовуємо лише для входу, докладніше в <a href="/privacy" class="text-accent underline underline-offset-4">політиці конфіденційності</a>.
+      </p>
+    </div>
+  </section>
+
+  <SiteFooter slot="footer" />
+  <MobileCta />
+</Layout>
+
+<script>
+  import {
+    readConfig, requestCode, verifyCode, ensureSession, saveSession, clearSession, fetchAccess, accessState, normalizeEmail,
+  } from '../../lib/kabinet.js';
+  import { formatDate } from '../../lib/granty.js';
+
+  const root = document.querySelector<HTMLElement>('[data-kabinet]')!;
+  const cfg = readConfig(root.dataset.url, root.dataset.key);
+  const states = Object.fromEntries([...root.querySelectorAll<HTMLElement>('[data-state]')].map((el) => [el.dataset.state!, el]));
+  const message = root.querySelector<HTMLElement>('[data-message]')!;
+  const emailForm = states.email as HTMLFormElement;
+  const codeForm = states.code as HTMLFormElement;
+  let pendingEmail = '';
+
+  const say = (text: string, bad = false) => {
+    message.textContent = text;
+    message.className = 'mt-4 text-sm min-h-6 ' + (bad ? 'text-accent' : 'text-muted');
+  };
+  const show = (name: string) => { for (const [key, el] of Object.entries(states)) el.hidden = key !== name; };
+
+  const ERRORS: Record<string, string> = {
+    email: 'Перевірте адресу пошти.',
+    rate: 'Забагато спроб. Зачекайте хвилину й спробуйте ще раз.',
+    network: 'Не вдалося з’єднатися. Спробуйте пізніше.',
+    server: 'Сервіс тимчасово недоступний. Спробуйте пізніше або напишіть нам.',
+    code: 'Код не підійшов або застарів. Запросіть новий.',
+    format: 'Введіть код з листа цифрами.',
+  };
+
+  async function showAccount() {
+    const session = await ensureSession(cfg!, localStorage);
+    if (!session) { show('email'); return; }
+    const row: any = await fetchAccess(cfg!, session).catch(() => null);
+    const state = accessState(row);
+    const line = states.account.querySelector<HTMLElement>('[data-account-line]')!;
+    if (state === 'active') {
+      line.textContent = `${session.email}: доступ ${row?.expires_at ? 'діє до ' + formatDate(row.expires_at.slice(0, 10)) : 'діє без обмеження строку'}.`;
+    } else if (state === 'expired') {
+      line.textContent = `${session.email}: доступ завершився ${formatDate(row.expires_at.slice(0, 10))}. Напишіть нам, щоб продовжити.`;
+    } else {
+      line.textContent = `${session.email}: для цієї пошти доступу немає. Напишіть нам, і ми підкажемо, як його отримати.`;
+    }
+    show('account');
+  }
+
+  if (!cfg) {
+    show('off');
+  } else {
+    emailForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = normalizeEmail(new FormData(emailForm).get('email'));
+      if (!email) { say(ERRORS.email, true); return; }
+      say('Надсилаємо…');
+      const res: any = await requestCode(cfg, email);
+      if (!res.ok) { say(ERRORS[res.reason] ?? ERRORS.server, true); return; }
+      pendingEmail = res.email;
+      say('Якщо ця пошта є у списку доступів, ми надіслали на неї код. Він діє кілька хвилин.');
+      show('code');
+    });
+    codeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      say('Перевіряємо…');
+      const res: any = await verifyCode(cfg, pendingEmail, new FormData(codeForm).get('code'));
+      if (!res.ok) { say(ERRORS[res.reason] ?? ERRORS.server, true); return; }
+      saveSession(localStorage, res);
+      say('');
+      await showAccount();
+    });
+    root.querySelector('[data-back]')?.addEventListener('click', () => { say(''); show('email'); });
+    root.querySelector('[data-signout]')?.addEventListener('click', () => { clearSession(localStorage); say('Ви вийшли.'); show('email'); });
+    show('email');
+    showAccount();
+  }
+</script>
